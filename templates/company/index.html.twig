@@ -4,21 +4,26 @@
 
 {% block body %}
     <h2>Companies</h2>
-    {#<a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>#}
+    <a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>
+    <hr>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Site</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Remove</th>
             </tr>
         </thead>
         <tbody>
             {% for company in companies %}
                 <tr>
-                    <td>{{ company.name }}</td>
+                    <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
                     <td>{{ company.phone }}</td>
                     <td><a href="{{ company.site }}" class="btn btn-primary">Перейти</a></td>
+                    <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Перейти</a></td>
+                    <td><a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a></td>
                 </tr>
             {% endfor %}
         </tbody>

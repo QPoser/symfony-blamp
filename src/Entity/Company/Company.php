@@ -3,12 +3,16 @@
 namespace App\Entity\Company;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
  */
 class Company
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_WAIT = 'wait';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -23,26 +27,43 @@ class Company
 
     /**
      * @ORM\Column(type="string", length=12)
+     * @Assert\Regex(
+     *     pattern = "^((\+7|7|8)+([0-9]){10})^",
+     *     message = "The phone '{{ value }}' is not a valid phone. Valid phone is - +79876543210."
+     * )
      */
     private $phone;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="time", nullable=true)
+     * @Assert\Time()
      */
     private $start_work;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="time", nullable=true)
+     * @Assert\Time()
      */
     private $end_work;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     *
+     * @Assert\Url(
+     *    protocols={"http", "https"},
+     *    message = "The url '{{ value }}' is not a valid url",
+     * )
      */
     private $site;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @Assert\Image()
+     *     minWidth="200"
+     *     maxWidth="400"
+     *     minHeight="200"
+     *     maxHeight="400"
      */
     private $photo;
 
@@ -55,6 +76,30 @@ class Company
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $reject_reason;
+
+
+
+
+
+    // Status
+
+    public function setActive()
+    {
+        $this->status = self::STATUS_ACTIVE;
+    }
+
+    public function setWaite()
+    {
+        $this->status = self::STATUS_WAIT;
+    }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
+
+    // Getters and setters
 
     public function getId()
     {
@@ -129,6 +174,20 @@ class Company
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getNewPhoto(): self
+    {
+        return $this;
+    }
+
+
+    private $new_photo;
+    public function setNewPhoto(?string $photo): self
+    {
+        $this->new_photo = $photo;
 
         return $this;
     }

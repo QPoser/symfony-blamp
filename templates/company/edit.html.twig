@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit company{% endblock %}
+
+{% block body %}
+    <h2>Edit company</h2>
+    {#<a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>#}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_row(form.photo) }}
+    <input type="submit" class="btn btn-primary">
+    {{ form_end(form) }}
+{% endblock %}
