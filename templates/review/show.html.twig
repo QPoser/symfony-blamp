@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}See review{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row">
+        <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary mr-1">< {{ review.company.name }}</a>
+        <a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary mr-1">Edit review</a>
+        <form action="{{ path('review.delete', {'id' : review.id}) }}" method="post" class="mr-1">
+            <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Param</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><i class="fa fa-user"></i> User</td>
+                <td>{{ review.userId }}</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-star"></i> Assessment</td>
+                <td>{{ review.assessment }}</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-comment"></i> Review</td>
+                <td>{{ review.text }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Комментарии</h2>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">User</th>
+            <th scope="col">Comment</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for comment in review.comments %}
+        <tr>
+            <td>{{ review.userId }}</td>
+            <td>{{ comment.text }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

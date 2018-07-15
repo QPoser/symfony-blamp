@@ -41,4 +41,20 @@ class ReviewService
         $this->manager->flush();
     }
 
+    public function edit(Review $review)
+    {
+        //
+        $this->manager->flush();
+        $review->getCompany()->calcAssessment();
+        $this->manager->flush();
+    }
+
+    public function delete(Review $review)
+    {
+        $this->manager->remove($review);
+        $this->manager->flush();
+        $review->getCompany()->calcAssessment();
+        $this->manager->flush();
+    }
+
 }

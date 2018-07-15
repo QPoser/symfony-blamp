@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit review{% endblock %}
+
+{% block body %}
+    <h2>Edit review</h2>
+    <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary">< {{ review.company.name }}</a>
+    <hr>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" class="btn btn-primary">
+    {{ form_end(form) }}
+{% endblock %}

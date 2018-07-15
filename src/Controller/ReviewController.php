@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Review;
 use App\Entity\ReviewComment;
+use App\Form\Company\Review\ReviewCreateForm;
 use App\Form\Review\ReviewAddCommentForm;
 use App\Services\ReviewService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,9 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/review")
- */
+
 class ReviewController extends Controller
 {
     /**
@@ -55,7 +54,9 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="review_show", methods="GET")
+     * @Route("/reviews/{id}", name="review.show", methods="GET")
+     * @param Review $review
+     * @return Response
      */
     public function show(Review $review): Response
     {
@@ -63,17 +64,22 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/{id}/edit", name="review_edit", methods="GET|POST")
+     * @Route("/reviews/edit/{id}", name="review.edit", methods="GET|POST")
+     * @param Request $request
+     * @param Review $review
+     * @return Response
      */
     public function edit(Request $request, Review $review): Response
     {
-        $form = $this->createForm(ReviewAddCommentForm::class, $review);
+        $form = $this->createForm(ReviewCreateForm::class, $review);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $this->service->edit($review);
 
-            return $this->redirectToRoute('review_edit', ['id' => $review->getId()]);
+            $this->addFlash('notice', 'Review ' . $review->getId() . ' has been successfully update.');
+
+            return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }
 
         return $this->render('review/edit.html.twig', [
@@ -83,16 +89,23 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="review_delete", methods="DELETE")
+     * @Route("/reviews/remove/{id}", name="review.delete", methods="DELETE")
+     * @param Request $request
+     * @param Review $review
+     * @return Response
      */
     public function delete(Request $request, Review $review): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$review->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($review);
-            $em->flush();
+        if ($this->isCsrfTokenValid('delete-review', $request->request->get('token'))) {
+            $this->service->delete($review);
+
+            $this->addFlash('notice', 'Review ' . $review->getId() . ' has been successfully deleted.');
+
+            return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
         }
 
-        return $this->redirectToRoute('review_index');
+        $this->addFlash('warning', 'Invalid csrf token for delete.');
+
+        return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }
 }
