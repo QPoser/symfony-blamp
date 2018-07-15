@@ -2,6 +2,9 @@
 
 namespace App\Entity\Company;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,6 +15,7 @@ class Company
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_WAIT = 'wait';
+    const STATUS_REJECTED = 'rejected';
 
     /**
      * @ORM\Id()
@@ -74,10 +78,32 @@ class Company
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min = 5,
+     *     max = 255,
+     * )
      */
     private $reject_reason;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="company")
+     */
+    private $reviews;
 
+    /**
+     * @ORM\Column(type="float", scale=2)
+     */
+    private $assessment;
+
+    public function calcAssessment()
+    {
+        $assessment = null;
+        /** @var Review $review */
+        foreach ($this->reviews as $review) {
+            $assessment += $review->getAssessment();
+        }
+        $this->assessment = $assessment / count($this->reviews);
+    }
 
 
 
@@ -96,6 +122,11 @@ class Company
     public function isActive()
     {
         return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
     }
 
 
@@ -185,6 +216,11 @@ class Company
 
 
     private $new_photo;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
     public function setNewPhoto(?string $photo): self
     {
         $this->new_photo = $photo;
@@ -212,6 +248,49 @@ class Company
     public function setRejectReason(?string $reject_reason): self
     {
         $this->reject_reason = $reject_reason;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getCompany() === $this) {
+                $review->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAssessment(): ?float
+    {
+        return $this->assessment;
+    }
+
+    public function setAssessment(float $assessment): self
+    {
+        $this->assessment = $assessment;
 
         return $this;
     }

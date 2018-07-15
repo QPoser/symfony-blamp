@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Companies{% endblock %}
+{% block title %}{{ company.name }}{% endblock %}
 
 {% block body %}
-    <h2>Companies</h2>
+    <h2>{{ company.name }} {% if company.assessment %}<i class="fa fa-star"></i> {{ company.assessment }}{% endif %}</h2>
+    <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
     <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Edit company</a>
     <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Remove company</a>
     <hr>
@@ -29,8 +30,20 @@
                 </tr>
                 <tr>
                     <td>Status</td>
-                    <td>{{ company.status }}</td>
+                    {% if company.isRejected %}
+                        <td><span class="badge badge-danger">{{ company.status }}</span></td>
+                    {% elseif company.isActive %}
+                        <td><span class="badge badge-success">{{ company.status }}</span></td>
+                    {% else %}
+                        <td><span class="badge">{{ company.status }}</span></td>
+                    {% endif %}
                 </tr>
+                {% if company.isRejected %}
+                    <tr>
+                        <td>Reject reason</td>
+                        <td>{{ company.rejectReason }}</td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td>Photo</td>
                     <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="No photo" style="width: auto; height: 120px;"></td>
@@ -43,6 +56,31 @@
                 {% endif %}
         </tbody>
     </table>
-
+    {% if company.reviews|length > 0 %}
+        <h2>Отзывы</h2>
+        <hr>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Отзыв</th>
+                        <th>Балл</th>
+                        <th>Кол-во комменатиев</th>
+                        <th>Добавить комментарий</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in company.reviews %}
+                        <tr>
+                            <td><i class="fa fa-user"></i> {{ review.userId }}</td>
+                            <td>{{ review.text }}</td>
+                            <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
+                            <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
+                            <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    {% endif %}
 
 {% endblock %}

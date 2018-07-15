@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Entity\Company\Company;
+use App\Entity\Review;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -67,6 +68,30 @@ class CompanyService
         $this->manager->flush();
     }
 
+    public function verify(Company $company)
+    {
+        $company->setStatus(Company::STATUS_ACTIVE);
+        $this->manager->flush($company);
+    }
+
+    public function reject(Company $company)
+    {
+        $company->setStatus(Company::STATUS_REJECTED);
+        $this->manager->flush($company);
+    }
+
+    public function addReview(Company $company, Review $review)
+    {
+        $review->setCompany($company);
+        $review->setStatus(Review::STATUS_WAIT);
+        $review->setUserId(1);
+
+        $this->manager->persist($review);
+        $this->manager->flush();
+        $company->calcAssessment();
+        $this->manager->flush();
+    }
+
 
     // Set photo
     private function setPhoto(?UploadedFile $file, Company $company)
@@ -78,11 +103,5 @@ class CompanyService
             $company->setPhoto($package->getUrl('uploads/img/' . $someFileName));
         }
     }
-
-    public function accept(Company $company)
-    {
-        return true;
-    }
-
 
 }

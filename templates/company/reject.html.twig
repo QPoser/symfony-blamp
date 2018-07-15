@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add company{% endblock %}
+{% block title %}Reject company{% endblock %}
 
 {% block body %}
-    <h2>Add company</h2>
-    <a href="{{ path('company') }}" class="btn btn-primary">< Back to list</a>
-    <hr>
+    <h2>Reject company {{ company.name }}</h2>
+    {#<a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>#}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <input type="submit" class="btn btn-primary">

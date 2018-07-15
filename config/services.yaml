@@ -33,3 +33,6 @@ services:
 
     App\Services\CompanyService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    App\Services\ReviewService:
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']

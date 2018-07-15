@@ -10,20 +10,38 @@
         <thead>
             <tr>
                 <th scope="col">Name</th>
+                <th scope="col">Assessment</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Site</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Remove</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+                <th scope="col">Add Review</th>
             </tr>
         </thead>
         <tbody>
             {% for company in companies %}
                 <tr>
                     <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                    <td><i class="fa fa-star"></i> {{ company.assessment }}</td>
                     <td>{{ company.phone }}</td>
                     <td><a href="{{ company.site }}" class="btn btn-primary">Перейти</a></td>
                     <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Перейти</a></td>
                     <td><a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a></td>
+                    {% if company.isRejected %}
+                        <td><span class="badge badge-danger">{{ company.status }}</span></td>
+                    {% elseif company.isActive %}
+                        <td><span class="badge badge-success">{{ company.status }}</span></td>
+                    {% else %}
+                        <td><span class="badge">{{ company.status }}</span></td>
+                    {% endif %}
+                    {% if company.isActive %}
+                        <td><a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-danger">Reject</a></td>
+                    {% else %}
+                        <td><a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success">Verify</a></td>
+                    {% endif %}
+                    <td><a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>
                 </tr>
             {% endfor %}
         </tbody>
