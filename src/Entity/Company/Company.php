@@ -91,7 +91,7 @@ class Company
     private $reviews;
 
     /**
-     * @ORM\Column(type="decimal", scale=2)
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
      */
     private $assessment;
 

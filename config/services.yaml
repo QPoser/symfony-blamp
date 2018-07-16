@@ -36,3 +36,6 @@ services:
 
     App\Services\ReviewService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    App\Services\AuthService:
+        arguments: ['@doctrine.orm.entity_manager']
