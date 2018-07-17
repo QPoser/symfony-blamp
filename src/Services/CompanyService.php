@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entity\Company\Company;
 use App\Entity\Review;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -80,11 +81,11 @@ class CompanyService
         $this->manager->flush($company);
     }
 
-    public function addReview(Company $company, Review $review)
+    public function addReview(Company $company, Review $review, User $user)
     {
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
-        $review->setUserId(1);
+        $review->setUser($user);
 
         $this->manager->persist($review);
         $this->manager->flush();

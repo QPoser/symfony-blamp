@@ -8,6 +8,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Review;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -58,9 +61,52 @@ class User implements UserInterface, \Serializable
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="user")
+     */
+    private $reviews;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="user")
+     */
+    private $likes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="user")
+     */
+    private $comments;
+
+    /**
+     * Many Users have many Users.
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="subscribers")
+     * @ORM\JoinTable(name="subs",
+     *      joinColumns={@ORM\JoinColumn(name="subs_user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="subscription_user_id", referencedColumnName="id")}
+     *      )
+     */
+    private $subscriptions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="subscriptions")
+     */
+    private $subscribers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="uploadedBy")
+     */
+    private $uploads;
+
+
+
     public function __construct()
     {
         $this->roles = $this->getRoles();
+        $this->reviews = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->subscribers = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->uploads = new ArrayCollection();
     }
 
 
@@ -151,5 +197,198 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->password
         ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReview(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getUser() === $this) {
+                $like->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReviewComment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(ReviewComment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(ReviewComment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|\App\Entity\Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscribers(): Collection
+    {
+        return $this->subscribers;
+    }
+
+    public function addSubscriber(User $subscriber): self
+    {
+        if (!$this->subscribers->contains($subscriber)) {
+            $this->subscribers[] = $subscriber;
+            $subscriber->addSubscription($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriber(User $subscriber): self
+    {
+        if ($this->subscribers->contains($subscriber)) {
+            $this->subscribers->removeElement($subscriber);
+            $subscriber->removeSubscription($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(User $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(User $subscription): self
+    {
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReviewPhoto[]
+     */
+    public function getUploads(): Collection
+    {
+        return $this->uploads;
+    }
+
+    public function addUpload(ReviewPhoto $upload): self
+    {
+        if (!$this->uploads->contains($upload)) {
+            $this->uploads[] = $upload;
+            $upload->setUploadedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpload(ReviewPhoto $upload): self
+    {
+        if ($this->uploads->contains($upload)) {
+            $this->uploads->removeElement($upload);
+            // set the owning side to null (unless already changed)
+            if ($upload->getUploadedBy() === $this) {
+                $upload->setUploadedBy(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -27,7 +27,7 @@ class ReviewComment
 
     /**
      * @ORM\ManyToOne(targetEntity="Review", inversedBy="review_comment")
-     * @ORM\JoinColumn(name="review_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
      */
     private $review;
 
@@ -40,6 +40,12 @@ class ReviewComment
      * @ORM\Column(type="string", length=16)
      */
     private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", nullable=false)
+     */
+    private $user;
 
     public function getId()
     {
@@ -90,6 +96,18 @@ class ReviewComment
     public function setReview(?Review $review): self
     {
         $this->review = $review;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
