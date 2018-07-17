@@ -54,6 +54,16 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
+     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     */
+    private $emailToken;
+
+    /**
+     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     */
+    private $passwordResetToken;
+
+    /**
      * @ORM\Column(type="array")
      */
     private $roles;
@@ -63,6 +73,30 @@ class User implements UserInterface, \Serializable
         $this->roles = $this->getRoles();
     }
 
+    // Password Reset
+
+    public function setResetPasswordToken()
+    {
+        $this->passwordResetToken = uniqid();
+    }
+
+    public function resetPassword($newPassword)
+    {
+        $this->password = $newPassword;
+        $this->passwordResetToken = null;
+    }
+
+    // Email Token
+
+    public function verify()
+    {
+        $this->setEmailToken(null);
+    }
+
+    public function isActive()
+    {
+        return $this->emailToken == null;
+    }
 
     public function getRoles()
     {
@@ -151,5 +185,24 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->password
         ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    public function getEmailToken(): ?string
+    {
+        return $this->emailToken;
+    }
+
+    public function setEmailToken(?string $emailToken): self
+    {
+        $this->emailToken = $emailToken;
+
+        return $this;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 }

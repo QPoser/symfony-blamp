@@ -12,6 +12,7 @@ namespace App\Services;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Constraints\Uuid;
 
 class AuthService
 {
@@ -31,7 +32,27 @@ class AuthService
     {
         $cryptPassword = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
         $user->setPassword($cryptPassword);
+        $user->setEmailToken(uniqid());
         $this->manager->persist($user);
+        $this->manager->flush();
+    }
+
+    public function requestReset(User $user)
+    {
+        $user->setResetPasswordToken();
+        $this->manager->flush();
+    }
+
+    public function reset(User $user)
+    {
+        $cryptPassword = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
+        $user->resetPassword($cryptPassword);
+        $this->manager->flush();
+    }
+
+    public function verify(User $user)
+    {
+        $user->verify();
         $this->manager->flush();
     }
 }

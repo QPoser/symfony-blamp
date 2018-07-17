@@ -18,10 +18,14 @@ security:
         main:
             anonymous: true
 
-            form_login:
-                login_path: login
-                check_path: login
-                provider: auth_provider
+            guard:
+                authenticators:
+                    - App\Security\CustomAuthenticator
+
+#            form_login:
+#                login_path: login
+#                check_path: login
+#                provider: auth_provider
 
 #            remember_me:
 #                secret: 'secret'
