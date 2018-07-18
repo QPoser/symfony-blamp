@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <td><i class="fa fa-user"></i> User</td>
-                <td>{{ review.userId }}</td>
+                <td>{{ review.user }}</td>
             </tr>
             <tr>
                 <td><i class="fa fa-star"></i> Assessment</td>
@@ -47,7 +47,7 @@
         <tbody>
         {% for comment in review.comments %}
         <tr>
-            <td>{{ review.userId }}</td>
+            <td>{{ comment.user }}</td>
             <td>{{ comment.text }}</td>
         </tr>
         {% endfor %}

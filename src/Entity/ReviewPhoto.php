@@ -30,19 +30,13 @@ class ReviewPhoto
     private $photo;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="uploads")
-     * @ORM\JoinColumn(name="user_uploads_id", referencedColumnName="id")
-     */
-    private $uploadedBy;
-
-    /**
      * @ORM\Column(name="uploaded_on", type="datetime")
      */
     private $uploadedOn;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="photos")
-     * @ORM\JoinColumn(name="photos_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="photo_review_id", referencedColumnName="id")
      */
     private $review;
 
@@ -92,18 +86,6 @@ class ReviewPhoto
     public function setUploadedOn(): self
     {
         $this->uploadedOn = new \DateTime();
-
-        return $this;
-    }
-
-    public function getUploadedBy(): ?User
-    {
-        return $this->uploadedBy;
-    }
-
-    public function setUploadedBy(?User $uploadedBy): self
-    {
-        $this->uploadedBy = $uploadedBy;
 
         return $this;
     }
