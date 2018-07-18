@@ -81,11 +81,11 @@ class CompanyService
         $this->manager->flush($company);
     }
 
-    public function addReview(Company $company, Review $review, User $user)
+    public function addReview(Company $company, Review $review)
     {
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
-        $review->setUser($user);
+
 
         $this->manager->persist($review);
         $this->manager->flush();

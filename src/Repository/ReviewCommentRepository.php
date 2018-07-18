@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\ReviewComment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Gedmo\Tree\Traits\NestedSetEntity;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @method ReviewComment|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,8 +14,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method ReviewComment[]    findAll()
  * @method ReviewComment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReviewCommentRepository extends ServiceEntityRepository
+class ReviewCommentRepository extends NestedTreeRepository //ServiceEntityRepository
 {
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, ReviewComment::class);
