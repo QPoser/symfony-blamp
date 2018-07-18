@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
+ * @ORM\Table(name="likes")
  */
 class Like
 {
@@ -28,7 +29,7 @@ class Like
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="likes")
-     * @ORM\JoinColumn(name="likes_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="review_id", referencedColumnName="id")
      */
     private $review;
 

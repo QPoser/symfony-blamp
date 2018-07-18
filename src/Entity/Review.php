@@ -42,7 +42,7 @@ class Review
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="review")
-     * @ORM\JoinColumn(name="reviews_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */
     private $company;
 
@@ -71,24 +71,19 @@ class Review
      */
     private $likes;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @ORM\Column(name="updated_at", type="datetime")
-     */
-    private $updatedAt;
-
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
         $this->photos = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function updateAssessment() {
+        $company = $this->getCompany();
+        $company->calcAssessment();
     }
 
     public function getId()
@@ -226,38 +221,6 @@ class Review
                 $like->setReview(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @ORM\PrePersist()
-     * @return Review
-     */
-    public function setCreatedAt(): self
-    {
-        $this->createdAt = new \DateTime();
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @ORM\PreUpdate()
-     * @return Review
-     */
-    public function setUpdatedAt(): self
-    {
-        $this->updatedAt = new \DateTime();
 
         return $this;
     }

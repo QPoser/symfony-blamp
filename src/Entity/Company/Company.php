@@ -96,14 +96,17 @@ class Company
      */
     private $assessment;
 
+
     public function calcAssessment()
     {
         $assessment = null;
-        /** @var Review $review */
-        foreach ($this->reviews as $review) {
-            $assessment += $review->getAssessment();
+        if (count($this->reviews) > 0) {
+            /** @var Review $review */
+            foreach ($this->reviews as $review) {
+                $assessment += $review->getAssessment();
+            }
+            $this->assessment = $assessment / count($this->reviews);
         }
-        $this->assessment = $assessment / count($this->reviews);
     }
 
 
