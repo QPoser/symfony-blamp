@@ -8,8 +8,13 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -20,7 +25,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @UniqueEntity(fields="email", message="Email already taken")
  * @UniqueEntity(fields="username", message="Username already taken")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterface
 {
     const ROLE_USER = 'ROLE_USER';
     const ROLE_BUSINESS = 'ROLE_BUSINESS';
@@ -40,14 +45,14 @@ class User implements UserInterface, \Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $password;
 
     private $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
@@ -68,9 +73,15 @@ class User implements UserInterface, \Serializable
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Network", mappedBy="users")
+     */
+    private $networks;
+
     public function __construct()
     {
         $this->roles = $this->getRoles();
+        $this->networks = new ArrayCollection();
     }
 
     // Password Reset
@@ -204,5 +215,62 @@ class User implements UserInterface, \Serializable
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function getPasswordResetToken(): ?string
+    {
+        return $this->passwordResetToken;
+    }
+
+    public function setPasswordResetToken(?string $passwordResetToken): self
+    {
+        $this->passwordResetToken = $passwordResetToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReviewComment[]
+     */
+    public function getNetworks(): Collection
+    {
+        return $this->networks;
+    }
+
+    public function addNetwork(Network $network): self
+    {
+        if (!$this->networks->contains($network)) {
+            $this->networks[] = $network;
+            $network->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNetwork(Network $network): self
+    {
+        if ($this->networks->contains($network)) {
+            $this->networks->removeElement($network);
+            // set the owning side to null (unless already changed)
+            if ($network->getUser() === $this) {
+                $network->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Loads the user by a given UserResponseInterface object.
+     *
+     * @param UserResponseInterface $response
+     *
+     * @return UserInterface
+     *
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    public function loadUserByOAuthUserResponse(UserResponseInterface $response)
+    {
+        // TODO: Implement loadUserByOAuthUserResponse() method.
     }
 }

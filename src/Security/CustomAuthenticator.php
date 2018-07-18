@@ -2,8 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Network;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Services\AuthService;
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,17 +37,23 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
      * @var RouterInterface
      */
     private $router;
+    /**
+     * @var AuthService
+     */
+    private $authService;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, UserRepository $users, RouterInterface $router)
+    public function __construct(UserPasswordEncoderInterface $encoder, UserRepository $users, RouterInterface $router, AuthService $authService)
     {
         $this->encoder = $encoder;
         $this->users = $users;
         $this->router = $router;
+        $this->authService = $authService;
     }
 
     public function supports(Request $request)
     {
-        return $request->getPathInfo() == '/login' && $request->isMethod('POST');
+        return ( $request->getPathInfo() == '/login' && $request->isMethod('POST') )
+            || ( $request->isMethod('GET') && $request->query->has('code') );
     }
 
     public function getCredentials(Request $request)
@@ -53,6 +62,10 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
         $password = $request->request->get('_password');
 
         if (!$username && !$password) {
+            $code = $request->query->get('code');
+            if ($code) {
+                return compact('code');
+            }
             return null;
         }
 
@@ -66,6 +79,19 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+            if (!empty($credentials['code'])) {
+                $client = new Client();
+                $res = $client->request('GET', 'https://oauth.vk.com/access_token?client_id=' . getenv('VK_CLIENT_ID') . '&client_secret=' . getenv('VK_SECRET_KEY') .'&redirect_uri=https://localhost:8080/login/check-vkontakte&code=' . $credentials['code']);
+                $response = json_decode($res->getBody());
+                $user = $this->users->findUserByNetworkIdentity($response->user_id);
+                if (!$user) {
+                    $network = new Network();
+                    $network->setIdentity($response->user_id);
+                    $network->setNetwork('vk');
+                    $user = $this->authService->registerByNetwork($network);
+                }
+                return $user;
+            }
             $username = $credentials['username'];
 
             return $this->users->findUserByUsername($username);
@@ -73,7 +99,12 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
+        if (!empty($credentials['code'])) {
+            return true;
+        }
+
         $password = $credentials['password'];
+
 
         /** @var User $user */
         if ($this->encoder->isPasswordValid($user, $password)) {

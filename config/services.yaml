@@ -39,3 +39,11 @@ services:
 
     App\Services\AuthService:
         arguments: ['@doctrine.orm.entity_manager']
+
+hwi_oauth:
+    firewall_names:     ['main']
+    resource_owners:
+        vk:
+            type:                vkontakte
+            client_id:          '%env(VK_CLIENT_ID)%'
+            client_secret:      '%env(VK_SECRET_KEY)%'

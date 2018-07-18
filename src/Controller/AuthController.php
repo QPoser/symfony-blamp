@@ -60,9 +60,16 @@ class AuthController extends Controller
 
         $lastUsername = $this->authenticationUtils->getLastUsername();
 
+        $networks = [
+            'vk' => [
+                'clientId' => getenv('VK_CLIENT_ID'),
+            ]
+        ];
+
         return $this->render('auth/login.html.twig', [
             'error' => $error,
             'lastUsername' => $lastUsername,
+            'networks' => $networks,
         ]);
     }
 

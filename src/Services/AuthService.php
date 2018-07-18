@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\Network;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -35,6 +36,17 @@ class AuthService
         $user->setEmailToken(uniqid());
         $this->manager->persist($user);
         $this->manager->flush();
+    }
+
+    public function registerByNetwork(Network $network): User
+    {
+        $user = new User();
+        $user->setUsername($network->getNetwork() . '_' . $network->getIdentity());
+        $user->addNetwork($network);
+        $this->manager->persist($user);
+        $this->manager->persist($network);
+        $this->manager->flush();
+        return $user;
     }
 
     public function requestReset(User $user)

@@ -14,9 +14,15 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    /**
+     * @var NetworkRepository
+     */
+    private $networks;
+
+    public function __construct(RegistryInterface $registry, NetworkRepository $networks)
     {
         parent::__construct($registry, User::class);
+        $this->networks = $networks;
     }
 
     public function findUserByUsername($username)
@@ -32,5 +38,14 @@ class UserRepository extends ServiceEntityRepository
     public function findUserByPasswordResetToken($token)
     {
         return $this->findOneBy(['passwordResetToken' => $token]);
+    }
+
+    public function findUserByNetworkIdentity($identity)
+    {
+        $network = $this->networks->findByIdentity('vk', $identity);
+        if (!$network) {
+            return null;
+        }
+        return $network->getUser();
     }
 }

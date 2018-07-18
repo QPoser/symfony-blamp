@@ -26,4 +26,7 @@
     </form>
     <a href="{{ path('reset.password.request') }}">Забыл пароль!</a>
 </div>
+
+    <a href="https://oauth.vk.com/authorize?client_id={{ networks.vk.clientId }}&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80">VK</a>
+
 {% endblock %}
