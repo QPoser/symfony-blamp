@@ -28,7 +28,7 @@ class LikeFixtures extends Fixture implements DependentFixtureInterface
             for ($j = 0; $j <10; $j++) {
                 $review = $reviews[array_rand($reviews)];
                 $like = new Like();
-                $values = [true, false];
+                $values = [Like::LIKE, Like::DISLIKE];
                 $value = $values[array_rand($values)];
                 $like->setUser($user);
                 $like->setReview($review);
@@ -36,8 +36,9 @@ class LikeFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($like);
             }
             $i++;
+            $manager->flush();
         }
-        $manager->flush();
+
     }
 
     public function getDependencies()

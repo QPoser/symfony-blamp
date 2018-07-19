@@ -62,7 +62,7 @@ class Review
     private $rejectReason;
 
     /**
-     * @ORM\OneToMany(targetEntity="ReviewComment", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="review")
      */
     private $comments;
 
@@ -70,6 +70,19 @@ class Review
      * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review")
      */
     private $likes;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $likeCounter;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $dislikeCounter;
+
+
+
 
     public function __construct()
     {
@@ -252,6 +265,50 @@ class Review
                 $photo->setReview(null);
             }
         }
+
+        return $this;
+    }
+
+
+    public function likesCount() {
+        $likeCounter = null;
+        $dislikeCounter = null;
+        /**
+         * @var $like Like
+         */
+        foreach ($this->likes as $like) {
+            $likeCounter++;
+            if ($like->getValue() == Like::LIKE) {
+                $likeCounter++;
+            }
+            if ($like->getValue() == Like::DISLIKE) {
+                $dislikeCounter++;
+            }
+        }
+        $this->likeCounter = $likeCounter;
+        $this->dislikeCounter = $dislikeCounter;
+    }
+
+    public function getLikeCounter(): ?int
+    {
+        return $this->likeCounter;
+    }
+
+    public function setLikeCounter(?int $likeCounter): self
+    {
+        $this->likeCounter = $likeCounter;
+
+        return $this;
+    }
+
+    public function getDislikeCounter(): ?int
+    {
+        return $this->dislikeCounter;
+    }
+
+    public function setDislikeCounter(?int $dislikeCounter): self
+    {
+        $this->dislikeCounter = $dislikeCounter;
 
         return $this;
     }

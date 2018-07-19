@@ -68,6 +68,8 @@
                         <th>Кол-во комменатиев</th>
                         <th>Перейти</th>
                         <th>Добавить комментарий</th>
+                        <th>Likes</th>
+                        <th>Dislikes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +81,14 @@
                             <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
                             <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
                             <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
+                            <td>
+                                {{ review.likeCounter }}
+                                <a href="#" class="btn btn-success btn-lg">Like</a>
+                            </td>
+                            <td>
+                                {{ review.dislikeCounter }}
+                                <a href="#" class="btn btn-danger btn-lg">Dislike</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

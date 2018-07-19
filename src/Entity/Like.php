@@ -7,9 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
  * @ORM\Table(name="likes")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Like
 {
+    const LIKE = true;
+    const DISLIKE = false;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -33,8 +37,6 @@ class Like
      */
     private $review;
 
-
-
     public function getId()
     {
         return $this->id;
@@ -52,12 +54,12 @@ class Like
         return $this;
     }
 
-    public function getReview(): ?Review
+    public function getReview(): Review
     {
         return $this->review;
     }
 
-    public function setReview(?Review $review): self
+    public function setReview(Review $review): self
     {
         $this->review = $review;
 
@@ -74,5 +76,16 @@ class Like
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function updateLikes() {
+        /**
+         * @var $review
+         */
+        $review = $this->getReview();;
+        $review->likesCount();
     }
 }
