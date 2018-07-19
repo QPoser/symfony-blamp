@@ -73,7 +73,7 @@
                 <tbody>
                     {% for review in company.reviews %}
                         <tr>
-                            <td><i class="fa fa-user"></i> {{ review.userId }}</td>
+                            <td><i class="fa fa-user"></i> {{ review.user.username }}</td>
                             <td>{{ review.text }}</td>
                             <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
                             <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>

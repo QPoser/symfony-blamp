@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ReviewRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Review
 {
@@ -30,9 +31,14 @@ class Review
     private $text;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="review")
      */
-    private $userId;
+    private $photos;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="review")
+     */
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="review")
@@ -60,9 +66,24 @@ class Review
      */
     private $comments;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review")
+     */
+    private $likes;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->photos = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function updateAssessment() {
+        $company = $this->getCompany();
+        $company->calcAssessment();
     }
 
     public function getId()
@@ -82,14 +103,14 @@ class Review
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(int $userId): self
+    public function setUser(User $user): self
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
@@ -167,6 +188,68 @@ class Review
             // set the owning side to null (unless already changed)
             if ($comment->getReview() === $this) {
                 $comment->setReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getReview() === $this) {
+                $like->setReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReviewPhoto[]
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(ReviewPhoto $photo): self
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos[] = $photo;
+            $photo->setReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(ReviewPhoto $photo): self
+    {
+        if ($this->photos->contains($photo)) {
+            $this->photos->removeElement($photo);
+            // set the owning side to null (unless already changed)
+            if ($photo->getReview() === $this) {
+                $photo->setReview(null);
             }
         }
 

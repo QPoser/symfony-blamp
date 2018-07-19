@@ -63,11 +63,12 @@ class Company
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @Assert\Image()
-     *     minWidth="200"
-     *     maxWidth="400"
-     *     minHeight="200"
-     *     maxHeight="400"
+     * @Assert\Image(
+     *     minWidth= 200,
+     *     maxWidth= 400,
+     *     minHeight= 200,
+     *     maxHeight= 400
+     * )
      */
     private $photo;
 
@@ -95,14 +96,17 @@ class Company
      */
     private $assessment;
 
+
     public function calcAssessment()
     {
         $assessment = null;
-        /** @var Review $review */
-        foreach ($this->reviews as $review) {
-            $assessment += $review->getAssessment();
+        if (count($this->reviews) > 0) {
+            /** @var Review $review */
+            foreach ($this->reviews as $review) {
+                $assessment += $review->getAssessment();
+            }
+            $this->assessment = $assessment / count($this->reviews);
         }
-        $this->assessment = $assessment / count($this->reviews);
     }
 
 
