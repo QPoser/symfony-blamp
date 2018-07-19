@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item"><a class="nav-link active" href="#">Новое</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
+    </ul>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Событие</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#">МЯСОРУБ</a></td>
+                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
+            </tr>
+
+            <tr>
+                <td><a href="#">Виктория Иванова</a></td>
+                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
+            </tr>
+
+            <tr>
+                <td><a href="#">МЯСОРУБ</a></td>
+                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
