@@ -129,13 +129,44 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         return $this->emailToken == null;
     }
 
+    // Roles
+
     public function getRoles()
     {
-        return [
-            self::ROLE_USER,
-            self::ROLE_BUSINESS,
-            self::ROLE_ADMIN,
-        ];
+        return $this->roles;
+    }
+
+    public function becomeUser()
+    {
+        $this->roles = [self::ROLE_USER];
+    }
+
+    public function becomeBusiness()
+    {
+        $this->roles = [self::ROLE_BUSINESS];
+    }
+
+    public function becomeAdmin()
+    {
+        $this->roles = [self::ROLE_ADMIN];
+    }
+
+    public function isUser()
+    {
+        return in_array(self::ROLE_USER, $this->roles) ||
+            in_array(self::ROLE_BUSINESS, $this->roles) ||
+            in_array(self::ROLE_ADMIN, $this->roles);
+    }
+
+    public function isBusiness()
+    {
+        return in_array(self::ROLE_BUSINESS, $this->roles) ||
+            in_array(self::ROLE_ADMIN, $this->roles);
+    }
+
+    public function isAdmin()
+    {
+        return in_array(self::ROLE_ADMIN, $this->roles);
     }
 
     public function getPassword()

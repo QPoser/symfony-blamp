@@ -64,11 +64,11 @@ class Company
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Assert\Image(
+     * )
      *     minWidth= 200,
-     *     maxWidth= 400,
+     *     maxWidth= 200,
      *     minHeight= 200,
      *     maxHeight= 400
-     * )
      */
     private $photo;
 

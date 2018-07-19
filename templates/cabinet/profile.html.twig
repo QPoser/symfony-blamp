@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet Reviews!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">14</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
+    </ul>
+    <hr>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">Имя</th>
+                <td>{{ app.user.username }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Email</th>
+                <td>{{ app.user.email }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Отзывы</th>
+                <td>{{ app.user.reviews|length }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Комментарии</th>
+                <td>{{ app.user.comments|length }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <a href="#" class="btn btn-success">Edit</a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
+            Settings
+        </button>
+    </p>
+    <div class="collapse" id="collapseEx">
+        <div class="card card-body">
+            {% if app.user.isBusiness %}
+                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Business</a></p>
+                <form action="{{ path('cabinet.unset-business') }}" method="post">
+                    <button class="btn btn-warning">Отвязать бизнес-привелегии</button>
+                </form>
+            {% else %}
+                <form action="{{ path('cabinet.set-business') }}" method="post">
+                    <button class="btn btn-primary">Добавить бизнес-привелегии</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

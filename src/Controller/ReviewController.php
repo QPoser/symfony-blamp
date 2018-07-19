@@ -89,7 +89,7 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/reviews/remove/{id}", name="review.delete", methods="DELETE")
+     * @Route("/reviews/remove/{id}", name="review.delete", methods={"DELETE"})
      * @param Request $request
      * @param Review $review
      * @return Response

@@ -13,6 +13,7 @@ use App\Entity\Review;
 use App\Entity\ReviewComment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class ReviewService
 {
@@ -24,11 +25,16 @@ class ReviewService
      * @var Container
      */
     private $container;
+    /**
+     * @var TokenStorage
+     */
+    private $storage;
 
-    public function __construct(EntityManager $manager, Container $container)
+    public function __construct(EntityManager $manager, Container $container, TokenStorage $storage)
     {
         $this->manager = $manager;
         $this->container = $container;
+        $this->storage = $storage;
     }
 
 
@@ -36,6 +42,7 @@ class ReviewService
     {
         $comment->setStatus(Review::STATUS_WAIT);
 
+        $comment->setUser($this->storage->getToken()->getUser());
         $review->addComment($comment);
 
         $this->manager->persist($comment);

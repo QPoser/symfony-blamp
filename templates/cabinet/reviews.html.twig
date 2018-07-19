@@ -1,37 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Cabinet Reviews!{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Новое</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Отзывы</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Профиль</a></li>
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">14</span></a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
     </ul>
 
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Событие</th>
-                <th>Значение</th>
+                <th></th>
+                <th>Компания</th>
+                <th>Отзыв</th>
+                <th>Оценка</th>
+                <th>Лайки</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
+            {% for review in reviews %}
             <tr>
-                <td><a href="#">МЯСОРУБ</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
+                <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-success"><i class="fa fa-eye"></i></a></td>
+                <td><a href="{{ path('company.show', {'id' : review.company.id}) }}">{{ review.company.name }}</a></td>
+                <td>{{ review.text }}</td>
+                <td>{{ review.assessment }}</td>
+                <td>{{ review.likes|length }}</td>
+                <td><a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                <td>
+                    <form action="{{ path('review.delete', {'id' : review.id}) }}" method="POST">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
+                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                    </form>
+                </td>
             </tr>
-
-            <tr>
-                <td><a href="#">Виктория Иванова</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
-            </tr>
-
-            <tr>
-                <td><a href="#">МЯСОРУБ</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

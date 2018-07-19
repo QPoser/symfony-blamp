@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Cabinet!{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Новое</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Отзывы</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Профиль</a></li>
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link active" href="#">Новое <span class="badge badge-pill badge-primary">14</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
     </ul>
 
     <table class="table table-striped">
