@@ -43,14 +43,14 @@ class User implements UserInterface, \Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $password;
 
     private $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
@@ -93,11 +93,6 @@ class User implements UserInterface, \Serializable
         $this->reviews = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
-    }
-
-    public function __toString()
-    {
-        return $this->username;
     }
 
     // Password Reset
