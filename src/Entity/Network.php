@@ -21,6 +21,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Network
 {
 
+    public const NETWORK_VK = 'vk';
+    public const NETWORK_FACEBOOK = 'facebook';
+
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="user_network")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")

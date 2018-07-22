@@ -75,7 +75,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Network", mappedBy="users")
+     * @ORM\OneToMany(targetEntity="Network", mappedBy="user")
      */
     private $networks;
 
@@ -130,6 +130,19 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     }
 
     // Roles
+
+    public function getNormalRoleName()
+    {
+        if ($this->isAdmin()) {
+            return 'Администратор';
+        }
+
+        if ($this->isBusiness()) {
+            return 'Бизнес-пользователь';
+        }
+
+        return 'Пользователь сайта';
+    }
 
     public function getRoles()
     {
@@ -387,6 +400,16 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     public function getNetworks(): Collection
     {
         return $this->networks;
+    }
+
+    public function getNetworkVk()
+    {
+        /** @var Network $network */
+        foreach ($this->networks as $network) {
+            if ($network->getNetwork() == Network::NETWORK_VK) { return $network; }
+        }
+
+        return false;
     }
 
     public function addNetwork(Network $network): self

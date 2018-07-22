@@ -40,6 +40,9 @@ services:
     App\Services\UserService:
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
 
+    App\Services\NetworkService:
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+
     App\Services\AuthService:
         arguments: ['@doctrine.orm.entity_manager']
 

@@ -31,6 +31,7 @@ class AuthService
 
     public function register(User $user)
     {
+        $user->setRoles([User::ROLE_USER]);
         $cryptPassword = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
         $user->setPassword($cryptPassword);
         $user->setEmailToken(uniqid());
@@ -41,6 +42,7 @@ class AuthService
     public function registerByNetwork(Network $network): User
     {
         $user = new User();
+        $user->setRoles([User::ROLE_USER]);
         $user->setUsername($network->getNetwork() . '_' . $network->getIdentity());
         $user->addNetwork($network);
         $this->manager->persist($user);

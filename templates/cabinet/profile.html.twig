@@ -13,6 +13,7 @@
         {% endif %}
     </ul>
     <hr>
+    <h4>Профиль</h4>
     <table class="table table-striped">
         <tbody>
             <tr>
@@ -21,7 +22,11 @@
             </tr>
             <tr>
                 <th scope="row">Email</th>
-                <td>{{ app.user.email }}</td>
+                <td>{{ app.user.email ?: 'Не задан' }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Роль</th>
+                <td><span class="badge badge-primary">{{ app.user.getNormalRoleName }}</span></td>
             </tr>
             <tr>
                 <th scope="row">Отзывы</th>
@@ -33,6 +38,20 @@
             </tr>
         </tbody>
     </table>
+    <hr>
+    <h4>Социальные сети</h4>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">VK</th>
+                {% if (app.user.getNetworkVk) %}
+                    <td>{{ app.user.getNetworkVk.identity }}</td>
+                {% else %}
+                    <td><a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/network/add/vk&v=5.80" class="btn btn-primary" style="color: white;">Подключить</a></td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
 
     <p>
         <a href="#" class="btn btn-success">Edit</a>
@@ -40,16 +59,28 @@
             Settings
         </button>
     </p>
+
     <div class="collapse" id="collapseEx">
         <div class="card card-body">
-            {% if app.user.isBusiness %}
-                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Business</a></p>
+            {% if app.user.isAdmin %}
+                <p>
+                <div class="card card-body">
+                    Вы являетесь администратором, и у вас есть все права для работы с сайтом!
+                </div>
+                </p>
+            {% elseif app.user.isBusiness %}
+                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Бизнес-панель</a></p>
                 <form action="{{ path('cabinet.unset-business') }}" method="post">
                     <button class="btn btn-warning">Отвязать бизнес-привелегии</button>
                 </form>
             {% else %}
                 <form action="{{ path('cabinet.set-business') }}" method="post">
                     <button class="btn btn-primary">Добавить бизнес-привелегии</button>
+                    <p>
+                    <div class="card card-body">
+                        Данные привелегии нужны только для работы с компаниями, и заказа рекламных предложений. Если вы не нуждаетесь в данных функциях, не добавляйте себе бизнес-привелегии.
+                    </div>
+                    </p>
                 </form>
             {% endif %}
         </div>

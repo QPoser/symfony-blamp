@@ -42,4 +42,5 @@ security:
          - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/cabinet/business, roles: ROLE_BUSINESS }
          - { path: ^/cabinet, roles: ROLE_USER }
+         - { path: ^/network, roles: ROLE_USER }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
