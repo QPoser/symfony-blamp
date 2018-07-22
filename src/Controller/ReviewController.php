@@ -39,12 +39,15 @@ class ReviewController extends Controller
 
         $form->handleRequest($request);
 
+        $user = $this->getUser();//TODO
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($user);
             $this->service->addComment($review, $comment);
 
             $this->addFlash('notice', 'Comment is successfully added.');
 
-            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
+            return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
         }
 
         return $this->render('review/comment/add.html.twig', [
@@ -60,7 +63,10 @@ class ReviewController extends Controller
      */
     public function show(Review $review): Response
     {
-        return $this->render('review/show.html.twig', ['review' => $review]);
+        $repo = $this->getDoctrine()->getRepository(ReviewComment::class);
+        $commentsTree = $repo->childrenHierarchy();
+
+        return $this->render('review/show.html.twig', ['review' => $review, 'comments' => $commentsTree]);
     }
 
     /**

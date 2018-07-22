@@ -35,7 +35,7 @@ class ReviewPhoto
     private $uploadedOn;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="photos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="photos", cascade={"persist"})
      * @ORM\JoinColumn(name="photo_review_id", referencedColumnName="id")
      */
     private $review;

@@ -36,12 +36,12 @@ class Review
     private $photos;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reviews")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="reviews")
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */
     private $company;

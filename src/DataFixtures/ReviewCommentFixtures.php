@@ -27,13 +27,16 @@ class ReviewCommentFixtures extends Fixture implements DependentFixtureInterface
 //            for ($c; $c < 5; $c++) {
 //                $user = $users[array_rand($users)];
 //                $comment = new ReviewComment();
-//
 //                $comment->setReview($review);
 //                $comment->setUser($user);
 //                $comment->setIsCompany(true);
 //                $comment->setText('Nulla lacus enim, vestibulum sed augue a, lobortis finibus leo. Fusce ornare sagittis ligula, nec fringilla eros sollicitudin in. Aliquam lacinia lorem lacus, et ullamcorper lectus pulvinar ut. In sagittis elit diam.');
 //                $comment->setStatus(ReviewComment::STATUS_ACTIVE);
-//                $manager->persist($comment);
+//
+//                for ($t = 0; $t < 3; $t++) {
+//                    $comment2 = new ReviewComment();
+//                    $comment2->setParent()
+//                }
 //                $c++;
 //            }
 //            $i++;

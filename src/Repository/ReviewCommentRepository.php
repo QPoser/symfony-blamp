@@ -3,51 +3,20 @@
 namespace App\Repository;
 
 use App\Entity\ReviewComment;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Gedmo\Tree\Traits\NestedSetEntity;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+
+use App\Services\TreeEntityManager;
+use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-/**
- * @method ReviewComment|null find($id, $lockMode = null, $lockVersion = null)
- * @method ReviewComment|null findOneBy(array $criteria, array $orderBy = null)
- * @method ReviewComment[]    findAll()
- * @method ReviewComment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class ReviewCommentRepository extends NestedTreeRepository //ServiceEntityRepository
+class ReviewCommentRepository extends NestedTreeRepository
 {
-
-    public function __construct(RegistryInterface $registry)
+    public function __construct(EntityManager $manager)
     {
-        parent::__construct($registry, ReviewComment::class);
-    }
+        $entityClass = ReviewComment::class;
+        $TEM = new TreeEntityManager();
+        $manager = $TEM->getTEM($manager);
 
-//    /**
-//     * @return ReviewComment[] Returns an array of ReviewComment objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        parent::__construct($manager, $manager->getClassMetadata($entityClass));
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ReviewComment
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -1,20 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: qposer
- * Date: 14.07.18
- * Time: 13:20
- */
 
 namespace App\Services;
 
-
-use App\Entity\Review;
 use App\Entity\ReviewComment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
 
-class ReviewService
+class CommentService
 {
     /**
      * @var EntityManager
@@ -32,31 +24,16 @@ class ReviewService
         $this->container = $container;
     }
 
-
-    public function addComment(Review $review, ReviewComment $comment)
+    public function addComment(ReviewComment $parentComment, ReviewComment $comment)
     {
-        $comment->setStatus(Review::STATUS_WAIT);
+        $review = $parentComment->getReview();
         $review->addComment($comment);
+        //$comment->setReview($review);
+        $comment->setStatus(ReviewComment::STATUS_WAIT);
+        $comment->setParent($parentComment);
 
         $this->manager->merge($comment);
         $this->manager->flush();
         $this->manager->clear();
     }
-
-    public function edit(Review $review)
-    {
-        //
-        $this->manager->flush();
-        $review->getCompany()->calcAssessment();
-        $this->manager->flush();
-    }
-
-    public function delete(Review $review)
-    {
-        $this->manager->remove($review);
-        $this->manager->flush();
-        $review->getCompany()->calcAssessment();
-        $this->manager->flush();
-    }
-
 }

@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="App\Repository\ReviewCommentRepository")
+ * @Gedmo\Tree(type="nested")
  */
 class ReviewComment
 {
@@ -30,7 +29,7 @@ class ReviewComment
     private $text;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Review", inversedBy="review_comment")
+     * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments", cascade={"persist"})
      * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
      */
     private $review;
@@ -46,52 +45,65 @@ class ReviewComment
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments", cascade={"persist"})
      * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
-     * @Gedmo\TreeLeft
-     * @ORM\Column(type="integer")
+     * @Gedmo\TreeLeft()
+     * @ORM\Column(name="lft", type="integer")
      */
     private $lft;
+
     /**
-     * @Gedmo\TreeRight
-     * @ORM\Column(type="integer")
+     * @Gedmo\TreeLevel()
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRight()
+     * @ORM\Column(name="rgt", type="integer")
      */
     private $rgt;
+
+//
+//* @ORM\ManyToOne(targetEntity="App\Entity\ReviewComment")
+//* @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+//
     /**
-     * @Gedmo\TreeParent
+     * @Gedmo\TreeRoot()
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent()
      * @ORM\ManyToOne(targetEntity="App\Entity\ReviewComment", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $root;
-    /**
-     * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer")
-     */
-    private $level;
+
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
      */
     private $children;
+
     /**
+     * @var \DateTime $created
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created;
+
     /**
+     * @var \DateTime $updated
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated;
-
 
     public function __construct()
     {
@@ -162,119 +174,45 @@ class ReviewComment
 
         return $this;
     }
-
-    public function getLft(): ?int
+///////////////////////////////////////////////////
+    public function getRoot()
+    {
+        return $this->root;
+    }
+    public function getLevel()
+    {
+        return $this->lvl;
+    }
+    public function getChildren()
+    {
+        return $this->children;
+    }
+    public function getLeft()
     {
         return $this->lft;
     }
-
-    public function setLft(int $lft): self
-    {
-        $this->lft = $lft;
-
-        return $this;
-    }
-
-    public function getRgt(): ?int
+    public function getRight()
     {
         return $this->rgt;
     }
 
-    public function setRgt(int $rgt): self
-    {
-        $this->rgt = $rgt;
-
-        return $this;
-    }
-
-    public function getRoot(): ?int
-    {
-        return $this->root;
-    }
-
-    public function setRoot(?int $root): self
-    {
-        $this->root = $root;
-
-        return $this;
-    }
-
-    public function getLevel(): ?int
-    {
-        return $this->level;
-    }
-
-    public function setLevel(int $level): self
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
-    public function getParent(): ?self
+    public function getParent()
     {
         return $this->parent;
     }
 
-    public function setParent(?self $parent): self
+    public function setParent(ReviewComment $parent = null)
     {
         $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ReviewComment[]
-     */
-    public function getChildren(): Collection
-    {
-        return $this->children;
-    }
-
-    public function addChild(ReviewComment $child): self
-    {
-        if (!$this->children->contains($child)) {
-            $this->children[] = $child;
-            $child->setParent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChild(ReviewComment $child): self
-    {
-        if ($this->children->contains($child)) {
-            $this->children->removeElement($child);
-            // set the owning side to null (unless already changed)
-            if ($child->getParent() === $this) {
-                $child->setParent(null);
-            }
-        }
-
-        return $this;
     }
 
     public function getCreated(): ?\DateTimeInterface
     {
-        return $this->created;
-    }
-
-    public function setCreated(\DateTimeInterface $created): self
-    {
-        $this->created = $created;
-
-        return $this;
+        return $this->created;//->format('Y-m-d');
     }
 
     public function getUpdated(): ?\DateTimeInterface
     {
-        return $this->updated;
-    }
-
-    public function setUpdated(\DateTimeInterface $updated): self
-    {
-        $this->updated = $updated;
-
-        return $this;
+        return $this->updated;//->format('Y-m-d');
     }
 }

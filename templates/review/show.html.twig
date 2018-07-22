@@ -37,6 +37,7 @@
     </table>
     <h2>Комментарии</h2>
     <hr>
+    {{ dump(comments) }}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -49,6 +50,7 @@
         <tr>
             <td>{{ comment.user }}</td>
             <td>{{ comment.text }}</td>
+            <td><a href="{{ path('review.comment.add', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Answer</a></td>
         </tr>
         {% endfor %}
         </tbody>
