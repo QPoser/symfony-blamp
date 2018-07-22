@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\User\ProfileEditForm;
 use App\Repository\ReviewRepository;
 use App\Services\EventService;
 use App\Services\UserService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -49,6 +51,31 @@ class CabinetController extends Controller
         $reviews = $repository->findBy(['user' => $this->getUser()->getId()]);
 
         return $this->render('cabinet/profile.html.twig', compact('reviews'));
+    }
+
+    /**
+     * @Route("/profile/edit", name="cabinet.profile.edit")
+     * @param Request $request
+     * @param UserService $service
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function profileEdit(Request $request, UserService $service)
+    {
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileEditForm::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $service->editUser($user);
+            $this->addFlash('notice', 'Вы успешно изменили свой профиль.');
+            return $this->redirectToRoute('cabinet.profile', []);
+        }
+
+        return $this->render('cabinet/profile/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

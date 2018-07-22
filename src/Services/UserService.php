@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -28,6 +29,11 @@ class UserService
     {
         $this->manager = $manager;
         $this->storage = $storage;
+    }
+
+    public function editUser(User $user)
+    {
+        $this->manager->flush();
     }
 
     public function setBusiness()

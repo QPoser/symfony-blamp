@@ -30,6 +30,8 @@ class ReviewController extends Controller
      * @param Request $request
      * @param Review $review
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function addComment(Request $request, Review $review): Response
     {
