@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Network;
+use App\Entity\Review\Network;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

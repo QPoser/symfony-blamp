@@ -46,6 +46,9 @@ services:
     App\Services\AuthService:
         arguments: ['@doctrine.orm.entity_manager']
 
+    App\Services\EventService:
+        arguments: ['@doctrine.orm.entity_manager']
+
 hwi_oauth:
     firewall_names:     ['main']
     resource_owners:

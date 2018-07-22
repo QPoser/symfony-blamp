@@ -8,7 +8,10 @@
 
 namespace App\Entity;
 
-use App\Entity\Review;
+use App\Entity\Review\Like;
+use App\Entity\Review\Network;
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -75,24 +78,34 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Network", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Network", mappedBy="user")
      */
     private $networks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="user")
      */
     private $reviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="user")
      */
     private $likes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="user")
      */
     private $comments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="user")
+     */
+    private $events;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="user")
+     */
+    private $sendEvent;
 
 
     public function __construct()
@@ -102,6 +115,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->networks = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     // Password Reset
@@ -375,7 +389,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     }
 
     /**
-     * @return Collection|\App\Entity\Review[]
+     * @return Collection|\App\Entity\Review\Review[]
      */
     public function getReviews(): Collection
     {
@@ -447,5 +461,36 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         // TODO: Implement loadUserByOAuthUserResponse() method.
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->contains($event)) {
+            $this->events->removeElement($event);
+            // set the owning side to null (unless already changed)
+            if ($event->getUser() === $this) {
+                $event->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

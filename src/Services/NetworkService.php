@@ -10,7 +10,7 @@ namespace App\Services;
 
 
 use App\Controller\NetworkController;
-use App\Entity\Network;
+use App\Entity\Review\Network;
 use App\Entity\User;
 use App\Repository\NetworkRepository;
 use App\Repository\UserRepository;

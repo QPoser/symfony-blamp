@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Entity\Network;
+use App\Entity\Review\Network;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\AuthService;

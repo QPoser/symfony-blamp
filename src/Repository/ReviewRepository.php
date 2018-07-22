@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

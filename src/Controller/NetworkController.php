@@ -35,7 +35,6 @@ class NetworkController extends Controller
     /**
      * @Route("/network/add/vk", name="networks.add.vk")
      * @param Request $request
-     * @param $code
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Doctrine\ORM\ORMException
      * @throws \GuzzleHttp\Exception\GuzzleException

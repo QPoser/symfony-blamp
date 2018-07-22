@@ -2,7 +2,7 @@
 
 namespace App\Form\Company\Review;
 
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

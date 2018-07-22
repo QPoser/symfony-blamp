@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
 use App\Entity\Company\Company;
+use App\Entity\Review\Like;
+use App\Entity\Review\ReviewComment;
+use App\Entity\Review\ReviewPhoto;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,7 +35,7 @@ class Review
     private $text;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewPhoto", mappedBy="review")
      */
     private $photos;
 
@@ -67,7 +71,7 @@ class Review
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review")
      */
     private $likes;
 

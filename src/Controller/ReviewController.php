@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Review;
-use App\Entity\ReviewComment;
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Form\Review\ReviewAddCommentForm;
 use App\Services\ReviewService;

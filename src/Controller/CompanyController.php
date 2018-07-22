@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company\Company;
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewAddCommentForm;

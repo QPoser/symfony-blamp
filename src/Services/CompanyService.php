@@ -10,7 +10,7 @@ namespace App\Services;
 
 
 use App\Entity\Company\Company;
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;

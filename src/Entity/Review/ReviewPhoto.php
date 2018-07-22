@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
+use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -35,7 +36,7 @@ class ReviewPhoto
     private $uploadedOn;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="photos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\Review", inversedBy="photos")
      * @ORM\JoinColumn(name="photo_review_id", referencedColumnName="id")
      */
     private $review;

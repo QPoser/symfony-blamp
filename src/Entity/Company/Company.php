@@ -4,7 +4,7 @@ namespace App\Entity\Company;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -87,7 +87,7 @@ class Company
     private $reject_reason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="company")
      */
     private $reviews;
 

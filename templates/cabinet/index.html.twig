@@ -4,7 +4,7 @@
 
 {% block body %}
     <ul class="nav nav-pills nav-fill mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Новое <span class="badge badge-pill badge-primary">14</span></a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Новое <span class="badge badge-pill badge-primary">{{ app.user.events|length }}</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
@@ -21,20 +21,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><a href="#">МЯСОРУБ</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
-            </tr>
-
-            <tr>
-                <td><a href="#">Виктория Иванова</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
-            </tr>
-
-            <tr>
-                <td><a href="#">МЯСОРУБ</a></td>
-                <td>Ответил на ваш <a href="#">отзыв</a>!</td>
-            </tr>
+            {% for event in app.user.events %}
+                <tr>
+                    <td><a href="#">{{ event.senderUser.username }}</a></td>
+                    <td>{{ event.eventMessage|raw }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

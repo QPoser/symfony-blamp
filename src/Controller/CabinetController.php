@@ -19,9 +19,7 @@ class CabinetController extends Controller
      */
     public function index()
     {
-        return $this->render('cabinet/index.html.twig', [
-
-        ]);
+        return $this->render('cabinet/index.html.twig', []);
     }
 
     /**
