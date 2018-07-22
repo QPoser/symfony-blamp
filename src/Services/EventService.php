@@ -26,6 +26,16 @@ class EventService
         $this->manager = $manager;
     }
 
+    public function setSeenForUser(User $user)
+    {
+        /** @var Event $event */
+        foreach ($user->getNewEvents() as $event) {
+            $event->setIsSeen(true);
+        }
+
+        $this->manager->flush();
+    }
+
     public function addEventByUser(User $user, string $message, User $sender)
     {
         if ($user->getId() == $sender->getId()) {
@@ -46,7 +56,17 @@ class EventService
 
     public function addEventByCompany(User $user, string $message, Company $company)
     {
+        $event = new Event();
+        $event->setUser($user);
+        $event->setEventMessage($message);
+        $event->setIsCompanySender(true);
+        $event->setIsSeen(false);
+        $event->setSenderCompany($company);
 
+        $this->manager->persist($event);
+        $this->manager->flush();
+
+        return true;
     }
 
 }

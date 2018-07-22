@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ReviewRepository;
+use App\Services\EventService;
 use App\Services\UserService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,9 +17,13 @@ class CabinetController extends Controller
 {
     /**
      * @Route("/", name="cabinet")
+     * @param EventService $eventService
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index()
+    public function index(EventService $eventService)
     {
+        $eventService->setSeenForUser($this->getUser());
+
         return $this->render('cabinet/index.html.twig', []);
     }
 

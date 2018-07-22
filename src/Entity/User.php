@@ -103,10 +103,9 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $events;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="senderUser")
      */
     private $sendEvent;
-
 
     public function __construct()
     {
@@ -116,6 +115,18 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->comments = new ArrayCollection();
         $this->networks = new ArrayCollection();
         $this->events = new ArrayCollection();
+    }
+
+    public function getNewEvents()
+    {
+        $newEvents = [];
+        /** @var Event $event */
+        foreach ($this->events as $event) {
+            if (!$event->getIsSeen()) {
+                $newEvents[] = $event;
+            }
+        }
+        return $newEvents;
     }
 
     // Password Reset

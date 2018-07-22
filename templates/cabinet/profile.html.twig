@@ -4,7 +4,7 @@
 
 {% block body %}
     <ul class="nav nav-pills nav-fill mb-3">
-        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.events|length }}</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
         <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
         <li class="nav-item"><a class="nav-link active" href="#">Профиль</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>

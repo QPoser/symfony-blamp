@@ -52,6 +52,12 @@ class ReviewService
     }
 
 
+    /**
+     * @param Review $review
+     * @param ReviewComment $comment
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function addComment(Review $review, ReviewComment $comment)
     {
         $comment->setStatus(Review::STATUS_WAIT);
@@ -64,13 +70,25 @@ class ReviewService
         $this->manager->persist($comment);
         $this->manager->flush();
 
-        $return = $this->eventService->addEventByUser(
-            $review->getUser(),
-            'Добавил комментарий к вашему отзыву на компанию <a href="' .
-            $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
-            '">' . $review->getCompany()->getName() . '</a>',
-            $comment->getUser()
-        );
+        if ($comment->getIsCompany()) {
+            $return = $this->eventService->addEventByCompany(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $review->getCompany()
+            );
+        } else {
+            $return = $this->eventService->addEventByUser(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $comment->getUser()
+            );
+        }
+
+
     }
 
     public function edit(Review $review)

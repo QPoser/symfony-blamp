@@ -35,7 +35,7 @@ class Event
     private $senderUser;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Company\Company", inversedBy="sendCompanies")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="sendCompanies")
      * @ORM\JoinColumn(name="company_company_id", referencedColumnName="id", nullable=true)
      */
     private $senderCompany;
