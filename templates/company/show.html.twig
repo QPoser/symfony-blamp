@@ -82,12 +82,10 @@
                             <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
                             <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
                             <td>
-                                {{ review.likeCounter }}
-                                <a href="#" class="btn btn-success btn-lg">Like</a>
+                                <a href="{{ path('review.like', {'id': review.id}) }}" class="btn btn-success"><i class="fa fa-thumbs-up"></i> {{ review.likeCounter }}</a>
                             </td>
                             <td>
-                                {{ review.dislikeCounter }}
-                                <a href="#" class="btn btn-danger btn-lg">Dislike</a>
+                                <a href="{{ path('review.dislike', {'id': review.id}) }}" class="btn btn-danger"><i class="fa fa-thumbs-down"></i>{{ review.dislikeCounter }}</a>
                             </td>
                         </tr>
                     {% endfor %}

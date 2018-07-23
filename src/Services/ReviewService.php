@@ -9,9 +9,12 @@
 namespace App\Services;
 
 
+use App\Entity\Like;
 use App\Entity\Review;
 use App\Entity\ReviewComment;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\DependencyInjection\Container;
 
 class ReviewService
@@ -58,4 +61,45 @@ class ReviewService
         $this->manager->flush();
     }
 
+    public function addLike(Review $review, User $user, bool $value = Like::LIKE)
+    {
+        $like = new Like();
+        $like->setUser($user);
+        $like->setValue($value);
+        $review->addLike($like);
+
+        $this->manager->persist($like);
+        $this->manager->persist($review);
+        $this->manager->flush();
+        $review->likesCount();
+        $this->manager->flush();
+    }
+
+    public function removeLike(Like $like)
+    {
+        $review = $like->getReview();
+        $this->manager->remove($like);
+        $this->manager->flush();
+        $review->likesCount();
+        $this->manager->flush();
+    }
+
+    public function findLikeByUser(Review $review, User $user, bool $value = Like::LIKE)
+    {
+        foreach ($review->getLikes() as $like) {
+            $liker = $like->getUser()->getId();
+            if ($like->getValue() == $value) {
+                if ($liker == $user->getId()) {
+                    $this->removeLike($like);
+                    return true;
+                }
+            }else {
+                if ($liker == $user->getId()) {
+                    $this->removeLike($like);
+                    break;
+                }
+            }
+        }
+        return false;
+    }
 }

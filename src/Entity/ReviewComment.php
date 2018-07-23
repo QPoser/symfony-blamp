@@ -26,7 +26,7 @@ class ReviewComment
     private $text;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Review", inversedBy="review_comment")
+     * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments")
      * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
      */
     private $review;

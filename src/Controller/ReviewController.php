@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Like;
 use App\Entity\Review;
 use App\Entity\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Form\Review\ReviewAddCommentForm;
+use App\Services\AuthService;
 use App\Services\ReviewService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,12 +41,15 @@ class ReviewController extends Controller
 
         $form->handleRequest($request);
 
+        $user = $this->getUser();
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($user);
             $this->service->addComment($review, $comment);
 
             $this->addFlash('notice', 'Comment is successfully added.');
 
-            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
+            return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }
 
         return $this->render('review/comment/add.html.twig', [
@@ -105,6 +110,46 @@ class ReviewController extends Controller
         }
 
         $this->addFlash('warning', 'Invalid csrf token for delete.');
+
+        return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
+    }
+
+    /**
+     * @Route("/reviews/{id}/like", name="review.like", methods="GET")
+     * @param Review $review
+     * @return Response
+     */
+    public function addLike(Review $review): Response
+    {
+        $user = $this->getUser();
+        if ($this->service->findLikeByUser($review, $user)) {
+            $this->addFlash('notice', 'Like is successfully removed.');
+            return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
+        }
+
+        $this->service->addLike($review, $user);
+
+        $this->addFlash('notice', 'Like is successfully added.');
+
+        return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
+    }
+
+    /**
+     * @Route("/reviews/{id}/dislike", name="review.dislike", methods="GET")
+     * @param Review $review
+     * @return Response
+     */
+    public function addDislike(Review $review): Response
+    {
+        $user = $this->getUser();
+        if ($this->service->findLikeByUser($review, $user, Like::DISLIKE)) {
+            $this->addFlash('notice', 'Dislike is successfully removed.');
+            return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
+        }
+
+        $this->service->addLike($review, $user, Like::DISLIKE);
+
+        $this->addFlash('notice', 'Dislike is successfully added.');
 
         return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }

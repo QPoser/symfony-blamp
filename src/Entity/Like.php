@@ -80,12 +80,14 @@ class Like
 
     /**
      * @ORM\PostLoad()
+     * @ORM\PostUpdate()
+     * @ORM\PostRemove()
      */
     public function updateLikes() {
         /**
-         * @var $review
+         * @var $review Review
          */
-        $review = $this->getReview();;
+        $review = $this->review;
         $review->likesCount();
     }
 }

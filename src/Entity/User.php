@@ -75,7 +75,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Network", mappedBy="users")
+     * @ORM\OneToMany(targetEntity="Network", mappedBy="user")
      */
     private $networks;
 
@@ -85,12 +85,12 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $reviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="user", orphanRemoval=true)
      */
     private $likes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="user", orphanRemoval=true)
      */
     private $comments;
 

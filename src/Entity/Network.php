@@ -22,7 +22,7 @@ class Network
 {
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="user_network")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="networks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;

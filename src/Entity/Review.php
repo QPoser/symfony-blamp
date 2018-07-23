@@ -31,17 +31,17 @@ class Review
     private $text;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="review", orphanRemoval=true)
      */
     private $photos;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reviews")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="review")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="reviews")
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */
     private $company;
@@ -62,12 +62,12 @@ class Review
     private $rejectReason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="review", orphanRemoval=true)
      */
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review", orphanRemoval=true)
      */
     private $likes;
 
@@ -80,9 +80,6 @@ class Review
      * @ORM\Column(type="integer", nullable=true)
      */
     private $dislikeCounter;
-
-
-
 
     public function __construct()
     {
@@ -269,19 +266,14 @@ class Review
         return $this;
     }
 
-
     public function likesCount() {
         $likeCounter = null;
         $dislikeCounter = null;
-        /**
-         * @var $like Like
-         */
         foreach ($this->likes as $like) {
-            $likeCounter++;
-            if ($like->getValue() == Like::LIKE) {
+            if ($like->getValue() == 1) {
                 $likeCounter++;
             }
-            if ($like->getValue() == Like::DISLIKE) {
+            if ($like->getValue() == 0) {
                 $dislikeCounter++;
             }
         }
