@@ -10,6 +10,7 @@ use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\CompanyRepository;
 use App\Services\CompanyService;
+use App\Services\UserService;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -198,5 +199,35 @@ class CompanyController extends Controller
             'company' => $company,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/favorites/add/{id}", name="company.add.favorites")
+     * @param Company $company
+     * @param UserService $service
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addToFavorites(Company $company, UserService $service)
+    {
+        $service->addCompanyToFavorites($company, $this->getUser());
+
+        $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно добавлена в избранное.');
+
+        return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
+    }
+
+    /**
+     * @Route("/favorites/remove/{id}", name="company.remove.favorites")
+     * @param Company $company
+     * @param UserService $service
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function removeFromFavorites(Company $company, UserService $service)
+    {
+        $service->removeCompanyFromFavorites($company, $this->getUser());
+
+        $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно удалена из избранных.');
+
+        return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
     }
 }

@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Company\Company;
 use App\Entity\Review\Like;
 use App\Entity\Review\Network;
 use App\Entity\Review\Review;
@@ -107,6 +108,12 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
      */
     private $sendEvent;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Company", inversedBy="usersFavor")
+     * @ORM\JoinTable(name="favorite_companies")
+     */
+    private $favoriteCompanies;
+
     public function __construct()
     {
         $this->roles = $this->getRoles();
@@ -115,6 +122,8 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->comments = new ArrayCollection();
         $this->networks = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->sendEvent = new ArrayCollection();
+        $this->favoriteCompanies = new ArrayCollection();
     }
 
     public function getNewEvents()
@@ -500,6 +509,69 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
             if ($event->getUser() === $this) {
                 $event->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getSendEvent(): Collection
+    {
+        return $this->sendEvent;
+    }
+
+    public function addSendEvent(Event $sendEvent): self
+    {
+        if (!$this->sendEvent->contains($sendEvent)) {
+            $this->sendEvent[] = $sendEvent;
+            $sendEvent->setSenderUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSendEvent(Event $sendEvent): self
+    {
+        if ($this->sendEvent->contains($sendEvent)) {
+            $this->sendEvent->removeElement($sendEvent);
+            // set the owning side to null (unless already changed)
+            if ($sendEvent->getSenderUser() === $this) {
+                $sendEvent->setSenderUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    public function hasInFavoriteCompanies(Company $company)
+    {
+        return $this->favoriteCompanies->contains($company);
+    }
+
+    /**
+     * @return Collection|Company[]
+     */
+    public function getFavoriteCompanies(): Collection
+    {
+        return $this->favoriteCompanies;
+    }
+
+    public function addFavoriteCompany(Company $favoriteCompany): self
+    {
+        if (!$this->favoriteCompanies->contains($favoriteCompany)) {
+            $this->favoriteCompanies[] = $favoriteCompany;
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteCompany(Company $favoriteCompany): self
+    {
+        if ($this->favoriteCompanies->contains($favoriteCompany)) {
+            $this->favoriteCompanies->removeElement($favoriteCompany);
         }
 
         return $this;

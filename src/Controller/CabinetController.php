@@ -54,6 +54,15 @@ class CabinetController extends Controller
     }
 
     /**
+     * @Route("/favorites", name="cabinet.favorites")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function favorites()
+    {
+        return $this->render('cabinet/favorites.html.twig', []);
+    }
+
+    /**
      * @Route("/profile/edit", name="cabinet.profile.edit")
      * @param Request $request
      * @param UserService $service

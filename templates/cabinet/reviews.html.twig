@@ -7,7 +7,7 @@
         <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
         <li class="nav-item"><a class="nav-link active" href="#">Отзывы</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.favorites') }}">Избранное</a></li>
         {% if app.user.isBusiness %}
             <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
         {% endif %}

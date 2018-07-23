@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\Company\Company;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -66,6 +67,20 @@ class UserService
         );
 
         $this->storage->setToken($token);
+    }
+
+    public function addCompanyToFavorites(Company $company, User $user)
+    {
+        $user->addFavoriteCompany($company);
+
+        $this->manager->flush();
+    }
+
+    public function removeCompanyFromFavorites(Company $company, User $user)
+    {
+        $user->removeFavoriteCompany($company);
+
+        $this->manager->flush();
     }
 
 }
