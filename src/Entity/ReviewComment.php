@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -44,6 +45,7 @@ class ReviewComment
      */
     private $status;
 
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments", cascade={"persist"})
      * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", nullable=false)
@@ -68,10 +70,6 @@ class ReviewComment
      */
     private $rgt;
 
-//
-//* @ORM\ManyToOne(targetEntity="App\Entity\ReviewComment")
-//* @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
-//
     /**
      * @Gedmo\TreeRoot()
      * @ORM\Column(type="integer", nullable=true)
@@ -214,5 +212,85 @@ class ReviewComment
     public function getUpdated(): ?\DateTimeInterface
     {
         return $this->updated;//->format('Y-m-d');
+    }
+
+    public function getLft(): ?int
+    {
+        return $this->lft;
+    }
+
+    public function setLft(int $lft): self
+    {
+        $this->lft = $lft;
+
+        return $this;
+    }
+
+    public function getLvl(): ?int
+    {
+        return $this->lvl;
+    }
+
+    public function setLvl(int $lvl): self
+    {
+        $this->lvl = $lvl;
+
+        return $this;
+    }
+
+    public function getRgt(): ?int
+    {
+        return $this->rgt;
+    }
+
+    public function setRgt(int $rgt): self
+    {
+        $this->rgt = $rgt;
+
+        return $this;
+    }
+
+    public function setRoot(?int $root): self
+    {
+        $this->root = $root;
+
+        return $this;
+    }
+
+    public function setCreated(\DateTimeInterface $created): self
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): self
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function addChildren(ReviewComment $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChildren(ReviewComment $child): self
+    {
+        if ($this->children->contains($child)) {
+            $this->children->removeElement($child);
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
+        return $this;
     }
 }

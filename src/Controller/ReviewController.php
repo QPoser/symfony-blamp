@@ -64,7 +64,7 @@ class ReviewController extends Controller
     public function show(Review $review): Response
     {
         $repo = $this->getDoctrine()->getRepository(ReviewComment::class);
-        $commentsTree = $repo->childrenHierarchy();
+        $commentsTree = $repo->findBy(['root' => 0, 'review' => $review]);
 
         return $this->render('review/show.html.twig', ['review' => $review, 'comments' => $commentsTree]);
     }

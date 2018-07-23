@@ -27,10 +27,10 @@ class CommentService
     public function addComment(ReviewComment $parentComment, ReviewComment $comment)
     {
         $review = $parentComment->getReview();
-        $review->addComment($comment);
-        //$comment->setReview($review);
+
         $comment->setStatus(ReviewComment::STATUS_WAIT);
         $comment->setParent($parentComment);
+        $review->addComment($comment);
 
         $this->manager->merge($comment);
         $this->manager->flush();

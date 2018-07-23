@@ -37,7 +37,6 @@
     </table>
     <h2>Комментарии</h2>
     <hr>
-    {{ dump(comments) }}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -45,14 +44,36 @@
             <th scope="col">Comment</th>
         </tr>
         </thead>
-        <tbody>
-        {% for comment in review.comments %}
-        <tr>
-            <td>{{ comment.user }}</td>
-            <td>{{ comment.text }}</td>
-            <td><a href="{{ path('review.comment.add', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Answer</a></td>
-        </tr>
-        {% endfor %}
-        </tbody>
     </table>
+
+    {# macros #}
+    {% macro comment_tree(comment) %}
+        {% import _self as macros %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>{{ comment.getUser.getUsername }}</td>
+                            <td>{{ comment.text }}</td>
+                            <td><a href="{{ path('review.comment.add', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Answer</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if comment.children %}
+                    {% for children in comment.children %}
+                    {{ macros.comment_tree(children) }}
+                    {% endfor %}
+                {% endif %}
+            </li>
+        </ul>
+    {% endmacro %}
+
+
+    {% import _self as macros %}
+    {% for comment in review.comments %}
+        {% if comment.lvl == 0 %}
+            {{ macros.comment_tree(comment) }}
+        {% endif %}
+    {% endfor %}
 {% endblock %}
