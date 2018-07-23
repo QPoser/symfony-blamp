@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AppSetRoleCommand extends Command
 {
@@ -23,12 +24,17 @@ class AppSetRoleCommand extends Command
      * @var EntityManagerInterface
      */
     private $manager;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $storage;
 
-    public function __construct($name = null, UserRepository $users, EntityManagerInterface $manager)
+    public function __construct($name = null, UserRepository $users, EntityManagerInterface $manager, TokenStorageInterface $storage)
     {
         parent::__construct($name);
         $this->users = $users;
         $this->manager = $manager;
+        $this->storage = $storage;
     }
 
     protected function configure()
@@ -71,6 +77,15 @@ class AppSetRoleCommand extends Command
         }
 
         $this->manager->flush();
+
+        $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
+            $user,
+            null,
+            'main',
+            $user->getRoles()
+        );
+
+        $this->storage->setToken($token);
 
         $io->success('Success!');
     }

@@ -106,6 +106,8 @@ class Company
                 $assessment += $review->getAssessment();
             }
             $this->assessment = $assessment / count($this->reviews);
+        } else {
+            $this->assessment = null;
         }
     }
 

@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class CompanyService
 {
@@ -30,11 +31,22 @@ class CompanyService
      * @var Container
      */
     private $container;
+    /**
+     * @var TokenStorage
+     */
+    private $storage;
 
-    public function __construct(EntityManager $manager, Container $container)
+    /**
+     * CompanyService constructor.
+     * @param EntityManager $manager
+     * @param Container $container
+     * @param TokenStorage $storage
+     */
+    public function __construct(EntityManager $manager, Container $container, TokenStorage $storage)
     {
         $this->manager = $manager;
         $this->container = $container;
+        $this->storage = $storage;
     }
 
 
@@ -85,6 +97,7 @@ class CompanyService
     {
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
+        $review->setUser($this->storage->getToken()->getUser());
 
         $this->manager->persist($review);
         $this->manager->flush();

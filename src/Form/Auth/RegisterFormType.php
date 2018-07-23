@@ -4,6 +4,7 @@ namespace App\Form\Auth;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +16,7 @@ class RegisterFormType extends AbstractType
         $builder
             ->add('username')
             ->add('plainPassword', PasswordType::class)
-            ->add('email');
+            ->add('email', EmailType::class, ['required' => true]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

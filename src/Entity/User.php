@@ -57,7 +57,6 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     /**
      * @ORM\Column(type="string", length=255, unique=true, nullable=true)
-     * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
@@ -99,6 +98,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="user")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $events;
 
@@ -243,7 +243,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     public function setUsername(string $username): self
     {
-        $this->username = $username;
+        $this->username = str_replace(' ', '', $username);
 
         return $this;
     }
