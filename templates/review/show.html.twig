@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <td><i class="fa fa-user"></i> User</td>
-                <td>{{ review.user }}</td>
+                <td>{{ review.user.username }}</td>
             </tr>
             <tr>
                 <td><i class="fa fa-star"></i> Assessment</td>
@@ -36,6 +36,9 @@
         </tbody>
     </table>
     <h2>Комментарии</h2>
+    {% block add_comment %}
+        {{ include('review/comment/add.html.twig', { 'form': form }) }}
+    {% endblock %}
     <hr>
     <table class="table table-striped">
         <thead>
@@ -45,7 +48,6 @@
         </tr>
         </thead>
     </table>
-
 
     {# macros #}
     {% macro comment_tree(comment) %}

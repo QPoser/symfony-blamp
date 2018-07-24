@@ -4,9 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Company\Company;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Validator\Constraints\Time;
 
 class CompanyFixtures extends Fixture
 {

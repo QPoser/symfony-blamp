@@ -1,12 +1,11 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Add comment{% endblock %}
-
-{% block body %}
-    <h2>Add comment</h2>
-    <hr>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <input type="submit" class="btn btn-primary">
-    {{ form_end(form) }}
-{% endblock %}
+{% extends 'review/show.html.twig' %}
+    {% block add_comment %}
+    <div class="row">
+        <div class="col-xs-12">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Save</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endblock %}

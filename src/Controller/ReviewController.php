@@ -59,13 +59,35 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/reviews/{id}", name="review.show", methods="GET")
+     * @Route("/reviews/{id}", name="review.show", methods="GET|POST")
+     * @param Request $request
      * @param Review $review
      * @return Response
      */
-    public function show(Review $review): Response
+    public function show(Request $request, Review $review): Response
     {
-        return $this->render('review/show.html.twig', ['review' => $review]);
+        $comment = new ReviewComment();
+
+        $form = $this->createForm(ReviewAddCommentForm::class, $comment);
+
+        $form->handleRequest($request);
+
+        $user = $this->getUser();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($user);
+            $this->service->addComment($review, $comment);
+
+            $this->addFlash('notice', 'Comment is successfully added.');
+
+            return $this->redirectToRoute('review.show', ['id' => $review->getId(),
+                'form' => $form->createView(),
+                ]);
+        }
+
+        return $this->render('review/comment/add.html.twig', ['review' => $review,
+            'form' => $form->createView(),
+            ]);
     }
 
     /**
