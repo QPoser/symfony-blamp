@@ -19,7 +19,7 @@ class CompanyFixtures extends Fixture
             $company->setStartWork(new \DateTime("09:00"));
             $company->setEndWork(new \DateTime("18:00"));
             $company->setSite('https://www.google'.$i.'.ru');
-            $company->setPhoto('public/source/img/company-logo.png');
+            $company->setPhoto('public/uploads/company-logo.png');
             $company->setStatus(Company::STATUS_ACTIVE);
 
             $manager->persist($company);

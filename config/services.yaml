@@ -40,6 +40,9 @@ services:
     App\Services\AuthService:
         arguments: ['@doctrine.orm.entity_manager']
 
+    App\Services\CommentService:
+            arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
 hwi_oauth:
     firewall_names:     ['main']
     resource_owners:

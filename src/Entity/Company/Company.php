@@ -96,7 +96,6 @@ class Company
      */
     private $assessment;
 
-
     public function calcAssessment()
     {
         $assessment = null;

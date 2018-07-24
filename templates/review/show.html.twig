@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <td><i class="fa fa-user"></i> User</td>
-                <td>{{ review.user.username }}</td>
+                <td>{{ review.user }}</td>
             </tr>
             <tr>
                 <td><i class="fa fa-star"></i> Assessment</td>
@@ -44,13 +44,36 @@
             <th scope="col">Comment</th>
         </tr>
         </thead>
-        <tbody>
-        {% for comment in review.comments %}
-        <tr>
-            <td>{{ comment.user.username }}</td>
-            <td>{{ comment.text }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
     </table>
+
+    {# macros #}
+    {% macro comment_tree(comment) %}
+        {% import _self as macros %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>{{ comment.getUser.getUsername }}</td>
+                            <td>{{ comment.text }}</td>
+                            <td><a href="{{ path('review.comment.add', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Answer</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if comment.children %}
+                    {% for children in comment.children %}
+                    {{ macros.comment_tree(children) }}
+                    {% endfor %}
+                {% endif %}
+            </li>
+        </ul>
+    {% endmacro %}
+
+
+    {% import _self as macros %}
+    {% for comment in review.comments %}
+        {% if comment.lvl == 0 %}
+            {{ macros.comment_tree(comment) }}
+        {% endif %}
+    {% endfor %}
 {% endblock %}

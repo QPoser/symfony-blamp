@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\Like;
 use App\Entity\Review;
 use App\Entity\ReviewComment;
@@ -30,7 +29,8 @@ class ReviewService
 
     public function __construct(EntityManager $manager, Container $container)
     {
-        $this->manager = $manager;
+        $TEM = new TreeEntityManager();
+        $this->manager = $TEM->getTEM($manager);
         $this->container = $container;
     }
 
@@ -38,11 +38,11 @@ class ReviewService
     public function addComment(Review $review, ReviewComment $comment)
     {
         $comment->setStatus(Review::STATUS_WAIT);
-
         $review->addComment($comment);
 
-        $this->manager->persist($comment);
+        $this->manager->merge($comment);
         $this->manager->flush();
+        $this->manager->clear();
     }
 
     public function edit(Review $review)

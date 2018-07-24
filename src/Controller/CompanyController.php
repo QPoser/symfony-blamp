@@ -186,7 +186,10 @@ class CompanyController extends Controller
 
         $form->handleRequest($request);
 
+        $user = $this->getUser();
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $review->setUser($user);
             $this->service->addReview($company, $review);
 
             $this->addFlash('notice', 'Review successfully added.');
