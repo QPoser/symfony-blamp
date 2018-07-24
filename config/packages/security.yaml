@@ -40,8 +40,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
          - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/cabinet/business, roles: ROLE_BUSINESS }
          - { path: ^/cabinet, roles: ROLE_USER }
          - { path: ^/network, roles: ROLE_USER }
+         - { path: ^/user/subs/, roles: ROLE_USER }
          - { path: ^/company/favorites, roles: ROLE_USER }
+         - { path: ^/cabinet/business, roles: ROLE_BUSINESS }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Пользователь {{ user.username }}{% endblock %}
+
+{% block body %}
+    <h1>{{ user.username }}</h1>
+    <a href="{{ path('user.index') }}" class="btn btn-primary">< Пользователи</a>
+    {% if user.id != app.user.id %}
+        {% if user.subscribers.contains(app.user) %}
+            <a href="{{ path('user.unsubscribe', {'id' : user.id}) }}" class="btn btn-warning">Отписаться</a>
+        {% else %}
+            <a href="{{ path('user.subscribe', {'id' : user.id}) }}" class="btn btn-success">Подписаться</a>
+        {% endif %}
+    {% endif %}
+    <hr>
+
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th>Имя</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Роль</th>
+                {% if user.isAdmin %}
+                    <td><span class="badge badge-primary">Admin</span></td>
+                {% else %}
+                    <td><span class="badge badge-primary">User</span></td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Отзывы ({{ user.reviews|length }})</h4>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Компания</th>
+            <th>Оценка</th>
+            <th>Отзыв</th>
+        </tr>
+        {% for review in user.reviews %}
+            <tr>
+                    <td><a href="{{ path('company.show', {'id' : review.company.id}) }}">{{ review.company.name }}</a></td>
+                    <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
+                    <td>{{ review.text }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Подписчики ({{ user.subscribers|length }})</h4>
+
+
+    {% for subscribers_chunk in user.subscribers|batch(5) %}
+        <div class="row">
+            {% for subscriber in subscribers_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscriber.id}) }}">{{ subscriber.username }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <hr>
+
+    <h4>Подписки ({{ user.subscriptions|length }})</h4>
+
+
+    {% for subscriptions_chunk in user.subscriptions|batch(5) %}
+        <div class="row">
+            {% for subscription in subscriptions_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscription.id}) }}">{{ subscription.username }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

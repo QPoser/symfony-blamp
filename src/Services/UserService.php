@@ -83,4 +83,28 @@ class UserService
         $this->manager->flush();
     }
 
+    // Subscribers
+
+    public function addSubscriber(User $user, User $subscriber)
+    {
+        if ($user->getId() === $subscriber->getId()) {
+            throw new \DomainException('Нельзя подписаться самому на себя!');
+        }
+
+        $user->addSubscriber($subscriber);
+
+        $this->manager->flush();
+    }
+
+    public function cancelSubscribe(User $user, User $unsubscriber)
+    {
+        if ($user->getId() === $unsubscriber->getId()) {
+            throw new \DomainException('Нельзя подписаться самому на себя!');
+        }
+
+        $user->removeSubscriber($unsubscriber);
+
+        $this->manager->flush();
+    }
+
 }

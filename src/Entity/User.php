@@ -114,6 +114,20 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
      */
     private $favoriteCompanies;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="subscribers")
+     */
+    private $subscriptions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="friendsWithMe")
+     * @ORM\JoinTable(name="subscribers",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="subscriber_user_id", referencedColumnName="id")}
+     * )
+     */
+    private $subscribers;
+
     public function __construct()
     {
         $this->roles = $this->getRoles();
@@ -124,6 +138,8 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->events = new ArrayCollection();
         $this->sendEvent = new ArrayCollection();
         $this->favoriteCompanies = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->subscribers = new ArrayCollection();
     }
 
     public function getNewEvents()
@@ -572,6 +588,60 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     {
         if ($this->favoriteCompanies->contains($favoriteCompany)) {
             $this->favoriteCompanies->removeElement($favoriteCompany);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(User $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(User $subscription): self
+    {
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
+            $subscription->removeSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscribers(): Collection
+    {
+        return $this->subscribers;
+    }
+
+    public function addSubscriber(User $subscriber): self
+    {
+        if (!$this->subscribers->contains($subscriber)) {
+            $this->subscribers[] = $subscriber;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriber(User $subscriber): self
+    {
+        if ($this->subscribers->contains($subscriber)) {
+            $this->subscribers->removeElement($subscriber);
         }
 
         return $this;

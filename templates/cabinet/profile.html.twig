@@ -14,6 +14,40 @@
     </ul>
     <hr>
     <h4>Профиль</h4>
+    <p>
+        <a href="{{ path('cabinet.profile.edit') }}" class="btn btn-success">Edit</a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
+            Settings
+        </button>
+    </p>
+
+    <div class="collapse" id="collapseEx">
+        <div class="card card-body">
+            {% if app.user.isAdmin %}
+                <p>
+                <div class="card card-body">
+                    Вы являетесь администратором, и у вас есть все права для работы с сайтом!
+                </div>
+                </p>
+            {% elseif app.user.isBusiness %}
+                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Бизнес-панель</a></p>
+                <form action="{{ path('cabinet.unset-business') }}" method="post">
+                    <button class="btn btn-warning">Отвязать бизнес-привелегии</button>
+                </form>
+            {% else %}
+                <form action="{{ path('cabinet.set-business') }}" method="post">
+                    <button class="btn btn-primary">Добавить бизнес-привелегии</button>
+                    <p>
+                    <div class="card card-body">
+                        Данные привелегии нужны только для работы с компаниями, и заказа рекламных предложений. Если вы не нуждаетесь в данных функциях, не добавляйте себе бизнес-привелегии.
+                    </div>
+                    </p>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
     <table class="table table-striped">
         <tbody>
             <tr>
@@ -53,36 +87,18 @@
         </tbody>
     </table>
 
-    <p>
-        <a href="{{ path('cabinet.profile.edit') }}" class="btn btn-success">Edit</a>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
-            Settings
-        </button>
-    </p>
+    <hr>
 
-    <div class="collapse" id="collapseEx">
-        <div class="card card-body">
-            {% if app.user.isAdmin %}
-                <p>
-                <div class="card card-body">
-                    Вы являетесь администратором, и у вас есть все права для работы с сайтом!
+    <h4>Подписчики ({{ app.user.subscribers|length }})</h4>
+
+
+    {% for subscribers_chunk in app.user.subscribers|batch(5) %}
+        <div class="row">
+            {% for subscriber in subscribers_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscriber.id}) }}">{{ subscriber.username }}</a>
                 </div>
-                </p>
-            {% elseif app.user.isBusiness %}
-                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Бизнес-панель</a></p>
-                <form action="{{ path('cabinet.unset-business') }}" method="post">
-                    <button class="btn btn-warning">Отвязать бизнес-привелегии</button>
-                </form>
-            {% else %}
-                <form action="{{ path('cabinet.set-business') }}" method="post">
-                    <button class="btn btn-primary">Добавить бизнес-привелегии</button>
-                    <p>
-                    <div class="card card-body">
-                        Данные привелегии нужны только для работы с компаниями, и заказа рекламных предложений. Если вы не нуждаетесь в данных функциях, не добавляйте себе бизнес-привелегии.
-                    </div>
-                    </p>
-                </form>
-            {% endif %}
+            {% endfor %}
         </div>
-    </div>
+    {% endfor %}
 {% endblock %}

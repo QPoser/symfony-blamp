@@ -36,4 +36,15 @@
 
     <hr>
     <h4>Пользователи</h4>
+
+    {% for subscriptions_chunk in app.user.subscriptions|batch(5) %}
+        <div class="row">
+            {% for subscription in subscriptions_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscription.id}) }}">{{ subscription.username }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
 {% endblock %}
