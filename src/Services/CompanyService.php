@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Review;
 use App\Entity\User;
@@ -102,6 +103,36 @@ class CompanyService
         $this->manager->persist($review);
         $this->manager->flush();
         $company->calcAssessment();
+        $this->manager->flush();
+    }
+
+    // Business
+
+    public function addRequest(BusinessRequest $request, Company $company, User $user)
+    {
+        $request->setCompany($company);
+        $request->setUser($user);
+        $request->setStatus(BusinessRequest::STATUS_WAIT);
+        $this->manager->persist($request);
+        $this->manager->flush();
+
+        $this->attachUser($request);
+    }
+
+    public function attachUser(BusinessRequest $request)
+    {
+        $company = $request->getCompany();
+        $user = $request->getUser();
+        $request->setStatus(BusinessRequest::STATUS_SUCCESS);
+        $company->addBusinessUser($user);
+
+        $this->manager->flush();
+    }
+
+    public function deattachUser(Company $company, User $user)
+    {
+        $company->removeBusinessUser($user);
+
         $this->manager->flush();
     }
 

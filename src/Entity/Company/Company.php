@@ -102,6 +102,16 @@ class Company
      */
     private $usersFavor;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="businessCompanies")
+     */
+    private $businessUsers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="user")
+     */
+    private $businessRequests;
+
 
     public function calcAssessment()
     {
@@ -233,6 +243,8 @@ class Company
     {
         $this->reviews = new ArrayCollection();
         $this->usersFavor = new ArrayCollection();
+        $this->businessUsers = new ArrayCollection();
+        $this->businessRequests = new ArrayCollection();
     }
     public function setNewPhoto(?string $photo): self
     {
@@ -331,6 +343,65 @@ class Company
         if ($this->usersFavor->contains($usersFavor)) {
             $this->usersFavor->removeElement($usersFavor);
             $usersFavor->removeFavoriteCompany($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getBusinessUsers(): Collection
+    {
+        return $this->businessUsers;
+    }
+
+    public function addBusinessUser(User $businessUser): self
+    {
+        if (!$this->businessUsers->contains($businessUser)) {
+            $this->businessUsers[] = $businessUser;
+            $businessUser->addBusinessCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessUser(User $businessUser): self
+    {
+        if ($this->businessUsers->contains($businessUser)) {
+            $this->businessUsers->removeElement($businessUser);
+            $businessUser->removeBusinessCompany($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BusinessRequest[]
+     */
+    public function getBusinessRequests(): Collection
+    {
+        return $this->businessRequests;
+    }
+
+    public function addBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if (!$this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests[] = $businessRequest;
+            $businessRequest->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if ($this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests->removeElement($businessRequest);
+            // set the owning side to null (unless already changed)
+            if ($businessRequest->getUser() === $this) {
+                $businessRequest->setUser(null);
+            }
         }
 
         return $this;

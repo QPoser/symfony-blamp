@@ -65,6 +65,11 @@ class ReviewService
         $user = $this->storage->getToken()->getUser();
 
         $comment->setUser($user);
+
+        if (!$comment->getIsCompany()) {
+            $comment->setIsCompany(false);
+        }
+
         $review->addComment($comment);
 
         $this->manager->persist($comment);

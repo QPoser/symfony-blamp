@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Like;
 use App\Entity\Review\Network;
@@ -115,6 +116,12 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $favoriteCompanies;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Company", inversedBy="businessUsers")
+     * @ORM\JoinTable(name="business_companies")
+     */
+    private $businessCompanies;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="subscribers")
      */
     private $subscriptions;
@@ -128,6 +135,11 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
      */
     private $subscribers;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="user")
+     */
+    private $businessRequests;
+
     public function __construct()
     {
         $this->roles = $this->getRoles();
@@ -140,6 +152,8 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->favoriteCompanies = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->subscribers = new ArrayCollection();
+        $this->businessCompanies = new ArrayCollection();
+        $this->businessRequests = new ArrayCollection();
     }
 
     public function getNewEvents()
@@ -642,6 +656,63 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     {
         if ($this->subscribers->contains($subscriber)) {
             $this->subscribers->removeElement($subscriber);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Company[]
+     */
+    public function getBusinessCompanies(): Collection
+    {
+        return $this->businessCompanies;
+    }
+
+    public function addBusinessCompany(Company $businessCompany): self
+    {
+        if (!$this->businessCompanies->contains($businessCompany)) {
+            $this->businessCompanies[] = $businessCompany;
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessCompany(Company $businessCompany): self
+    {
+        if ($this->businessCompanies->contains($businessCompany)) {
+            $this->businessCompanies->removeElement($businessCompany);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BusinessRequest[]
+     */
+    public function getBusinessRequests(): Collection
+    {
+        return $this->businessRequests;
+    }
+
+    public function addBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if (!$this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests[] = $businessRequest;
+            $businessRequest->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if ($this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests->removeElement($businessRequest);
+            // set the owning side to null (unless already changed)
+            if ($businessRequest->getUser() === $this) {
+                $businessRequest->setUser(null);
+            }
         }
 
         return $this;

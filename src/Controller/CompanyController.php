@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Review;
+use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewAddCommentForm;
@@ -229,5 +231,36 @@ class CompanyController extends Controller
         $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно удалена из избранных.');
 
         return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
+    }
+
+
+    /**
+     * @Route("/business/attach/{id}", name="company.business.attach")
+     * @param Request $request
+     * @param Company $company
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function requestBusiness(Request $request, Company $company)
+    {
+        $businessRequest = new BusinessRequest();
+
+        $form = $this->createForm(BusinessRequestForm::class, $businessRequest);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->service->addRequest($businessRequest, $company, $this->getUser());
+
+            $this->addFlash('notice', 'Компания ' . $company->getName() . ' теперь является вашей компанией.');
+
+            return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
+        }
+
+        return $this->render('company/business/request.html.twig', [
+            'form' => $form->createView(),
+            'company' => $company,
+        ]);
+
+
     }
 }

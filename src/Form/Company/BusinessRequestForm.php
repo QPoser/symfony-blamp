@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Form\Review;
+namespace App\Form\Company;
 
-use App\Entity\Review\Review;
-use App\Entity\Review\ReviewComment;
+use App\Entity\Company\BusinessRequest;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ReviewAddCommentForm extends AbstractType
+class BusinessRequestForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('text');
+            ->add('phone')
+            ->add('note')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ReviewComment::class,
+            'data_class' => BusinessRequest::class,
         ]);
     }
 }

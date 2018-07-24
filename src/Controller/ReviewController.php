@@ -39,6 +39,10 @@ class ReviewController extends Controller
 
         $form = $this->createForm(ReviewAddCommentForm::class, $comment);
 
+        if ($review->getCompany()->getBusinessUsers()->contains($this->getUser())) {
+            $form->add('isCompany');
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

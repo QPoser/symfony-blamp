@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Привязать компанию{% endblock %}
+
+{% block body %}
+    <h2>Привязать компанию</h2>
+    <a href="{{ path('company.show', {'id' : company.id}) }}" class="btn btn-primary">< {{ company.name }}</a>
+    <hr>
+    <div class="card card-body">
+        Оставьте ваш номер телефона, и после этого с вами свяжется нам менеджер, и одобрит вашу заявку.
+    </div>
+    <hr>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" class="btn btn-primary">
+    {{ form_end(form) }}
+{% endblock %}

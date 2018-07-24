@@ -16,4 +16,14 @@
     </ul>
     <hr>
     <h2>Бизнес-панель</h2>
+
+    <table class="table table-striped">
+        <tbody>
+            {% for company in app.user.businessCompanies %}
+                <tr>
+                    <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
