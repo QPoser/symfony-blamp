@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
+use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,14 +20,16 @@ class ReviewPhoto
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
+     * @Assert\Image(
+     *     minWidth = 200,
+     *     maxWidth = 400,
+     *     minHeight = 200,
+     *     maxHeight = 400,
+     *
+     * )
      */
-    private $path;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    private $photo;
 
     /**
      * @ORM\Column(name="uploaded_on", type="datetime")
@@ -34,12 +37,10 @@ class ReviewPhoto
     private $uploadedOn;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="photos", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\Review", inversedBy="photos")
      * @ORM\JoinColumn(name="photo_review_id", referencedColumnName="id")
      */
     private $review;
-
-
 
     public function __construct()
     {
@@ -80,33 +81,13 @@ class ReviewPhoto
         return $this->uploadedOn;
     }
 
-    public function getPath(): ?string
+    /**
+     * @ORM\PrePersist()
+     * @return ReviewPhoto
+     */
+    public function setUploadedOn(): self
     {
-        return $this->path;
-    }
-
-    public function setPath(string $path): self
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function setUploadedOn(\DateTimeInterface $uploadedOn): self
-    {
-        $this->uploadedOn = $uploadedOn;
+        $this->uploadedOn = new \DateTime();
 
         return $this;
     }

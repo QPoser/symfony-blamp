@@ -8,13 +8,17 @@
 
 namespace App\Services;
 
+
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use App\Entity\Like;
-use App\Entity\Review;
-use App\Entity\ReviewComment;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class ReviewService
 {
@@ -26,22 +30,69 @@ class ReviewService
      * @var Container
      */
     private $container;
+    /**
+     * @var TokenStorage
+     */
+    private $storage;
+    /**
+     * @var EventService
+     */
+    private $eventService;
 
-    public function __construct(EntityManager $manager, Container $container)
+    /**
+     * ReviewService constructor.
+     * @param EntityManager $manager
+     * @param Container $container
+     * @param TokenStorage $storage
+     * @param EventService $eventService
+     */
+    public function __construct(EntityManager $manager, Container $container, TokenStorage $storage, EventService $eventService)
     {
         $TEM = new TreeEntityManager();
         $this->manager = $TEM->getTEM($manager);
         $this->container = $container;
+        $this->storage = $storage;
+        $this->eventService = $eventService;
     }
 
 
+    /**
+     * @param Review $review
+     * @param ReviewComment $comment
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function addComment(Review $review, ReviewComment $comment)
     {
         $comment->setStatus(Review::STATUS_WAIT);
+
+        $user = $this->storage->getToken()->getUser();
+
+        $comment->setUser($user);
         $review->addComment($comment);
 
         $this->manager->merge($comment);
         $this->manager->flush();
+
+        if ($comment->getIsCompany()) {
+            $return = $this->eventService->addEventByCompany(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $review->getCompany()
+            );
+        } else {
+            $return = $this->eventService->addEventByUser(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $comment->getUser()
+            );
+        }
+
+
         $this->manager->clear();
     }
 

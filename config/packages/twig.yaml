@@ -1,4 +1,8 @@
 twig:
+    globals:
+        vk_client: '%env(VK_CLIENT_ID)%'
+        vk_secret: '%env(VK_SECRET_KEY)%'
     paths: ['%kernel.project_dir%/templates']
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes: ['bootstrap_4_layout.html.twig']

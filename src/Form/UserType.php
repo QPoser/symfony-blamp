@@ -1,22 +1,27 @@
 <?php
 
-namespace App\Form\Auth;
+namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegisterFormType extends AbstractType
+class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('username')
-            ->add('plainPassword', PasswordType::class)
-            ->add('email', EmailType::class, ['required' => true]);
+            ->add('password')
+            ->add('email')
+            ->add('emailToken')
+            ->add('passwordResetToken')
+            ->add('roles')
+            ->add('favoriteCompanies')
+            ->add('subscriptions')
+            ->add('subscribers')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

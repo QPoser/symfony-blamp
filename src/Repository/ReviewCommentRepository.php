@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\ReviewComment;
-
+use App\Entity\Review\ReviewComment;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Services\TreeEntityManager;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;

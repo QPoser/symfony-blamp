@@ -20,6 +20,11 @@
                     {% if currentPath == path('company') %}active{% endif %}
                     ">Companies</a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ path('user.index') }}" class="nav-link
+                    {% if currentPath == path('user.index') %}active{% endif %}
+                    ">Users</a>
+                </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 {% if app.user %}

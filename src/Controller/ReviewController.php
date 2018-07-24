@@ -3,11 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Like;
-use App\Entity\Review;
-use App\Entity\ReviewComment;
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Form\Review\ReviewAddCommentForm;
-use App\Services\AuthService;
 use App\Services\ReviewService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +31,8 @@ class ReviewController extends Controller
      * @param Request $request
      * @param Review $review
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function addComment(Request $request, Review $review): Response
     {
@@ -116,7 +117,7 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/reviews/remove/{id}", name="review.delete", methods="DELETE")
+     * @Route("/reviews/remove/{id}", name="review.delete", methods={"DELETE"})
      * @param Request $request
      * @param Review $review
      * @return Response

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ path('cabinet.favorites') }}">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
+    </ul>
+    <hr>
+    <h4>Компании</h4>
+    {% for favoriteChunk in app.user.favoriteCompanies|batch(3) %}
+        <div class="row mb-3">
+        {% for favoriteCompany in favoriteChunk %}
+                <div class="card col-sm-3 mr-auto ml-auto" style="width: 18rem; padding: 10px;">
+                    {% if favoriteCompany.photo %}
+                    <img class="card-img-top" src="{{ absolute_url(asset(favoriteCompany.photo)) }}" alt="Нет изображения"
+                         style="height: 160px; width: 100%; border-radius: 1.5em;">
+                    {% else %}
+                        <img class="card-img-top" src="{{ absolute_url(asset('uploads/img/noimg.png')) }}" alt="Нет изображения"
+                             style="height: 160px; width: 100%; border-radius: 1.5em;">
+                    {% endif %}
+                    <div class="card-body" style="text-align: center;">
+                        <h5 class="card-title">{{ favoriteCompany.name }}</h5>
+                        <a href="{{ path('company.show', {'id' : favoriteCompany.id}) }}" class="btn btn-primary">Перейти</a>
+                    </div>
+                </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+
+    <hr>
+    <h4>Пользователи</h4>
+
+    {% for subscriptions_chunk in app.user.subscriptions|batch(5) %}
+        <div class="row">
+            {% for subscription in subscriptions_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscription.id}) }}">{{ subscription.username }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+{% endblock %}

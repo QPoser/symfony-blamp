@@ -5,6 +5,12 @@
 {% block body %}
     <h2>{{ company.name }} {% if company.assessment %}<i class="fa fa-star"></i> {{ company.assessment }}{% endif %}</h2>
     <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
+    {% if app.user and app.user.favoriteCompanies.contains(company) %}
+        <a href="{{ path('company.remove.favorites', {'id' : company.id}) }}" class="btn btn-warning">Убрать из избранного</a>
+    {% else %}
+        <a href="{{ path('company.add.favorites', {'id' : company.id}) }}" class="btn btn-success">Добавить в избранное</a>
+    {% endif %}
+
     <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Edit company</a>
     <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Remove company</a>
     <hr>

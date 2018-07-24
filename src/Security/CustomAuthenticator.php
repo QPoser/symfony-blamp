@@ -2,10 +2,11 @@
 
 namespace App\Security;
 
-use App\Entity\Network;
+use App\Entity\Review\Network;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\AuthService;
+use App\Services\NetworkService;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,19 +42,24 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
      * @var AuthService
      */
     private $authService;
+    /**
+     * @var NetworkService
+     */
+    private $networkService;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, UserRepository $users, RouterInterface $router, AuthService $authService)
+    public function __construct(UserPasswordEncoderInterface $encoder, UserRepository $users, RouterInterface $router, AuthService $authService, NetworkService $networkService)
     {
         $this->encoder = $encoder;
         $this->users = $users;
         $this->router = $router;
         $this->authService = $authService;
+        $this->networkService = $networkService;
     }
 
     public function supports(Request $request)
     {
         return ( $request->getPathInfo() == '/login' && $request->isMethod('POST') )
-            || ( $request->isMethod('GET') && $request->query->has('code') );
+            || ( $request->getPathInfo() == '/login/check-vkontakte' && $request->query->has('code') );
     }
 
     public function getCredentials(Request $request)
@@ -80,14 +86,9 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
             if (!empty($credentials['code'])) {
-                $client = new Client();
-                $res = $client->request('GET', 'https://oauth.vk.com/access_token?client_id=' . getenv('VK_CLIENT_ID') . '&client_secret=' . getenv('VK_SECRET_KEY') .'&redirect_uri=https://localhost:8080/login/check-vkontakte&code=' . $credentials['code']);
-                $response = json_decode($res->getBody());
-                $user = $this->users->findUserByNetworkIdentity($response->user_id);
+                $network = $this->networkService->getNetworkVkByCode($credentials['code']);
+                $user = $this->users->findUserByNetworkIdentity($network->getIdentity());
                 if (!$user) {
-                    $network = new Network();
-                    $network->setIdentity($response->user_id);
-                    $network->setNetwork('vk');
                     $user = $this->authService->registerByNetwork($network);
                 }
                 return $user;

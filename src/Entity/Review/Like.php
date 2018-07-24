@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
+use App\Entity\Review\Review;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,7 +34,7 @@ class Like
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Review", inversedBy="likes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\Review", inversedBy="likes")
      * @ORM\JoinColumn(name="review_id", referencedColumnName="id")
      */
     private $review;

@@ -3,8 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Company\Company;
-use App\Entity\Like;
-use App\Entity\Review;
+use App\Entity\Review\Like;
+use App\Entity\Review\Review;
 use App\Entity\User;
 use App\Services\ReviewService;
 use Doctrine\Bundle\FixturesBundle\Fixture;

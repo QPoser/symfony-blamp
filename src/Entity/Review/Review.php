@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
 use App\Entity\Company\Company;
+use App\Entity\Review\Like;
+use App\Entity\Review\ReviewComment;
+use App\Entity\Review\ReviewPhoto;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

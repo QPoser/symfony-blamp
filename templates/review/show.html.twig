@@ -57,7 +57,7 @@
                 <table class="table table-striped">
                     <tbody>
                         <tr>
-                            <td>{{ comment.getUser.getUsername }}</td>
+                            <td><i class="fa fa-user"></i>{{ comment.getUser.getUsername }}</td>
                             <td>{{ comment.text }}</td>
                             <td><a href="{{ path('review.comment.add', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Answer</a></td>
                         </tr>

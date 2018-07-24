@@ -2,9 +2,10 @@
 
 namespace App\Entity\Company;
 
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -64,11 +65,11 @@ class Company
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Assert\Image(
+     * )
      *     minWidth= 200,
-     *     maxWidth= 400,
+     *     maxWidth= 200,
      *     minHeight= 200,
      *     maxHeight= 400
-     * )
      */
     private $photo;
 
@@ -87,7 +88,7 @@ class Company
     private $reject_reason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="company")
      */
     private $reviews;
 
@@ -95,6 +96,12 @@ class Company
      * @ORM\Column(type="decimal", scale=2, nullable=true)
      */
     private $assessment;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="favoriteCompanies")
+     */
+    private $usersFavor;
+
 
     public function calcAssessment()
     {
@@ -220,6 +227,7 @@ class Company
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->usersFavor = new ArrayCollection();
     }
     public function setNewPhoto(?string $photo): self
     {
@@ -291,6 +299,34 @@ class Company
     public function setAssessment(float $assessment): self
     {
         $this->assessment = $assessment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersFavor(): Collection
+    {
+        return $this->usersFavor;
+    }
+
+    public function addUsersFavor(User $usersFavor): self
+    {
+        if (!$this->usersFavor->contains($usersFavor)) {
+            $this->usersFavor[] = $usersFavor;
+            $usersFavor->addFavoriteCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFavor(User $usersFavor): self
+    {
+        if ($this->usersFavor->contains($usersFavor)) {
+            $this->usersFavor->removeElement($usersFavor);
+            $usersFavor->removeFavoriteCompany($this);
+        }
 
         return $this;
     }

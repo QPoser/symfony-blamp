@@ -6,8 +6,9 @@
  * Time: 21:20
  */
 
-namespace App\Entity;
+namespace App\Entity\Review;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,6 +21,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class Network
 {
+
+    public const NETWORK_VK = 'vk';
+    public const NETWORK_FACEBOOK = 'facebook';
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="networks")

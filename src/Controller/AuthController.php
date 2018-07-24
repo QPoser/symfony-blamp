@@ -90,6 +90,8 @@ class AuthController extends Controller
             $this->service->register($user);
 
             $this->addFlash('notice', 'Вы успешно зарегистрировались, проверьте ваш email!');
+
+            return $this->redirectToRoute('login');
         }
 
         return $this->render('auth/register.html.twig', [

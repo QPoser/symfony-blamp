@@ -2,8 +2,8 @@
 
 namespace App\Form\Review;
 
-use App\Entity\Review;
-use App\Entity\ReviewComment;
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet Reviews!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.favorites') }}">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
+    </ul>
+    <hr>
+    <h4>Профиль</h4>
+    <p>
+        <a href="{{ path('cabinet.profile.edit') }}" class="btn btn-success">Edit</a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
+            Settings
+        </button>
+    </p>
+
+    <div class="collapse" id="collapseEx">
+        <div class="card card-body">
+            {% if app.user.isAdmin %}
+                <p>
+                <div class="card card-body">
+                    Вы являетесь администратором, и у вас есть все права для работы с сайтом!
+                </div>
+                </p>
+            {% elseif app.user.isBusiness %}
+                <p><a href="{{ path('cabinet.business.profile') }}" class="btn btn-primary">Бизнес-панель</a></p>
+                <form action="{{ path('cabinet.unset-business') }}" method="post">
+                    <button class="btn btn-warning">Отвязать бизнес-привелегии</button>
+                </form>
+            {% else %}
+                <form action="{{ path('cabinet.set-business') }}" method="post">
+                    <button class="btn btn-primary">Добавить бизнес-привелегии</button>
+                    <p>
+                    <div class="card card-body">
+                        Данные привелегии нужны только для работы с компаниями, и заказа рекламных предложений. Если вы не нуждаетесь в данных функциях, не добавляйте себе бизнес-привелегии.
+                    </div>
+                    </p>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">Имя</th>
+                <td>{{ app.user.username }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Email</th>
+                <td>{{ app.user.email ?: 'Не задан' }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Роль</th>
+                <td><span class="badge badge-primary">{{ app.user.getNormalRoleName }}</span></td>
+            </tr>
+            <tr>
+                <th scope="row">Отзывы</th>
+                <td>{{ app.user.reviews|length }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Комментарии</th>
+                <td>{{ app.user.comments|length }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+    <h4>Социальные сети</h4>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th scope="row">VK</th>
+                {% if (app.user.getNetworkVk) %}
+                    <td>{{ app.user.getNetworkVk.identity }}</td>
+                {% else %}
+                    <td><a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/network/add/vk&v=5.80" class="btn btn-primary" style="color: white;">Подключить</a></td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h4>Подписчики ({{ app.user.subscribers|length }})</h4>
+
+
+    {% for subscribers_chunk in app.user.subscribers|batch(5) %}
+        <div class="row">
+            {% for subscriber in subscribers_chunk %}
+                <div class="col-sm-2 ml-auto mr-auto card" style="text-align: center;">
+                    <a href="{{ path('user.show', {'id' : subscriber.id}) }}">{{ subscriber.username }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -8,7 +8,11 @@
 
 namespace App\Entity;
 
-use App\Entity\Review;
+use App\Entity\Company\Company;
+use App\Entity\Review\Like;
+use App\Entity\Review\Network;
+use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +58,6 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     /**
      * @ORM\Column(type="string", length=255, unique=true, nullable=true)
-     * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
@@ -75,25 +78,55 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Network", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Network", mappedBy="user")
      */
     private $networks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="user")
      */
     private $reviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="user")
      */
     private $likes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="user")
      */
     private $comments;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="user")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $events;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="senderUser")
+     */
+    private $sendEvent;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Company", inversedBy="usersFavor")
+     * @ORM\JoinTable(name="favorite_companies")
+     */
+    private $favoriteCompanies;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="subscribers")
+     */
+    private $subscriptions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="friendsWithMe")
+     * @ORM\JoinTable(name="subscribers",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="subscriber_user_id", referencedColumnName="id")}
+     * )
+     */
+    private $subscribers;
 
     public function __construct()
     {
@@ -102,6 +135,23 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->networks = new ArrayCollection();
+        $this->events = new ArrayCollection();
+        $this->sendEvent = new ArrayCollection();
+        $this->favoriteCompanies = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->subscribers = new ArrayCollection();
+    }
+
+    public function getNewEvents()
+    {
+        $newEvents = [];
+        /** @var Event $event */
+        foreach ($this->events as $event) {
+            if (!$event->getIsSeen()) {
+                $newEvents[] = $event;
+            }
+        }
+        return $newEvents;
     }
 
     // Password Reset
@@ -129,13 +179,57 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         return $this->emailToken == null;
     }
 
+    // Roles
+
+    public function getNormalRoleName()
+    {
+        if ($this->isAdmin()) {
+            return 'Администратор';
+        }
+
+        if ($this->isBusiness()) {
+            return 'Бизнес-пользователь';
+        }
+
+        return 'Пользователь сайта';
+    }
+
     public function getRoles()
     {
-        return [
-            self::ROLE_USER,
-            self::ROLE_BUSINESS,
-            self::ROLE_ADMIN,
-        ];
+        return $this->roles;
+    }
+
+    public function becomeUser()
+    {
+        $this->roles = [self::ROLE_USER];
+    }
+
+    public function becomeBusiness()
+    {
+        $this->roles = [self::ROLE_BUSINESS];
+    }
+
+    public function becomeAdmin()
+    {
+        $this->roles = [self::ROLE_ADMIN];
+    }
+
+    public function isUser()
+    {
+        return in_array(self::ROLE_USER, $this->roles) ||
+            in_array(self::ROLE_BUSINESS, $this->roles) ||
+            in_array(self::ROLE_ADMIN, $this->roles);
+    }
+
+    public function isBusiness()
+    {
+        return in_array(self::ROLE_BUSINESS, $this->roles) ||
+            in_array(self::ROLE_ADMIN, $this->roles);
+    }
+
+    public function isAdmin()
+    {
+        return in_array(self::ROLE_ADMIN, $this->roles);
     }
 
     public function getPassword()
@@ -174,7 +268,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     public function setUsername(string $username): self
     {
-        $this->username = $username;
+        $this->username = str_replace(' ', '', $username);
 
         return $this;
     }
@@ -331,7 +425,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     }
 
     /**
-     * @return Collection|\App\Entity\Review[]
+     * @return Collection|\App\Entity\Review\Review[]
      */
     public function getReviews(): Collection
     {
@@ -356,6 +450,16 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     public function getNetworks(): Collection
     {
         return $this->networks;
+    }
+
+    public function getNetworkVk()
+    {
+        /** @var Network $network */
+        foreach ($this->networks as $network) {
+            if ($network->getNetwork() == Network::NETWORK_VK) { return $network; }
+        }
+
+        return false;
     }
 
     public function addNetwork(Network $network): self
@@ -393,5 +497,153 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         // TODO: Implement loadUserByOAuthUserResponse() method.
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->contains($event)) {
+            $this->events->removeElement($event);
+            // set the owning side to null (unless already changed)
+            if ($event->getUser() === $this) {
+                $event->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getSendEvent(): Collection
+    {
+        return $this->sendEvent;
+    }
+
+    public function addSendEvent(Event $sendEvent): self
+    {
+        if (!$this->sendEvent->contains($sendEvent)) {
+            $this->sendEvent[] = $sendEvent;
+            $sendEvent->setSenderUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSendEvent(Event $sendEvent): self
+    {
+        if ($this->sendEvent->contains($sendEvent)) {
+            $this->sendEvent->removeElement($sendEvent);
+            // set the owning side to null (unless already changed)
+            if ($sendEvent->getSenderUser() === $this) {
+                $sendEvent->setSenderUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    public function hasInFavoriteCompanies(Company $company)
+    {
+        return $this->favoriteCompanies->contains($company);
+    }
+
+    /**
+     * @return Collection|Company[]
+     */
+    public function getFavoriteCompanies(): Collection
+    {
+        return $this->favoriteCompanies;
+    }
+
+    public function addFavoriteCompany(Company $favoriteCompany): self
+    {
+        if (!$this->favoriteCompanies->contains($favoriteCompany)) {
+            $this->favoriteCompanies[] = $favoriteCompany;
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteCompany(Company $favoriteCompany): self
+    {
+        if ($this->favoriteCompanies->contains($favoriteCompany)) {
+            $this->favoriteCompanies->removeElement($favoriteCompany);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(User $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(User $subscription): self
+    {
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
+            $subscription->removeSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscribers(): Collection
+    {
+        return $this->subscribers;
+    }
+
+    public function addSubscriber(User $subscriber): self
+    {
+        if (!$this->subscribers->contains($subscriber)) {
+            $this->subscribers[] = $subscriber;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriber(User $subscriber): self
+    {
+        if ($this->subscribers->contains($subscriber)) {
+            $this->subscribers->removeElement($subscriber);
+        }
+
+        return $this;
     }
 }
