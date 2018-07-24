@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Like;
+use App\Entity\Review\Like;
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
@@ -64,6 +64,8 @@ class ReviewController extends Controller
      * @param Request $request
      * @param Review $review
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function show(Request $request, Review $review): Response
     {

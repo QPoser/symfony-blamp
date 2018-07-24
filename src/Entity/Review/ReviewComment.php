@@ -32,7 +32,7 @@ class ReviewComment
     private $text;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\Review", inversedBy="comments", cascade={"persist"})
      * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
      */
     private $review;
@@ -80,13 +80,13 @@ class ReviewComment
 
     /**
      * @Gedmo\TreeParent()
-     * @ORM\ManyToOne(targetEntity="App\Entity\ReviewComment", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\ReviewComment", inversedBy="children", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private $children;

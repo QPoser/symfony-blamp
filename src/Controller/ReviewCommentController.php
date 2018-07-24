@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\ReviewComment;
+use App\Entity\Review\ReviewComment;
 use App\Form\ReviewCommentType;
 use App\Repository\ReviewCommentRepository;
 use App\Services\CommentService;

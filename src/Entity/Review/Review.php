@@ -35,12 +35,12 @@ class Review
     private $text;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewPhoto", mappedBy="review", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewPhoto", mappedBy="review", orphanRemoval=true)
      */
     private $photos;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reviews")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reviews", cascade={"persist"})
      */
     private $user;
 
@@ -66,12 +66,12 @@ class Review
     private $rejectReason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReviewComment", mappedBy="review", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="review", orphanRemoval=true)
      */
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="review", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review", orphanRemoval=true)
      */
     private $likes;
 

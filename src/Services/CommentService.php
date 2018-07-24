@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Entity\ReviewComment;
+use App\Entity\Review\ReviewComment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
 

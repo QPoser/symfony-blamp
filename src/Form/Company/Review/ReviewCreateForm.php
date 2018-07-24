@@ -26,7 +26,7 @@ class ReviewCreateForm extends AbstractType
                     3 => 3,
                     4 => 4,
                     5 => 5,
-                ]
+                ]])
             ->add('photos', FileType::class, array(
         'multiple' => true,
         'required' => false,

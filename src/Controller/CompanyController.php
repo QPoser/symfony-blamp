@@ -6,7 +6,7 @@ use App\Entity\Company\Company;
 use App\Entity\Review\Review;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
-use App\Form\Company\Review\ReviewAddCommentForm;
+use App\Form\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\CompanyRepository;
 use App\Services\CompanyService;

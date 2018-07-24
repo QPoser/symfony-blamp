@@ -11,7 +11,7 @@ namespace App\Services;
 
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
-use App\Entity\Like;
+use App\Entity\Review\Like;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -73,6 +73,7 @@ class ReviewService
 
         $this->manager->merge($comment);
         $this->manager->flush();
+        $this->manager->clear();
 
         if ($comment->getIsCompany()) {
             $return = $this->eventService->addEventByCompany(
