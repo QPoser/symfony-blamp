@@ -18,10 +18,33 @@
     <h2>Бизнес-панель</h2>
 
     <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Редактировать</th>
+            </tr>
+        </thead>
         <tbody>
             {% for company in app.user.businessCompanies %}
                 <tr>
                     <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                    <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Рейтинг : <i class="fa fa-star"></i> {{ company.assessment }}</p>
+                    </td>
+                    <td>
+                        <p>Динамика <i class="fa fa-line-chart"></i> :
+                            {% if company.fixedAssessment < company.assessment %}
+                                <i class="fa fa-rocket"></i> Компания становится лучше!
+                            {% elseif company.fixedAssessment == company.assessment %}
+                                <i class="fa fa-ship"></i> Компания не изменилась в рейтинге
+                            {% else %}
+                                <i class="fa fa-arrow-down"></i> Компания теряет рейтинги!
+                            {% endif %}
+                        </p>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

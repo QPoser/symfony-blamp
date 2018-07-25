@@ -11,9 +11,13 @@
         <a href="{{ path('company.add.favorites', {'id' : company.id}) }}" class="btn btn-success">Добавить в избранное</a>
     {% endif %}
 
-    <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Edit company</a>
-    <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Remove company</a>
-    <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
+    {% if app.user and (app.user.isAdmin or company.businessUsers.contains(app.user)) %}
+        <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Edit company</a>
+        <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Remove company</a>
+    {% endif %}
+    {% if app.user and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
+        <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
+    {% endif %}
     <hr>
     <table class="table table-striped">
         <thead>
@@ -80,7 +84,7 @@
                 <tbody>
                     {% for review in company.reviews %}
                         <tr>
-                            <td><i class="fa fa-user"></i> {{ review.user.username }}</td>
+                            <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
                             <td>{{ review.text }}</td>
                             <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
                             <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>

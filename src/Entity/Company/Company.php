@@ -98,6 +98,11 @@ class Company
     private $assessment;
 
     /**
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
+     */
+    private $fixedAssessment;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="favoriteCompanies")
      */
     private $usersFavor;
@@ -403,6 +408,18 @@ class Company
                 $businessRequest->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFixedAssessment()
+    {
+        return $this->fixedAssessment;
+    }
+
+    public function setFixedAssessment($fixedAssessment): self
+    {
+        $this->fixedAssessment = $fixedAssessment;
 
         return $this;
     }

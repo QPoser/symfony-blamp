@@ -95,7 +95,10 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
             }
             $username = $credentials['username'];
 
-            return $this->users->findUserByUsername($username);
+            if (!$user = $this->users->findUserByUsername($username)) {
+                throw new AuthenticationException('Пользователь не найден.');
+            }
+            return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)

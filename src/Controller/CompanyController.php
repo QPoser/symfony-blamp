@@ -98,6 +98,8 @@ class CompanyController extends Controller
      */
     public function edit(Request $request, Company $company)
     {
+        $this->denyAccessUnlessGranted('EDIT', $company);
+
         $form = $this->createForm(CompanyEditForm::class, $company);
 
         $form->handleRequest($request);
@@ -123,6 +125,8 @@ class CompanyController extends Controller
      */
     public function remove(Company $company)
     {
+        $this->denyAccessUnlessGranted('DELETE', $company);
+
         $this->service->remove($company);
 
         $this->addFlash('warning', 'Company ' . $company->getName() . ' successfully deleted.');
@@ -138,6 +142,8 @@ class CompanyController extends Controller
      */
     public function verify(Company $company)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $company);
+
         $this->service->verify($company);
 
         $this->addFlash('notice', 'Company ' . $company->getName() . ' successfully verified.');
@@ -153,6 +159,8 @@ class CompanyController extends Controller
      */
     public function reject(Request $request, Company $company)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $company);
+
         $form = $this->createFormBuilder($company)
             ->add('rejectReason', TextType::class)->getForm();
 

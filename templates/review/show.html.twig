@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <td><i class="fa fa-user"></i> User</td>
-                <td>{{ review.user.username }}</td>
+                <td><a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
             </tr>
             <tr>
                 <td><i class="fa fa-star"></i> Assessment</td>
@@ -47,7 +47,7 @@
         <tbody>
         {% for comment in review.comments %}
         <tr>
-            <td><i class="fa fa-user"></i> {{ comment.user.username }}</td>
+            <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a></td>
             <td>{{ comment.text }}</td>
         </tr>
         {% endfor %}
