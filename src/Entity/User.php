@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Advert\Banner;
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Like;
@@ -136,6 +137,11 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $subscribers;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert\Banner", mappedBy="user")
+     */
+    private $banners;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="user")
      */
     private $businessRequests;
@@ -154,6 +160,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->subscribers = new ArrayCollection();
         $this->businessCompanies = new ArrayCollection();
         $this->businessRequests = new ArrayCollection();
+        $this->banners = new ArrayCollection();
     }
 
     public function getNewEvents()
@@ -712,6 +719,37 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
             // set the owning side to null (unless already changed)
             if ($businessRequest->getUser() === $this) {
                 $businessRequest->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Banner[]
+     */
+    public function getBanners(): Collection
+    {
+        return $this->banners;
+    }
+
+    public function addBanner(Banner $banner): self
+    {
+        if (!$this->banners->contains($banner)) {
+            $this->banners[] = $banner;
+            $banner->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBanner(Banner $banner): self
+    {
+        if ($this->banners->contains($banner)) {
+            $this->banners->removeElement($banner);
+            // set the owning side to null (unless already changed)
+            if ($banner->getUser() === $this) {
+                $banner->setUser(null);
             }
         }
 
