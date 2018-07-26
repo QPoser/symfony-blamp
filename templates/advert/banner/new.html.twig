@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Новый баннер{% endblock %}
+
+{% block body %}
+    <h1>Создать баннер</h1>
+
+    <a class="btn btn-primary" href="{{ path('cabinet.business.adverts') }}">< Реклама</a>
+    <hr>
+    <div class="card card-body">
+        Вы можете загрузить изображение только с разрешением до 240x400, для бокового баннера сайта. Но разрешение 240х400 является оптимальным.
+    </div>
+    <hr>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Сохранить</button>
+    {{ form_end(form) }}
+{% endblock %}

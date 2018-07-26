@@ -18,12 +18,12 @@
                 <li class="nav-item">
                     <a href="{{ path('company') }}" class="nav-link
                     {% if currentPath == path('company') %}active{% endif %}
-                    ">Companies</a>
+                    ">Компании</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ path('user.index') }}" class="nav-link
                     {% if currentPath == path('user.index') %}active{% endif %}
-                    ">Users</a>
+                    ">Пользователи</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -34,17 +34,23 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a href="{{ path('cabinet') }}" class="dropdown-item">Cabinet</a>
-                            <a href="{{ path('company') }}" class="dropdown-item">Companies</a>
-                            <a href="{{ path('logout') }}" class="dropdown-item">Logout</a>
+                            {% if app.user.isAdmin %}
+                                <a href="{{ path('admin') }}" class="dropdown-item">Админ-панель</a>
+                            {% endif %}
+                            {% if app.user.isBusiness %}
+                                <a href="{{ path('cabinet.business.profile') }}" class="dropdown-item">Бизнес-панель</a>
+                            {% endif %}
+                            <a href="{{ path('cabinet') }}" class="dropdown-item">Кабинет</a>
+                            <a href="{{ path('company') }}" class="dropdown-item">Компании</a>
+                            <a href="{{ path('logout') }}" class="dropdown-item">Выйти</a>
                         </div>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a href="{{ path('login') }}" class="nav-link">Login</a>
+                        <a href="{{ path('login') }}" class="nav-link">Войти</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('register') }}" class="nav-link">Register</a>
+                        <a href="{{ path('register') }}" class="nav-link">Регистрация</a>
                     </li>
                 {% endif %}
             </ul>

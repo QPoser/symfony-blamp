@@ -6,6 +6,7 @@
 parameters:
     locale: 'en'
     img_dir: '%kernel.project_dir%/public/uploads/img'
+    img_banner_dir: '%kernel.project_dir%/public/uploads/img/banners'
 
 services:
     # default configuration for services in *this* file
@@ -48,6 +49,9 @@ services:
 
     App\Services\EventService:
         arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\AdvertService:
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     App\Services\CommentService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
