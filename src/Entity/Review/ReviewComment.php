@@ -4,6 +4,8 @@ namespace App\Entity\Review;
 
 use App\Entity\Review\Review;
 use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,7 +30,7 @@ class ReviewComment
     private $text;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Review", inversedBy="review_comment")
+     * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments")
      * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
      */
     private $review;
@@ -48,6 +50,38 @@ class ReviewComment
      * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", nullable=false)
      */
     private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parentComment")
+     */
+    private $childrenComments;
+
+    /**
+     * Many Categories have One Category.
+     * @ORM\ManyToOne(targetEntity="App\Entity\Review\ReviewComment", inversedBy="childrenComments")
+     * @ORM\JoinColumn(name="parent_comment_id", referencedColumnName="id")
+     */
+    private $parentComment;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $root;
+
+    public function __construct()
+    {
+        $this->childrenComments = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -110,6 +144,93 @@ class ReviewComment
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReviewComment[]
+     */
+    public function getChildrenComments(): Collection
+    {
+        return $this->childrenComments;
+    }
+
+    public function addChildrenComment(ReviewComment $childrenComment): self
+    {
+        if (!$this->childrenComments->contains($childrenComment)) {
+            $this->childrenComments[] = $childrenComment;
+            $childrenComment->setParentComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChildrenComment(ReviewComment $childrenComment): self
+    {
+        if ($this->childrenComments->contains($childrenComment)) {
+            $this->childrenComments->removeElement($childrenComment);
+            // set the owning side to null (unless already changed)
+            if ($childrenComment->getParentComment() === $this) {
+                $childrenComment->setParentComment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getParentComment(): ?self
+    {
+        return $this->parentComment;
+    }
+
+    public function setParentComment(?self $parentComment): self
+    {
+        $this->parentComment = $parentComment;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @return ReviewComment
+     */
+    public function setCreatedAt(): self
+    {
+        $this->createdAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     * @return ReviewComment
+     */
+    public function setUpdatedAt(): self
+    {
+        $this->updatedAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function getRoot(): ?bool
+    {
+        return $this->root;
+    }
+
+    public function setRoot(bool $root): self
+    {
+        $this->root = $root;
 
         return $this;
     }

@@ -35,6 +35,11 @@ class Like
      */
     private $review;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
 
 
     public function getId()
@@ -74,6 +79,22 @@ class Like
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @return Like
+     */
+    public function setCreatedAt(): self
+    {
+        $this->createdAt = new \DateTime();
 
         return $this;
     }

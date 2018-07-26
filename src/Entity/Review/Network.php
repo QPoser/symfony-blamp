@@ -26,7 +26,7 @@ class Network
     public const NETWORK_FACEBOOK = 'facebook';
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="user_network")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="networks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;

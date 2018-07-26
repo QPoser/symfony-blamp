@@ -18,7 +18,7 @@ class Event
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="event")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="events")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -29,7 +29,7 @@ class Event
     private $eventMessage;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="sendEvents")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="sendEvent")
      * @ORM\JoinColumn(name="sender_id", referencedColumnName="id", nullable=true)
      */
     private $senderUser;

@@ -113,7 +113,7 @@ class Company
     private $businessUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company")
      */
     private $businessRequests;
 
@@ -121,15 +121,10 @@ class Company
     public function calcAssessment()
     {
         $assessment = null;
-        if (count($this->reviews) > 0) {
-            /** @var Review $review */
-            foreach ($this->reviews as $review) {
-                $assessment += $review->getAssessment();
-            }
-            $this->assessment = $assessment / count($this->reviews);
-        } else {
-            $this->assessment = null;
+        foreach ($this->reviews as $review) {
+            $assessment += $review->getAssessment();
         }
+        $this->assessment = $assessment / count($this->reviews);
     }
 
 
