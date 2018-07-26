@@ -18,6 +18,16 @@ class CompanyRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Company::class);
     }
+
+    public function getActiveCompanies()
+    {
+        return $this->findBy(['status' => Company::STATUS_ACTIVE]);
+    }
+
+    public function getWaitCompanies()
+    {
+        return $this->findBy(['status' => Company::STATUS_WAIT]);
+    }
 //    /**
 //     * @return Company[] Returns an array of Company objects
 //     */

@@ -121,15 +121,28 @@ class Company
     public function calcAssessment()
     {
         $assessment = null;
+        $count = 0;
         if (count($this->reviews) > 0) {
             /** @var Review $review */
             foreach ($this->reviews as $review) {
-                $assessment += $review->getAssessment();
+                if ($review->isActive()) {
+                    $count++;
+                    $assessment += $review->getAssessment();
+                }
             }
-            $this->assessment = $assessment / count($this->reviews);
-        } else {
-            $this->assessment = null;
+
+            if ($count == 0) {
+                $this->assessment = null;
+                return true;
+            }
+
+            $this->assessment = $assessment / $count;
+
+            return true;
         }
+
+        $this->assessment = null;
+
     }
 
 
@@ -141,7 +154,7 @@ class Company
         $this->status = self::STATUS_ACTIVE;
     }
 
-    public function setWaite()
+    public function setWait()
     {
         $this->status = self::STATUS_WAIT;
     }
@@ -154,6 +167,11 @@ class Company
     public function isRejected()
     {
         return $this->status == self::STATUS_REJECTED;
+    }
+
+    public function isWait()
+    {
+        return $this->status == self::STATUS_WAIT;
     }
 
 

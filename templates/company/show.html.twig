@@ -83,14 +83,16 @@
                 </thead>
                 <tbody>
                     {% for review in company.reviews %}
-                        <tr>
-                            <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
-                            <td>{{ review.text }}</td>
-                            <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
-                            <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
-                            <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
-                            <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
-                        </tr>
+                        {% if review.isActive %}
+                            <tr>
+                                <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
+                                <td>{{ review.text }}</td>
+                                <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
+                                <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
+                                <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
+                                <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

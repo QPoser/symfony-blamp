@@ -45,4 +45,5 @@ security:
          - { path: ^/user/subs/, roles: ROLE_USER }
          - { path: ^/company/favorites, roles: ROLE_USER }
          - { path: ^/cabinet/business, roles: ROLE_BUSINESS }
+         - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

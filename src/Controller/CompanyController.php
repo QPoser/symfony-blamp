@@ -46,7 +46,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $companies = $this->repository->findAll();
+        $companies = $this->repository->getActiveCompanies();
 
         return $this->render('company/index.html.twig', compact('companies'));
     }
@@ -86,6 +86,8 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
+        $this->denyAccessUnlessGranted('SHOW', $company);
+
         return $this->render('company/show.html.twig', compact('company'));
     }
 

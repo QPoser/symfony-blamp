@@ -112,4 +112,22 @@ class ReviewService
         $this->manager->flush();
     }
 
+    public function verify(Review $review)
+    {
+        $review->setStatus(Review::STATUS_ACTIVE);
+
+        $review->getCompany()->calcAssessment();
+
+        $this->manager->flush();
+    }
+
+    public function reject(Review $review)
+    {
+        $review->setStatus(Review::STATUS_REJECTED);
+
+        $review->getCompany()->calcAssessment();
+
+        $this->manager->flush();
+    }
+
 }

@@ -12,7 +12,7 @@ class CompanyVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, ['EDIT', 'DELETE', 'VERIFY'])
+        return in_array($attribute, ['EDIT', 'DELETE', 'VERIFY', 'SHOW'])
             && $subject instanceof Company;
     }
 
@@ -35,6 +35,9 @@ class CompanyVoter extends Voter
                 break;
             case 'VERIFY':
                 if ($user->isAdmin()) { return true; }
+                break;
+            case 'SHOW':
+                if ($subject->isActive() || $user->isAdmin()) { return true; }
                 break;
         }
 

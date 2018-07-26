@@ -5,12 +5,14 @@
 {% block body %}
     <div class="d-flex flex-row">
         <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary mr-1">< {{ review.company.name }}</a>
-        <a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary mr-1">Edit review</a>
-        <form action="{{ path('review.delete', {'id' : review.id}) }}" method="post" class="mr-1">
-            <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
-            <input type="hidden" name="_method" value="delete">
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
+        {% if app.user and (app.user == review.user or app.user.isAdmin) %}
+            <a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary mr-1">Edit review</a>
+            <form action="{{ path('review.delete', {'id' : review.id}) }}" method="post" class="mr-1">
+                <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        {% endif %}
     </div>
     <hr>
     <table class="table table-striped">

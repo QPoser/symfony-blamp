@@ -90,6 +90,23 @@ class Review
         $company->calcAssessment();
     }
 
+    // Statuses
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
+    }
+
+    public function isWait()
+    {
+        return $this->status == self::STATUS_WAIT;
+    }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
     public function getId()
     {
         return $this->id;

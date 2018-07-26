@@ -19,6 +19,16 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
+    public function getActiveReviews()
+    {
+        return $this->findBy(['status' => Review::STATUS_ACTIVE]);
+    }
+
+    public function getWaitReviews()
+    {
+        return $this->findBy(['status' => Review::STATUS_WAIT]);
+    }
+
 //    /**
 //     * @return Review[] Returns an array of Review objects
 //     */

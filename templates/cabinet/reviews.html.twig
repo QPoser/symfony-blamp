@@ -20,6 +20,7 @@
                 <th>Компания</th>
                 <th>Отзыв</th>
                 <th>Оценка</th>
+                <th>Статус</th>
                 <th>Лайки</th>
                 <th></th>
                 <th></th>
@@ -32,6 +33,15 @@
                 <td><a href="{{ path('company.show', {'id' : review.company.id}) }}">{{ review.company.name }}</a></td>
                 <td>{{ review.text }}</td>
                 <td>{{ review.assessment }}</td>
+                <td>
+                    {% if review.isRejected %}
+                        <span class="badge badge-danger">{{ review.status }}</span>
+                    {% elseif review.isActive %}
+                        <span class="badge badge-success">{{ review.status }}</span>
+                    {% else %}
+                        <span class="badge">{{ review.status }}</span>
+                    {% endif %}
+                </td>
                 <td>{{ review.likes|length }}</td>
                 <td><a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                 <td>
