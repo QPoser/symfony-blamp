@@ -52,7 +52,7 @@ class ReviewComment
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parentComment")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parentComment", orphanRemoval=true)
      */
     private $childrenComments;
 
@@ -64,23 +64,24 @@ class ReviewComment
     private $parentComment;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $root;
 
     public function __construct()
     {
         $this->childrenComments = new ArrayCollection();
+        $this->setCreatedAt();
     }
 
     public function getId()
@@ -161,6 +162,8 @@ class ReviewComment
         if (!$this->childrenComments->contains($childrenComment)) {
             $this->childrenComments[] = $childrenComment;
             $childrenComment->setParentComment($this);
+            $childrenComment->setRoot(false);
+            $childrenComment->setReview($this->getReview());
         }
 
         return $this;
@@ -196,10 +199,6 @@ class ReviewComment
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist()
-     * @return ReviewComment
-     */
     public function setCreatedAt(): self
     {
         $this->createdAt = new \DateTime();
@@ -212,10 +211,6 @@ class ReviewComment
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PreUpdate()
-     * @return ReviewComment
-     */
     public function setUpdatedAt(): self
     {
         $this->updatedAt = new \DateTime();

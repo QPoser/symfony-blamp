@@ -37,6 +37,17 @@
     </table>
     <h2>Комментарии</h2>
     <hr>
+
+    <form method="post" action="{{ path('review.add.comment', {'id': review.id}) }}">
+        <input type="hidden" name="_method" value="ADD_COMMENT">
+        <input type="hidden" name="_token" value="{{ csrf_token('add' ~ review.id) }}">
+        <input type="text" name="_text" required placeholder="Ваш комментарий">
+        <button class="btn btn-primary mr-1">Add comment</button>
+    </form>
+
+
+
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -49,6 +60,8 @@
         <tr>
             <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a></td>
             <td>{{ comment.text }}</td>
+            <td><a href="{{ path('comment.answer', {'id' : comment.id}) }}">Answer</a></td>
+            <td><a href="{{ path('comment.edit', {'id' : comment.id}) }}">Edit</a></td>
         </tr>
         {% endfor %}
         </tbody>

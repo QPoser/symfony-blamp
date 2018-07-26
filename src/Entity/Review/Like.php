@@ -36,11 +36,14 @@ class Like
     private $review;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
 
-
+    public function __construct()
+    {
+        $this->setCreatedAt();
+    }
 
     public function getId()
     {
@@ -88,10 +91,6 @@ class Like
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist()
-     * @return Like
-     */
     public function setCreatedAt(): self
     {
         $this->createdAt = new \DateTime();

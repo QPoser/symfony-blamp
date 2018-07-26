@@ -25,8 +25,43 @@ class ReviewController extends Controller
         $this->service = $service;
     }
 
+//    /**
+//     * @Route("/{id}/comments/add", name="review.add.comment", methods="GET|POST")
+//     * @param Request $request
+//     * @param Review $review
+//     * @return Response
+//     * @throws \Doctrine\ORM\ORMException
+//     * @throws \Doctrine\ORM\OptimisticLockException
+//     */
+//    public function addComment(Request $request, Review $review): Response
+//    {
+//        $comment = new ReviewComment();
+//
+//        $form = $this->createForm(ReviewAddCommentForm::class, $comment);
+//
+//        if ($review->getCompany()->getBusinessUsers()->contains($this->getUser())) {
+//            $form->add('isCompany');
+//        }
+//
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $this->service->addComment($review, $comment);
+//
+//            $this->addFlash('notice', 'Comment is successfully added.');
+//
+//            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
+//        }
+//
+//        return $this->render('review/comment/add.html.twig', [
+//            'review' => $review,
+//            'form' => $form->createView(),
+//        ]);
+//    }
+
+
     /**
-     * @Route("/{id}/comments/add", name="review.add.comment", methods="GET|POST")
+     * @Route("/{id}/comments/add", name="review.add.comment", methods="ADD_COMMENT")
      * @param Request $request
      * @param Review $review
      * @return Response
@@ -35,29 +70,22 @@ class ReviewController extends Controller
      */
     public function addComment(Request $request, Review $review): Response
     {
-        $comment = new ReviewComment();
-
-        $form = $this->createForm(ReviewAddCommentForm::class, $comment);
-
-        if ($review->getCompany()->getBusinessUsers()->contains($this->getUser())) {
-            $form->add('isCompany');
-        }
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($this->isCsrfTokenValid('add'.$review->getId(), $request->request->get('_token'))) {
+            $comment = new ReviewComment();
+            $comment->setText($request->request->get('_text'));
             $this->service->addComment($review, $comment);
-
-            $this->addFlash('notice', 'Comment is successfully added.');
-
-            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
         }
 
-        return $this->render('review/comment/add.html.twig', [
-            'review' => $review,
-            'form' => $form->createView(),
-        ]);
+        $this->addFlash('notice', 'Comment ' . $comment->getId() . ' has been successfully added.');
+
+        return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
     }
+
+
+
+
+
+
 
     /**
      * @Route("/reviews/{id}", name="review.show", methods="GET")

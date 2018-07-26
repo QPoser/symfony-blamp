@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ReviewComment index{% endblock %}
+
+{% block body %}
+    <h1>ReviewComment index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Text</th>
+                <th>IsCompany</th>
+                <th>Status</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>Root</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for review_comment in review_comments %}
+            <tr>
+                <td>{{ review_comment.id }}</td>
+                <td>{{ review_comment.text }}</td>
+                <td>{{ review_comment.isCompany ? 'Yes' : 'No' }}</td>
+                <td>{{ review_comment.status }}</td>
+                <td>{{ review_comment.createdAt ? review_comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ review_comment.updatedAt ? review_comment.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ review_comment.root ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('review_review_comment_show', {'id': review_comment.id}) }}">show</a>
+                    <a href="{{ path('review_review_comment_edit', {'id': review_comment.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('review_review_comment_new') }}">Create new</a>
+{% endblock %}

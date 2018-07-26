@@ -35,7 +35,7 @@ class Review
     private $text;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewPhoto", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewPhoto", mappedBy="review", cascade={"persist"}, orphanRemoval=true)
      */
     private $photos;
 
@@ -66,12 +66,13 @@ class Review
     private $rejectReason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="review", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review", orphanRemoval=true)
      */
     private $likes;
 
@@ -180,6 +181,8 @@ class Review
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
             $comment->setReview($this);
+            $comment->setRoot(true);
+            $comment->setParentComment(null);
         }
 
         return $this;

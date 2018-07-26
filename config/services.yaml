@@ -49,6 +49,10 @@ services:
     App\Services\EventService:
         arguments: ['@doctrine.orm.entity_manager']
 
+    App\Services\CommentService:
+        arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+
+
 hwi_oauth:
     firewall_names:     ['main']
     resource_owners:
