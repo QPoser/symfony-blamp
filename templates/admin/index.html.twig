@@ -1,13 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cabinet!{% endblock %}
+{% block title %}Админ-панель{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-pills nav-fill mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Компании <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Отзывы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Комментарии <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Запросы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Реклама <span class="badge badge-pill badge-primary">111</span></a></li>
-    </ul>
+    {% include 'admin/_nav.html.twig' %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Оценка</th>
+                <th>Статус</th>
+                <th>Действие</th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+                <tr>
+                    <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                    <td>{{ company.assessment ?: 'Нет оценки' }}</td>
+                    <td>
+                        {% if company.isRejected %}
+                            <span class="badge badge-danger">{{ company.status }}</span>
+                        {% elseif company.isActive %}
+                            <span class="badge badge-success">{{ company.status }}</span>
+                        {% else %}
+                            <span class="badge">{{ company.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if company.isActive %}
+                            <a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-warning"><i class="fa fa-times"></i>Отклонить</a>
+                            <br><br>
+                            <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary"><i class="fa fa-cog"></i>Изменить</a>
+                        {% else %}
+                            <a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success"><i class="fa fa-check"></i>Принять</a>
+                            <br>
+                            <br>
+                            <a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-warning"><i class="fa fa-times"></i>Отклонить</a>
+                            <br><br>
+                            <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary"><i class="fa fa-cog"></i>Изменить</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-danger"><i class="fa fa-trash"></i>Удалить</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

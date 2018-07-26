@@ -20,6 +20,8 @@
                 <th>Компания</th>
                 <th>Отзыв</th>
                 <th>Оценка</th>
+                <th>Лайки</th>
+                <th>Статус</th>
                 <th>Рейтинг</th>
                 <th></th>
                 <th></th>
@@ -33,6 +35,16 @@
                 <td>{{ review.text }}</td>
                 <td>{{ review.assessment }}</td>
                 <td>{{ review.likeCounter }}/-{{ review.dislikeCounter }}</td>
+                <td>
+                    {% if review.isRejected %}
+                        <span class="badge badge-danger">{{ review.status }}</span>
+                    {% elseif review.isActive %}
+                        <span class="badge badge-success">{{ review.status }}</span>
+                    {% else %}
+                        <span class="badge">{{ review.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ review.likes|length }}</td>
                 <td><a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                 <td>
                     <form action="{{ path('review.delete', {'id' : review.id}) }}" method="POST">

@@ -4,8 +4,6 @@ namespace App\Entity\Review;
 
 use App\Entity\Review\Review;
 use App\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,7 +29,7 @@ class ReviewComment
 
     /**
      * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments")
-     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $review;
 

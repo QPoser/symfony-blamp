@@ -12,7 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+/**
+ * @Route("/reviews")
+ */
 class ReviewController extends Controller
 {
     /**
@@ -84,23 +86,27 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/reviews/{id}", name="review.show", methods="GET")
+     * @Route("/{id}", name="review.show", methods="GET")
      * @param Review $review
      * @return Response
      */
     public function show(Review $review): Response
     {
+        $this->denyAccessUnlessGranted('VIEW', $review);
+
         return $this->render('review/show.html.twig', ['review' => $review]);
     }
 
     /**
-     * @Route("/reviews/edit/{id}", name="review.edit", methods="GET|POST")
+     * @Route("/edit/{id}", name="review.edit", methods="GET|POST")
      * @param Request $request
      * @param Review $review
      * @return Response
      */
     public function edit(Request $request, Review $review): Response
     {
+        $this->denyAccessUnlessGranted('EDIT', $review);
+
         $form = $this->createForm(ReviewCreateForm::class, $review);
         $form->handleRequest($request);
 
@@ -119,13 +125,15 @@ class ReviewController extends Controller
     }
 
     /**
-     * @Route("/reviews/remove/{id}", name="review.delete", methods={"DELETE"})
+     * @Route("/remove/{id}", name="review.delete", methods={"DELETE"})
      * @param Request $request
      * @param Review $review
      * @return Response
      */
     public function delete(Request $request, Review $review): Response
     {
+        $this->denyAccessUnlessGranted('DELETE', $review);
+
         if ($this->isCsrfTokenValid('delete-review', $request->request->get('token'))) {
             $this->service->delete($review);
 
@@ -137,5 +145,49 @@ class ReviewController extends Controller
         $this->addFlash('warning', 'Invalid csrf token for delete.');
 
         return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
+    }
+
+    /**
+     * @Route("/verify/{id}", name="review.verify")
+     * @param Review $review
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function verify(Review $review)
+    {
+        $this->denyAccessUnlessGranted('VERIFY', $review);
+
+        $this->service->verify($review);
+
+        $this->addFlash('notice', 'Данный отзыв успешно проверифицирован');
+
+        return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
+    }
+
+    /**
+     * @Route("/reject/{id}", name="review.reject")
+     * @param Request $request
+     * @param Review $review
+     * @return Response
+     */
+    public function reject(Request $request, Review $review)
+    {
+        $this->denyAccessUnlessGranted('VERIFY', $review);
+
+        $form = $this->createFormBuilder($review)
+            ->add('rejectReason', TextType::class)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->service->reject($review);
+
+            $this->addFlash('notice', 'Данный отзыв успешно отклонен');
+
+            return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
+        }
+
+        return $this->render('review/reject.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
