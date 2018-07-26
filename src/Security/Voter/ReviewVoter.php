@@ -14,7 +14,7 @@ class ReviewVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['EDIT', 'VIEW', 'VERIFY'])
+        return in_array($attribute, ['EDIT', 'VIEW', 'VERIFY', 'DELETE'])
             && $subject instanceof Review;
     }
 
@@ -36,7 +36,7 @@ class ReviewVoter extends Voter
                 }
                 break;
             case 'VIEW':
-                if ($subject->isActive() || $subject->getUser() == $user || $user->isAdmin()) { return true; }
+                if ($subject->isActive() || $subject->getUser()->getId() == $user->getId() || $user->isAdmin()) { return true; }
                 break;
             case 'VERIFY':
                 if ($user->isAdmin()) {
@@ -44,7 +44,7 @@ class ReviewVoter extends Voter
                 }
                 break;
             case 'DELETE':
-                if ($user->isAdmin() || $subject->getUser() == $user) { return true; }
+                if ($user->isAdmin() || $subject->getUser()->getId() == $user->getId()) { return true; }
                 break;
         }
 

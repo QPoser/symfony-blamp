@@ -29,7 +29,7 @@ class ReviewComment
 
     /**
      * @ORM\ManyToOne(targetEntity="Review", inversedBy="review_comment")
-     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $review;
 
