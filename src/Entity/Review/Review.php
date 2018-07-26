@@ -72,9 +72,19 @@ class Review
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="review", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $likes;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $likeCounter;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $dislikeCounter;
 
     public function __construct()
     {
@@ -261,5 +271,44 @@ class Review
         }
 
         return $this;
+    }
+
+    public function getLikeCounter(): ?int
+    {
+        return $this->likeCounter;
+    }
+
+    public function setLikeCounter(?int $likeCounter): self
+    {
+        $this->likeCounter = $likeCounter;
+
+        return $this;
+    }
+
+    public function getDislikeCounter(): ?int
+    {
+        return $this->dislikeCounter;
+    }
+
+    public function setDislikeCounter(?int $dislikeCounter): self
+    {
+        $this->dislikeCounter = $dislikeCounter;
+
+        return $this;
+    }
+
+    public function likesCount() {
+        $likeCounter = null;
+        $dislikeCounter = null;
+        foreach ($this->likes as $like) {
+            if ($like->getValue() == Like::LIKE) {
+                $likeCounter++;
+            }
+            if ($like->getValue() == Like::DISLIKE) {
+                $dislikeCounter++;
+            }
+        }
+        $this->likeCounter = $likeCounter;
+        $this->dislikeCounter = $dislikeCounter;
     }
 }

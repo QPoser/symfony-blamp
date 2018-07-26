@@ -52,6 +52,9 @@ services:
     App\Services\CommentService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
 
+    App\Services\LikeService:
+            arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+
 
 hwi_oauth:
     firewall_names:     ['main']

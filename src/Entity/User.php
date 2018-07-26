@@ -89,7 +89,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $reviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Like", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
      */
     private $likes;
 

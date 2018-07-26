@@ -7,6 +7,7 @@ use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class CommentService
@@ -67,23 +68,27 @@ class CommentService
         $this->manager->persist($comment);
         $this->manager->flush();
 
-//        if ($comment->getIsCompany()) {
-//            $return = $this->eventService->addEventByCompany(
-//                $review->getUser(),
-//                'Добавил комментарий к вашему отзыву на компанию <a href="' .
-//                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
-//                '">' . $review->getCompany()->getName() . '</a>',
-//                $review->getCompany()
-//            );
-//        } else {
-//            $return = $this->eventService->addEventByUser(
-//                $review->getUser(),
-//                'Добавил комментарий к вашему отзыву на компанию <a href="' .
-//                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
-//                '">' . $review->getCompany()->getName() . '</a>',
-//                $comment->getUser()
-//            );
-//        }
+        if ($comment->getIsCompany()) {
+            $return = $this->eventService->addEventByCompany(
+                $reviewComment->getUser(),
+                'Ответил на ваш комментарий к отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $reviewComment->getReview()->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $reviewComment->getReview()->getCompany()->getName() . '</a> (<a href="' .
+                $this->container->get('router')->getGenerator()->generate('review.show', ['id' => $reviewComment->getReview()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">смотреть</a>)',
+                $reviewComment->getReview()->getCompany()
+            );
+        } else {
+            $return = $this->eventService->addEventByUser(
+                $reviewComment->getUser(),
+                'Ответил на ваш комментарий к отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $reviewComment->getReview()->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $reviewComment->getReview()->getCompany()->getName() . '</a> (<a href="' .
+                $this->container->get('router')->getGenerator()->generate('review.show', ['id' => $reviewComment->getReview()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">смотреть</a>)',
+                $comment->getUser()
+            );
+        }
 
 
     }

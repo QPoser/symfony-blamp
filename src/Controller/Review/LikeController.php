@@ -3,76 +3,65 @@
 namespace App\Controller\Review;
 
 use App\Entity\Review\Like;
+use App\Entity\Review\Review;
 use App\Form\Review\LikeType;
 use App\Repository\LikeRepository;
+use App\Services\LikeService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/review/like")
+ * @Route("/review")
  */
 class LikeController extends Controller
 {
     /**
-     * @Route("/", name="review_like_index", methods="GET")
+     * @var LikeService
      */
-    public function index(LikeRepository $likeRepository): Response
+    private $service;
+
+    public function __construct(LikeService $service)
     {
-        return $this->render('review_like/index.html.twig', ['likes' => $likeRepository->findAll()]);
+        $this->service = $service;
     }
 
     /**
-     * @Route("/new", name="review_like_new", methods="GET|POST")
+     * @Route("/{id}/like", name="review.like", methods="GET|POST")
+     * @param Request $request
+     * @param Review $review
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function new(Request $request): Response
+    public function addLike(Request $request, Review $review): Response
     {
-        $like = new Like();
-        $form = $this->createForm(LikeType::class, $like);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($like);
-            $em->flush();
-
-            return $this->redirectToRoute('review_like_index');
+        if ($this->service->addLike($review)) {
+            $this->addFlash('notice', 'Like is successfully added.');
+        }else {
+            $this->addFlash('notice', 'Like is successfully removed.');
         }
-
-        return $this->render('review_like/new.html.twig', [
-            'like' => $like,
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }
 
     /**
-     * @Route("/{id}", name="review_like_show", methods="GET")
+     * @Route("/{id}/dislike", name="review.dislike", methods="GET|POST")
+     * @param Review $review
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function show(Like $like): Response
+    public function addDislike(Review $review): Response
     {
-        return $this->render('review_like/show.html.twig', ['like' => $like]);
+        if ($this->service->addLike($review, Like::DISLIKE)) {
+        $this->addFlash('notice', 'Dislike is successfully added.');
+    }else {
+        $this->addFlash('notice', 'Dislike is successfully removed.');
+    }
+        return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="review_like_edit", methods="GET|POST")
-     */
-    public function edit(Request $request, Like $like): Response
-    {
-        $form = $this->createForm(LikeType::class, $like);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('review_like_edit', ['id' => $like->getId()]);
-        }
-
-        return $this->render('review_like/edit.html.twig', [
-            'like' => $like,
-            'form' => $form->createView(),
-        ]);
-    }
 
     /**
      * @Route("/{id}", name="review_like_delete", methods="DELETE")

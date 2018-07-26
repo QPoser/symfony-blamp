@@ -38,7 +38,7 @@
     <h2>Комментарии</h2>
     <hr>
 
-    <form method="post" action="{{ path('review.add.comment', {'id': review.id}) }}">
+    <form method="post" action="{{ path('review.add.comment.inside', {'id': review.id}) }}">
         <input type="hidden" name="_method" value="ADD_COMMENT">
         <input type="hidden" name="_token" value="{{ csrf_token('add' ~ review.id) }}">
         <input type="text" name="_text" required placeholder="Ваш комментарий">

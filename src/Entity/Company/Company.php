@@ -88,7 +88,7 @@ class Company
     private $reject_reason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="company", orphanRemoval=true, cascade={"persist"})
      */
     private $reviews;
 
@@ -113,7 +113,7 @@ class Company
     private $businessUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company", orphanRemoval=true, cascade={"persist"})
      */
     private $businessRequests;
 

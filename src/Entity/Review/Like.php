@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Like
 {
+    const DISLIKE = false;
+    const LIKE = true;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
