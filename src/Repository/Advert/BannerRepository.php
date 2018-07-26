@@ -24,6 +24,11 @@ class BannerRepository extends ServiceEntityRepository
         return $this->findBy(['status' => Banner::STATUS_ACTIVE]);
     }
 
+    public function getWaitBanners()
+    {
+        return $this->findBy(['status' => Banner::STATUS_WAIT]);
+    }
+
 //    /**
 //     * @return Banner[] Returns an array of Banner objects
 //     */

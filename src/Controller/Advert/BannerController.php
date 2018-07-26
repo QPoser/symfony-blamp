@@ -88,4 +88,32 @@ class BannerController extends Controller
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/verify/{id}", name="advert.banner.verify")
+     * @param Banner $banner
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function verify(Banner $banner)
+    {
+        $this->service->verifyBanner($banner);
+
+        $this->addFlash('notice', 'Баннер был верифицирован, и готов к оплате для пользователя');
+
+        return $this->redirectToRoute('admin.adverts');
+    }
+
+    /**
+     * @Route("/reject/{id}", name="advert.banner.reject")
+     * @param Banner $banner
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function reject(Banner $banner)
+    {
+        $this->service->rejectBanner($banner);
+
+        $this->addFlash('notice', 'Баннер был успешно отклонен!');
+
+        return $this->redirectToRoute('admin.adverts');
+    }
 }

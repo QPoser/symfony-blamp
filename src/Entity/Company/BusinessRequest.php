@@ -54,6 +54,21 @@ class BusinessRequest
      */
     private $note;
 
+    public function isSuccess()
+    {
+        return $this->status == self::STATUS_SUCCESS;
+    }
+
+    public function isWait()
+    {
+        return $this->status == self::STATUS_WAIT;
+    }
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
+    }
+
     public function getId()
     {
         return $this->id;

@@ -3,11 +3,37 @@
 {% block title %}Cabinet!{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-pills nav-fill mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Компании <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Отзывы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Комментарии <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Запросы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Реклама <span class="badge badge-pill badge-primary">111</span></a></li>
-    </ul>
+    {% include 'admin/_nav.html.twig' %}
+
+    <table class="table table-striped">
+        <thead>
+
+        </thead>
+        <tbody>
+            {% for banner in banners %}
+                <tr>
+                    <td>{{ banner.id }}</td>
+                    <td><a href="{{ banner.src }}">Ссылка</a></td>
+                    <td><img src="{{ absolute_url(asset(banner.bannerImg)) }}" alt="#" style="width: 240px; height: auto;"></td>
+                    <td><a href="{{ path('user.show', {'id' : banner.user.id}) }}">{{ banner.user.username }}</a></td>
+                    <td>
+                        {% if banner.isRejected %}
+                            <span class="badge badge-danger">{{ banner.status }}</span>
+                        {% elseif banner.isActive %}
+                            <span class="badge badge-success">{{ banner.status }}</span>
+                        {% else %}
+                            <span class="badge badge-primary">{{ banner.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('advert.banner.verify', {'id' : banner.id}) }}" class="btn btn-success">Принять</a>
+                        <br><br>
+                        <a href="{{ path('advert.banner.pay', {'id' : banner.id}) }}" class="btn btn-primary">Оплатить</a>
+                        <br><br>
+                        <a href="{{ path('advert.banner.reject', {'id' : banner.id}) }}" class="btn btn-warning">Отклонить</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

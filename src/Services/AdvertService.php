@@ -68,8 +68,6 @@ class AdvertService
 
         $this->manager->persist($banner);
         $this->manager->flush();
-
-        $this->verifyBanner($banner);
     }
 
     public function pay(Banner $banner)

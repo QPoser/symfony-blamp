@@ -19,6 +19,16 @@ class BusinessRequestRepository extends ServiceEntityRepository
         parent::__construct($registry, BusinessRequest::class);
     }
 
+    public function getWaitRequests()
+    {
+        return $this->findBy(['status' => BusinessRequest::STATUS_WAIT]);
+    }
+
+    public function getActiveRequests()
+    {
+        return $this->findBy(['status' => BusinessRequest::STATUS_SUCCESS]);
+    }
+
 //    /**
 //     * @return BusinessRequest[] Returns an array of BusinessRequest objects
 //     */

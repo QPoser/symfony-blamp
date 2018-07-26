@@ -11,6 +11,7 @@ use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\CompanyRepository;
+use App\Services\AdvertService;
 use App\Services\CompanyService;
 use App\Services\UserService;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -270,7 +271,37 @@ class CompanyController extends Controller
             'form' => $form->createView(),
             'company' => $company,
         ]);
+    }
 
+    /**
+     * @Route("/business/verify/{id}", name="company.business.verify")
+     * @param BusinessRequest $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function verifyBusiness(BusinessRequest $request)
+    {
+        $this->denyAccessUnlessGranted('VERIFY', $request->getCompany());
 
+        $this->service->attachUser($request);
+
+        $this->addFlash('notice', 'Заявка успешно одобрена.');
+
+        return $this->redirectToRoute('admin.request');
+    }
+
+    /**
+     * @Route("/business/reject/{id}", name="company.business.reject")
+     * @param BusinessRequest $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function rejectBusiness(BusinessRequest $request)
+    {
+        $this->denyAccessUnlessGranted('VERIFY', $request->getCompany());
+
+        $this->service->rejectRequest($request);
+
+        $this->addFlash('notice', 'Заявка успешно отклонена.');
+
+        return $this->redirectToRoute('admin.request');
     }
 }

@@ -3,11 +3,44 @@
 {% block title %}Cabinet!{% endblock %}
 
 {% block body %}
-    <ul class="nav nav-pills nav-fill mb-3">
-        <li class="nav-item"><a class="nav-link active" href="#">Компании <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Отзывы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Комментарии <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Запросы <span class="badge badge-pill badge-primary">111</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Реклама <span class="badge badge-pill badge-primary">111</span></a></li>
-    </ul>
+    {% include 'admin/_nav.html.twig' %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Компания</th>
+                <th>Юзер</th>
+                <th>Статус</th>
+                <th>Телефон</th>
+                <th>Заметка</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+                 <tr>
+                     <td>{{ request.id }}</td>
+                     <td><a href="{{ path('company.show', {'id' : request.company.id}) }}">{{ request.company.name }}</a></td>
+                     <td><a href="{{ path('user.show', {'id' : request.user.id}) }}">{{ request.user.username }}</a></td>
+                     <td>
+                         {% if request.isRejected %}
+                             <span class="badge badge-danger">{{ request.status }}</span>
+                         {% elseif request.isSuccess %}
+                             <span class="badge badge-success">{{ request.status }}</span>
+                         {% else %}
+                             <span class="badge">{{ request.status }}</span>
+                         {% endif %}
+                     </td>
+                     <td>{{ request.phone }}</td>
+                     <td>{{ request.note }}</td>
+                     <td>
+                         <a href="{{ path('company.business.verify', {'id' : request.id}) }}" class="btn btn-success">Принять заявку</a>
+                         <br><br>
+                         <a href="{{ path('company.business.reject', {'id' : request.id}) }}" class="btn btn-warning">Отклонить заявку</a>
+                     </td>
+                 </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

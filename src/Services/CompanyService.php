@@ -115,8 +115,6 @@ class CompanyService
         $request->setStatus(BusinessRequest::STATUS_WAIT);
         $this->manager->persist($request);
         $this->manager->flush();
-
-        $this->attachUser($request);
     }
 
     public function attachUser(BusinessRequest $request)
@@ -125,6 +123,15 @@ class CompanyService
         $user = $request->getUser();
         $request->setStatus(BusinessRequest::STATUS_SUCCESS);
         $company->addBusinessUser($user);
+
+        $this->manager->flush();
+    }
+
+    public function rejectRequest(BusinessRequest $request)
+    {
+        $request->setStatus(BusinessRequest::STATUS_REJECTED);
+
+        $this->deattachUser($request->getCompany(), $request->getUser());
 
         $this->manager->flush();
     }

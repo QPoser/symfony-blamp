@@ -10,7 +10,14 @@
     active
     {% endif %}
     " href="{{ path('admin.review') }}">Отзывы <span class="badge badge-pill badge-primary">{{ waitCounts.reviews }}</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Комментарии <span class="badge badge-pill badge-primary">111</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Запросы <span class="badge badge-pill badge-primary">111</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Реклама <span class="badge badge-pill badge-primary">111</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.request') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.request') }}">Запросы <span class="badge badge-pill badge-primary">{{ waitCounts.requests }}</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.adverts') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.adverts') }}">Реклама <span class="badge badge-pill badge-primary">{{ waitCounts.banners }}</span></a></li>
 </ul>
