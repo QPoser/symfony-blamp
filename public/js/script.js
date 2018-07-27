@@ -3,10 +3,19 @@
 $( document ).ready(function () {
     $.ajax({
         type: 'GET',
-        url: "/banner/get",
+        url: "/banner/vertical/get",
     }).done(function ( html ) {
-        $('.banner').html(html);
+        $('.banner-vertical').html(html);
     }).fail(function () {
-        $('.banner').css('display', 'none');
+        $('.banner-vertical').css('display', 'none');
+    });
+
+    $.ajax({
+        type: 'GET',
+        url: "/banner/horizontal/get",
+    }).done(function ( html ) {
+        $('.banner-horizontal').html(html);
+    }).fail(function () {
+        $('.banner-horizontal').css('display', 'none');
     });
 });

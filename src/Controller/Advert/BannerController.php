@@ -7,6 +7,7 @@ use App\Form\Advert\BannerType;
 use App\Repository\Advert\BannerRepository;
 use App\Services\AdvertService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,6 +37,7 @@ class BannerController extends Controller
     {
         $banner = new Banner();
         $form = $this->createForm(BannerType::class, $banner);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -13,6 +13,7 @@ use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
 use App\Services\AdvertService;
 use App\Services\CompanyService;
+use App\Services\ReviewService;
 use App\Services\UserService;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -191,9 +192,10 @@ class CompanyController extends Controller
      * @Route("/{id}/reviews/create", name="company.add.review")
      * @param Request $request
      * @param Company $company
+     * @param ReviewService $reviewService
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addReview(Request $request, Company $company)
+    public function addReview(Request $request, Company $company, ReviewService $reviewService)
     {
         $review = new Review();
 
@@ -203,6 +205,10 @@ class CompanyController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->addReview($company, $review);
+
+            if ($this->getUser()->isAdmin()) {
+                $reviewService->verify($review);
+            }
 
             $this->addFlash('notice', 'Отзыв успешно добавлен.');
 
@@ -254,6 +260,8 @@ class CompanyController extends Controller
      */
     public function requestBusiness(Request $request, Company $company)
     {
+        $this->denyAccessUnlessGranted('BUSINESS', $company);
+
         $businessRequest = new BusinessRequest();
 
         $form = $this->createForm(BusinessRequestForm::class, $businessRequest);

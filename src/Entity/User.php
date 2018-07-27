@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use App\Entity\Advert\Banner;
+use App\Entity\Advert\LogBanner;
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Like;
@@ -142,6 +143,11 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $banners;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert\LogBanner", mappedBy="user")
+     */
+    private $bannerLogs;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="user")
      */
     private $businessRequests;
@@ -161,6 +167,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         $this->businessCompanies = new ArrayCollection();
         $this->businessRequests = new ArrayCollection();
         $this->banners = new ArrayCollection();
+        $this->bannerLogs = new ArrayCollection();
     }
 
     public function getNewEvents()
@@ -749,6 +756,37 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
             // set the owning side to null (unless already changed)
             if ($banner->getUser() === $this) {
                 $banner->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LogBanner[]
+     */
+    public function getBannerLogs(): Collection
+    {
+        return $this->bannerLogs;
+    }
+
+    public function addBannerLog(LogBanner $bannerLog): self
+    {
+        if (!$this->bannerLogs->contains($bannerLog)) {
+            $this->bannerLogs[] = $bannerLog;
+            $bannerLog->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBannerLog(LogBanner $bannerLog): self
+    {
+        if ($this->bannerLogs->contains($bannerLog)) {
+            $this->bannerLogs->removeElement($bannerLog);
+            // set the owning side to null (unless already changed)
+            if ($bannerLog->getUser() === $this) {
+                $bannerLog->setUser(null);
             }
         }
 

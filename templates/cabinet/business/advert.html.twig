@@ -25,7 +25,8 @@
             {% for banner in app.user.banners %}
                 <tr>
                     <td><a class="btn btn-primary" href="{{ banner.src }}">Ссылка</a></td>
-                    <td><img src="{{ absolute_url(asset(banner.bannerImg)) }}" alt="#" style="max-height: 250px; width: auto;"></td>
+                    <td><img src="{{ absolute_url(asset(banner.bannerImg)) }}" alt="#" style="max-height: 250px; width: auto; max-width: 100%; height: auto;"></td>
+                    <td><span class="badge badge-success">{{ banner.isVertical ? 'Вертикальный' : 'Горизонтальный' }}</span></td>
                     <td>
                         {% if banner.isWait %}
                             <span class="badge badge-primary">В ожидании</span>
@@ -39,9 +40,10 @@
                     </td>
                     {% if banner.isReadyToPay %}
                         <td><a href="{{ path('advert.banner.pay', {'id' : banner.id}) }}" class="btn btn-success">Оплатить</a></td>
-                    {% endif %}
-                    {% if banner.isActive %}
+                    {% elseif banner.isActive %}
                         <td>Осталось показов: {{ banner.views }}</td>
+                    {% else %}
+                        <td><span class="badge badge-warning">Не активен</span></td>
                     {% endif %}
                 </tr>
             {% endfor %}

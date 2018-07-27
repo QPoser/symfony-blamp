@@ -17,7 +17,7 @@
             <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a>
         {% endif %}
     {% endif %}
-    {% if app.user and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
+    {% if app.user and app.user.isBusiness and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
         <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
     {% endif %}
     <hr>
