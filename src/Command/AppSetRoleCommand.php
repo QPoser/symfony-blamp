@@ -65,10 +65,10 @@ class AppSetRoleCommand extends Command
                 $user->becomeUser();
                 break;
             case 'business':
-                $user->becomeUser();
+                $user->becomeBusiness();
                 break;
             case 'admin':
-                $user->becomeUser();
+                $user->becomeAdmin();
                 break;
             default:
                 $io->error('Role ' . $role . ' not setted.');

@@ -10,7 +10,7 @@ security:
 
     role_hierarchy:
         ROLE_BUSINESS:    ROLE_USER
-        ROLE_ADMIN:   ROLE_ADMIN
+        ROLE_ADMIN:   ROLE_BUSINESS
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
