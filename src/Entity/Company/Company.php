@@ -113,7 +113,7 @@ class Company
     private $businessUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $businessRequests;
 

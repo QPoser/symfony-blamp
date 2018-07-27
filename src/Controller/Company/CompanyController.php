@@ -4,6 +4,7 @@ namespace App\Controller\Company;
 
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
+use App\Entity\Event;
 use App\Entity\Review\Review;
 use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
@@ -13,6 +14,7 @@ use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
 use App\Services\AdvertService;
 use App\Services\CompanyService;
+use App\Services\EventService;
 use App\Services\UserService;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -32,13 +34,18 @@ class CompanyController extends Controller
      */
     private $service;
     /**
+     * @var EventService
+     */
+    private $eventService;
+    /**
      * @var CompanyRepository
      */
     private $repository;
 
-    public function __construct(CompanyService $service, CompanyRepository $repository)
+    public function __construct(CompanyService $service, EventService $eventService, CompanyRepository $repository)
     {
         $this->service = $service;
+        $this->eventService = $eventService;
         $this->repository = $repository;
     }
 
@@ -130,6 +137,10 @@ class CompanyController extends Controller
     public function remove(Company $company)
     {
         $this->denyAccessUnlessGranted('DELETE', $company);
+
+        $events = $this->getDoctrine()->getRepository(Event::class)->findBy(['senderCompany' => $company]);
+        foreach ($events as $event)
+            $this->eventService->removeEvent($event);
 
         $this->service->remove($company);
 

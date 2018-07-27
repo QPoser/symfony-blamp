@@ -32,11 +32,11 @@ class UserFixtures extends Fixture
     {
         $user = new User();
         $user->setUsername('admin');
-        $user->setRoles([User::ROLE_ADMIN]);
         $user->setEmail('admin@gmail.ru');
         $user->setPlainPassword('secret');
         $this->service->register($user);
         $this->service->verify($user);
+        $user->setRoles([User::ROLE_ADMIN]);
         $manager->persist($user);
 
         for ($i = 1; $i < 25; $i++) {

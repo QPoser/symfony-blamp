@@ -2,7 +2,6 @@
 
 namespace App\Entity\Review;
 
-use App\Entity\Review\Review;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 

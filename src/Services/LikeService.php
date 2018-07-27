@@ -135,4 +135,33 @@ class LikeService
                 break;
         }
     }
+
+    public function addLikeFixtureMod(User $user, Review $review, $value)
+    {
+        if ($value == Like::LIKE) {
+            $eventStatement  = $this->statement['like'];
+        }else $eventStatement  = $this->statement['dislike'];
+
+        foreach ($review->getLikes() as $like) {
+            $liker = $like->getUser();
+            if ($liker == $user) {
+                if ($like->getValue() == $value) {
+                    $eventStatement  = $this->statement['erase'];
+                    $this->notify($review, $like, $eventStatement);
+                    $this->delete($like);
+                    $review->likesCount();
+                    $this->manager->flush();
+                    return;
+                } else {
+                    $this->delete($like);
+                    $newLike = $this->createLike($review, $user, $value);
+                    $this->notify($review, $newLike, $eventStatement);
+                    return;
+                }
+            }
+        }
+        $newLike = $this->createLike($review, $user, $value);
+        $this->notify($review, $newLike, $eventStatement);
+        return;
+    }
 }

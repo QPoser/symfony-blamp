@@ -35,8 +35,8 @@ class Event
     private $senderUser;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="sendCompanies")
-     * @ORM\JoinColumn(name="company_company_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="sendCompanies", )
+     * @ORM\JoinColumn(name="company_company_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     private $senderCompany;
 

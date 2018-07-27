@@ -75,8 +75,11 @@ class ReviewController extends Controller
         if ($this->isCsrfTokenValid('add'.$review->getId(), $request->request->get('_token'))) {
             $comment = new ReviewComment();
             $comment->setText($request->request->get('_text'));
+            if ($request->request->get('_isCompany') == 'isCompany')
+            {$comment->setIsCompany(true);}
             $this->service->addComment($review, $comment);
-            $this->addFlash('notice', 'Комментарий ' . $comment->getId() . ' был успешно добавлен.');
+
+            $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
             return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }

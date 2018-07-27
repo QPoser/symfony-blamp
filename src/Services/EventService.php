@@ -69,4 +69,9 @@ class EventService
         return true;
     }
 
+    public function removeEvent(Event $event)
+    {
+        $this->manager->remove($event);
+        $this->manager->flush();
+    }
 }

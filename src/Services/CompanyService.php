@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
+use App\Entity\Event;
 use App\Entity\Review\Review;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -155,4 +156,14 @@ class CompanyService
         }
     }
 
+    public function addReviewFixtureMod(Company $company, Review $review, User $user)
+    {
+        $review->setCompany($company);
+        $review->setUser($user);
+
+        $this->manager->persist($review);
+        $this->manager->flush();
+        $company->calcAssessment();
+        $this->manager->flush();
+    }
 }

@@ -37,16 +37,23 @@
             </tr>
         </tbody>
     </table>
-    <h2>Комментарии</h2>
+    <h2>{{ review.comments|length }} комментариев</h2>
     <hr>
 
     <form method="post" action="{{ path('review.add.comment.inside', {'id': review.id}) }}">
         <div class="form-group">
-            <label for="comment">Ваш комментарий</label>
-            <input type="text" id="comment" class="form-control" name="_text" required placeholder="Ваш комментарий">
+            <input type="text" id="comment" class="form-control" name="_text" required placeholder="Оставьте комментарий">
         </div>
         <input type="hidden" name="_method" value="ADD_COMMENT">
         <input type="hidden" name="_token" value="{{ csrf_token('add' ~ review.id) }}">
+        {% if app.user in review.company.businessUsers %}
+            <div class="form-group form-check">
+                <input type="checkbox" id="isCompany-check-box" class="form-check-input" name="_isCompany" value="isCompany">
+                <label for="isCompany-check-box" class="form-check-label">
+                    <small>Оставить комментарий от имени компании</small>
+                </label>
+            </div>
+        {% endif %}
         <button type="submit" class="btn btn-primary mr-1">Add comment</button>
     </form>
 
@@ -65,10 +72,14 @@
     {% macro comment_tree(comment) %}
         {% import _self as macros %}
         <ul class="nested-comments" style="list-style: none">
-            <li style="margin-left: 2em">
-                <div class="row" style="padding:1em; border: 1px solid black; border-radius: 15px">
+            <li style="margin-left: 1em">
+                <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 15px;">
                     <div class="col-sm-2">
-                        <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                        {% if comment.isCompany %}
+                            <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                        {% else %}
+                            <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                        {% endif %}
                         {% if comment.updatedAt %}
                             <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
                         {% else %}
@@ -91,15 +102,19 @@
     {% import _self as macros %}
     {% for comment in review.comments %}
         {% if comment.root == true %}
-            <ul class="nested-comments" style="list-style: none">
+            <ul class="nested-comments" style="list-style: none; padding-left: 1em">
                 <li>
-                    <div class="row" style="padding:1em; border: 1px solid black; border-radius: 15px; background-color: darkgrey">
+                    <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 10px;">
                         <div class="col-sm-2">
-                            <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                            {% if comment.isCompany %}
+                                <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                            {% else %}
+                                <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                            {% endif %}
                             {% if comment.updatedAt %}
                                 <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
                             {% else %}
-                                <p><i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
+                                <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
                             {% endif %}
                         </div>
                         <div class="col-sm-8"><p>{{ comment.text }}</p></div>

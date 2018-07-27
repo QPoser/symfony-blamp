@@ -2,7 +2,6 @@
 
 namespace App\Entity\Review;
 
-use App\Entity\Review\Review;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -52,7 +51,7 @@ class ReviewComment
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parentComment", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewComment", mappedBy="parentComment", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $childrenComments;
 

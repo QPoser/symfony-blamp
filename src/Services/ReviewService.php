@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -130,4 +131,37 @@ class ReviewService
         $this->manager->flush();
     }
 
+    public function addCommentFixtureMod(Review $review, ReviewComment $comment, User $user)
+    {
+        $comment->setStatus(Review::STATUS_WAIT);
+
+        $comment->setUser($user);
+
+        if (!$comment->getIsCompany()) {
+            $comment->setIsCompany(false);
+        }
+
+        $review->addComment($comment);
+
+        $this->manager->persist($comment);
+        $this->manager->flush();
+
+        if ($comment->getIsCompany()) {
+            $return = $this->eventService->addEventByCompany(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $review->getCompany()
+            );
+        } else {
+            $return = $this->eventService->addEventByUser(
+                $review->getUser(),
+                'Добавил комментарий к вашему отзыву на компанию <a href="' .
+                $this->container->get('router')->getGenerator()->generate('company.show', ['id' => $review->getCompany()->getId()], UrlGeneratorInterface::ABSOLUTE_URL) .
+                '">' . $review->getCompany()->getName() . '</a>',
+                $comment->getUser()
+            );
+        }
+    }
 }
