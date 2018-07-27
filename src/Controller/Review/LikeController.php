@@ -5,7 +5,7 @@ namespace App\Controller\Review;
 use App\Entity\Review\Like;
 use App\Entity\Review\Review;
 use App\Form\Review\LikeType;
-use App\Repository\LikeRepository;
+use App\Repository\Review\LikeRepository;
 use App\Services\LikeService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,9 +38,9 @@ class LikeController extends Controller
     public function addLike(Request $request, Review $review): Response
     {
         if ($this->service->addLike($review)) {
-            $this->addFlash('notice', 'Like is successfully added.');
+            $this->addFlash('notice', 'Лайк успешно добавлен.');
         }else {
-            $this->addFlash('notice', 'Like is successfully removed.');
+            $this->addFlash('notice', 'Лайк успешно удален.');
         }
         return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }
@@ -55,9 +55,9 @@ class LikeController extends Controller
     public function addDislike(Review $review): Response
     {
         if ($this->service->addLike($review, Like::DISLIKE)) {
-        $this->addFlash('notice', 'Dislike is successfully added.');
+        $this->addFlash('notice', 'Дизлайк успешно добавлен.');
     }else {
-        $this->addFlash('notice', 'Dislike is successfully removed.');
+        $this->addFlash('notice', 'Дизлайк успешно удален.');
     }
         return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }
@@ -65,6 +65,9 @@ class LikeController extends Controller
 
     /**
      * @Route("/{id}", name="review_like_delete", methods="DELETE")
+     * @param Request $request
+     * @param Like $like
+     * @return Response
      */
     public function delete(Request $request, Like $like): Response
     {

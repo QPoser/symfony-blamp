@@ -1,36 +1,26 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Review;
 
-use App\Entity\Review\Review;
+use App\Entity\Review\ReviewComment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Review|null find($id, $lockMode = null, $lockVersion = null)
- * @method Review|null findOneBy(array $criteria, array $orderBy = null)
- * @method Review[]    findAll()
- * @method Review[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ReviewComment|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ReviewComment|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ReviewComment[]    findAll()
+ * @method ReviewComment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReviewRepository extends ServiceEntityRepository
+class ReviewCommentRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Review::class);
-    }
-
-    public function getActiveReviews()
-    {
-        return $this->findBy(['status' => Review::STATUS_ACTIVE]);
-    }
-
-    public function getWaitReviews()
-    {
-        return $this->findBy(['status' => Review::STATUS_WAIT]);
+        parent::__construct($registry, ReviewComment::class);
     }
 
 //    /**
-//     * @return Review[] Returns an array of Review objects
+//     * @return ReviewComment[] Returns an array of ReviewComment objects
 //     */
     /*
     public function findByExampleField($value)
@@ -47,7 +37,7 @@ class ReviewRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Review
+    public function findOneBySomeField($value): ?ReviewComment
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.exampleField = :val')

@@ -1,26 +1,36 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Review;
 
-use App\Entity\Review\ReviewPhoto;
+use App\Entity\Review\Review;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method ReviewPhoto|null find($id, $lockMode = null, $lockVersion = null)
- * @method ReviewPhoto|null findOneBy(array $criteria, array $orderBy = null)
- * @method ReviewPhoto[]    findAll()
- * @method ReviewPhoto[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Review|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Review|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Review[]    findAll()
+ * @method Review[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReviewPhotoRepository extends ServiceEntityRepository
+class ReviewRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, ReviewPhoto::class);
+        parent::__construct($registry, Review::class);
+    }
+
+    public function getActiveReviews()
+    {
+        return $this->findBy(['status' => Review::STATUS_ACTIVE]);
+    }
+
+    public function getWaitReviews()
+    {
+        return $this->findBy(['status' => Review::STATUS_WAIT]);
     }
 
 //    /**
-//     * @return ReviewPhoto[] Returns an array of ReviewPhoto objects
+//     * @return Review[] Returns an array of Review objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +47,7 @@ class ReviewPhotoRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ReviewPhoto
+    public function findOneBySomeField($value): ?Review
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.exampleField = :val')

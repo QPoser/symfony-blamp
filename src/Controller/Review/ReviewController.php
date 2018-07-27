@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Review;
 
+use App\Controller\TextType;
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
@@ -50,7 +51,7 @@ class ReviewController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->addComment($review, $comment);
 
-            $this->addFlash('notice', 'Comment is successfully added.');
+            $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
             return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
         }
@@ -75,12 +76,12 @@ class ReviewController extends Controller
             $comment = new ReviewComment();
             $comment->setText($request->request->get('_text'));
             $this->service->addComment($review, $comment);
-            $this->addFlash('notice', 'Comment ' . $comment->getId() . ' has been successfully added.');
+            $this->addFlash('notice', 'Комментарий ' . $comment->getId() . ' был успешно добавлен.');
 
             return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }
 
-        $this->addFlash('warning', 'Invalid csrf token for comment.');
+        $this->addFlash('warning', 'Неправильный CSRF-Токен.');
 
         return $this->redirectToRoute('review.show', ['id' => $review->getCompany()->getId()]);
     }
@@ -113,7 +114,7 @@ class ReviewController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->edit($review);
 
-            $this->addFlash('notice', 'Review ' . $review->getId() . ' has been successfully update.');
+            $this->addFlash('notice', 'Отзыв ' . $review->getId() . ' был успешно обновлен.');
 
             return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }
@@ -137,12 +138,12 @@ class ReviewController extends Controller
         if ($this->isCsrfTokenValid('delete-review', $request->request->get('token'))) {
             $this->service->delete($review);
 
-            $this->addFlash('notice', 'Review ' . $review->getId() . ' has been successfully deleted.');
+            $this->addFlash('notice', 'Отзыв ' . $review->getId() . ' был успешно удален.');
 
             return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
         }
 
-        $this->addFlash('warning', 'Invalid csrf token for delete.');
+        $this->addFlash('warning', 'Неправильный CSRF-Токен.');
 
         return $this->redirectToRoute('company.show', ['id' => $review->getCompany()->getId()]);
     }

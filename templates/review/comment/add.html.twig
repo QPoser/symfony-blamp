@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add comment{% endblock %}
+{% block title %}Добавить комментарий{% endblock %}
 
 {% block body %}
-    <h2>Add comment</h2>
+    <h2>Добавить комментарий</h2>
     <hr>
     {{ form_start(form) }}
     {{ form_widget(form) }}
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="Добавить">
     {{ form_end(form) }}
 {% endblock %}

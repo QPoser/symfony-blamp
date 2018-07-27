@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ReviewPhotoRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Review\ReviewPhotoRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class ReviewPhoto

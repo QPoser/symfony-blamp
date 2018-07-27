@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use App\Form\User\ProfileEditForm;
-use App\Repository\ReviewRepository;
+use App\Repository\Review\ReviewRepository;
 use App\Services\EventService;
 use App\Services\UserService;
 use Symfony\Component\HttpFoundation\Request;

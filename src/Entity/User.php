@@ -12,7 +12,7 @@ use App\Entity\Advert\Banner;
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Like;
-use App\Entity\Review\Network;
+use App\Entity\Network;
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -80,7 +80,7 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\Network", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Network", mappedBy="user")
      */
     private $networks;
 

@@ -1,23 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Companies{% endblock %}
+{% block title %}Компании{% endblock %}
 
 {% block body %}
-    <h2>Companies</h2>
-    <a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>
+    <h2>Компании</h2>
+    <a href="{{ path('company.create') }}" class="btn btn-success">Добавить компанию</a>
     <hr>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Assessment</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Site</th>
+                <th scope="col">Название</th>
+                <th scope="col">Оценка</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Сайт</th>
                 {% if app.user and app.user.isAdmin %}
-                    <th scope="col">Edit</th>
-                    <th scope="col">Remove</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Изменить</th>
+                    <th scope="col">Удалить</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Действие</th>
                 {% endif %}
                 <th scope="col">Добавить отзыв</th>
             </tr>
@@ -44,9 +44,9 @@
 
 
                         {% if company.isActive %}
-                            <td><a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-danger">Reject</a></td>
+                            <td><a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-danger">Отклонить</a></td>
                         {% else %}
-                            <td><a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success">Verify</a></td>
+                            <td><a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success">Принять</a></td>
                         {% endif %}
                     {% endif %}
                     <td><a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>

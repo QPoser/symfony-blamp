@@ -2,9 +2,9 @@
 
 namespace App\Security;
 
-use App\Entity\Review\Network;
+use App\Entity\Network;
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\User\UserRepository;
 use App\Services\AuthService;
 use App\Services\NetworkService;
 use GuzzleHttp\Client;

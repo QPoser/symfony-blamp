@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\UserRepository;
+use App\Repository\User\UserRepository;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ class UserController extends Controller
 {
 
     /**
-     * @var UserRepository
+     * @var \App\Repository\User\UserRepository
      */
     private $users;
     /**

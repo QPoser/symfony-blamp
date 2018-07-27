@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Form\Auth\RegisterFormType;
 use App\Form\Auth\ResetPasswordForm;
-use App\Repository\UserRepository;
+use App\Repository\User\UserRepository;
 use App\Services\AuthService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit company{% endblock %}
+{% block title %}Редактировать компанию{% endblock %}
 
 {% block body %}
-    <h2>Edit company</h2>
-    {#<a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>#}
+    <h2>Редактировать компанию {{ company.name }}</h2>
+    <a href="{{ path('company.show', {'id' : company.id}) }}" class="btn btn-success">< {{ company.name }}</a>
+    <hr>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_row(form.photo) }}
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="Принять">
     {{ form_end(form) }}
 {% endblock %}

@@ -9,11 +9,11 @@
 namespace App\Services;
 
 
-use App\Controller\NetworkController;
-use App\Entity\Review\Network;
+use App\Controller\User\NetworkController;
+use App\Entity\Network;
 use App\Entity\User;
-use App\Repository\NetworkRepository;
-use App\Repository\UserRepository;
+use App\Repository\User\NetworkRepository;
+use App\Repository\User\UserRepository;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -29,7 +29,7 @@ class NetworkService
      */
     private $storage;
     /**
-     * @var UserRepository
+     * @var \App\Repository\User\UserRepository
      */
     private $users;
     /**
@@ -47,7 +47,7 @@ class NetworkService
 
     /**
      * @param string $code
-     * @return Network
+     * @return \App\Entity\Network
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getNetworkVkByCode(string $code, $safe = false)

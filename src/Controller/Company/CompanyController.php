@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Company;
 
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
@@ -10,7 +10,7 @@ use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
-use App\Repository\CompanyRepository;
+use App\Repository\Company\CompanyRepository;
 use App\Services\AdvertService;
 use App\Services\CompanyService;
 use App\Services\UserService;
@@ -69,7 +69,7 @@ class CompanyController extends Controller
 
             $company = $this->service->create($company, $form);
 
-            $this->addFlash('notice', 'Company ' . $company->getName() . ' successfully added.');
+            $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно добавлена.');
 
             return $this->redirectToRoute('company');
         }
@@ -110,13 +110,14 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $company = $this->service->edit($company, $form);
 
-            $this->addFlash('notice', 'Company ' . $company->getName() . ' successfully edited.');
+            $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно изменена.');
 
             return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
         }
 
         return $this->render('company/edit.html.twig', [
             'form' => $form->createView(),
+            'company' => $company,
         ]);
     }
 
@@ -132,7 +133,7 @@ class CompanyController extends Controller
 
         $this->service->remove($company);
 
-        $this->addFlash('warning', 'Company ' . $company->getName() . ' successfully deleted.');
+        $this->addFlash('warning', 'Компания ' . $company->getName() . ' успешно удалена.');
 
         return $this->redirectToRoute('company');
     }
@@ -149,7 +150,7 @@ class CompanyController extends Controller
 
         $this->service->verify($company);
 
-        $this->addFlash('notice', 'Company ' . $company->getName() . ' successfully verified.');
+        $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно принята.');
 
         return $this->redirectToRoute('company');
     }
@@ -172,7 +173,7 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->reject($company);
 
-            $this->addFlash('notice', 'Company ' . $company->getName() . ' successfully rejected.');
+            $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно отклонена.');
 
             return $this->redirectToRoute('company');
         }
@@ -203,7 +204,7 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->addReview($company, $review);
 
-            $this->addFlash('notice', 'Review successfully added.');
+            $this->addFlash('notice', 'Отзыв успешно добавлен.');
 
             return $this->redirectToRoute('company');
         }

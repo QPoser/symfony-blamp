@@ -5,9 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\Advert\Banner;
 use App\Repository\Advert\BannerRepository;
 use App\Repository\Company\BusinessRequestRepository;
-use App\Repository\CompanyRepository;
-use App\Repository\ReviewCommentRepository;
-use App\Repository\ReviewRepository;
+use App\Repository\Company\CompanyRepository;
+use App\Repository\Review\ReviewCommentRepository;
+use App\Repository\Review\ReviewRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -18,11 +18,11 @@ class AdminController extends Controller
 {
 
     /**
-     * @var CompanyRepository
+     * @var \App\Repository\Company\CompanyRepository
      */
     private $companyRepository;
     /**
-     * @var ReviewRepository
+     * @var \App\Repository\Review\ReviewRepository
      */
     private $reviewRepository;
     /**

@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit review{% endblock %}
+{% block title %}Редактировать отзыв{% endblock %}
 
 {% block body %}
-    <h2>Edit review</h2>
+    <h2>Редактировать отзыв</h2>
     <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary">< {{ review.company.name }}</a>
     <hr>
     {{ form_start(form) }}

@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Company\Company;
-use App\Repository\CompanyRepository;
+use App\Repository\Company\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +16,7 @@ class AppFixAssessmentCommand extends Command
 {
     protected static $defaultName = 'app:fix-assessments';
     /**
-     * @var CompanyRepository
+     * @var \App\Repository\Company\CompanyRepository
      */
     private $companies;
     /**

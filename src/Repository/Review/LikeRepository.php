@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Review;
 
 use App\Entity\Review\Like;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

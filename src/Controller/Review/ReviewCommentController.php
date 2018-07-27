@@ -4,7 +4,7 @@ namespace App\Controller\Review;
 
 use App\Entity\Review\ReviewComment;
 use App\Form\Review\ReviewCommentType;
-use App\Repository\ReviewCommentRepository;
+use App\Repository\Review\ReviewCommentRepository;
 use App\Services\CommentService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +57,7 @@ class ReviewCommentController extends Controller
             $this->service->addComment($reviewComment, $comment);
 
 
-            $this->addFlash('notice', 'Comment is successfully added.');
+            $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
 //            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
 
@@ -92,7 +92,7 @@ class ReviewCommentController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->edit($reviewComment);
 
-            $this->addFlash('notice', 'Comment ' . $reviewComment->getId() . ' has been successfully update.');
+            $this->addFlash('notice', 'Комментарий ' . $reviewComment->getId() . ' был успешно обновлен.');
 
             return $this->redirectToRoute('review.show', ['id' => $reviewComment->getReview()->getId()]);
         }
@@ -117,7 +117,7 @@ class ReviewCommentController extends Controller
             $this->service->delete($reviewComment);
         }
 
-        $this->addFlash('notice', 'Comment ' . $commentId . ' has been successfully removed.');
+        $this->addFlash('notice', 'Комментарий ' . $commentId . ' был успешно удален.');
 
         return $this->redirectToRoute('review.show', ['id' => $reviewId]);
     }

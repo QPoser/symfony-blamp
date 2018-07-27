@@ -6,7 +6,7 @@
  * Time: 21:20
  */
 
-namespace App\Entity\Review;
+namespace App\Entity;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;

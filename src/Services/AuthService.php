@@ -9,7 +9,7 @@
 namespace App\Services;
 
 
-use App\Entity\Review\Network;
+use App\Entity\Network;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

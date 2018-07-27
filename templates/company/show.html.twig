@@ -12,8 +12,10 @@
     {% endif %}
 
     {% if app.user and (app.user.isAdmin or company.businessUsers.contains(app.user)) %}
-        <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Edit company</a>
-        <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Remove company</a>
+        <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a>
+        {% if app.user.isAdmin %}
+            <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a>
+        {% endif %}
     {% endif %}
     {% if app.user and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
         <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
@@ -22,25 +24,25 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Param</th>
-                <th scope="col">Value</th>
+                <th scope="col">Характеристика</th>
+                <th scope="col">Значение</th>
             </tr>
         </thead>
         <tbody>
                 <tr>
-                    <td>Name</td>
+                    <td>Название</td>
                     <td>{{ company.name }}</td>
                 </tr>
                 <tr>
-                    <td>Phone</td>
+                    <td>Телефон</td>
                     <td>{{ company.phone }}</td>
                 </tr>
                 <tr>
-                    <td>Site</td>
+                    <td>Сайт</td>
                     <td><a href="{{ company.site }}" class="btn btn-primary">{{ company.site }}</a></td>
                 </tr>
                 <tr>
-                    <td>Status</td>
+                    <td>Статус</td>
                     {% if company.isRejected %}
                         <td><span class="badge badge-danger">{{ company.status }}</span></td>
                     {% elseif company.isActive %}
@@ -51,17 +53,17 @@
                 </tr>
                 {% if company.isRejected %}
                     <tr>
-                        <td>Reject reason</td>
+                        <td>Причина отклонения</td>
                         <td>{{ company.rejectReason }}</td>
                     </tr>
                 {% endif %}
                 <tr>
-                    <td>Photo</td>
-                    <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="No photo" style="width: auto; height: 120px;"></td>
+                    <td>Фотография</td>
+                    <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="Без фото" style="width: auto; height: 120px;"></td>
                 </tr>
                 {% if company.startWork and company.endWork %}
                     <tr>
-                        <td>Hours</td>
+                        <td>Часы работы</td>
                         <td>{{ company.startWork.format('H:i') }} - {{ company.endWork.format('H:i') }}</td>
                     </tr>
                 {% endif %}
