@@ -17,6 +17,9 @@ use Symfony\Component\Validator\Constraints\Uuid;
 
 class AuthService
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
     /**
      * @var EntityManager

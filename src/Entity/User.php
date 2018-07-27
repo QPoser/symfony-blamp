@@ -511,9 +511,8 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
      *
      * @param UserResponseInterface $response
      *
-     * @return UserInterface
+     * @return void
      *
-     * @throws UsernameNotFoundException if the user is not found
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {

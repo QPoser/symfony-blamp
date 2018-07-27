@@ -90,7 +90,7 @@
                                 <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
                                 <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
                                 <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
-                                <td><a href="{{ path('review.add.comment', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
+                                <td><a href="{{ path('review.add.comment.outside', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
                                 <td>
                                     <a href="{{ path('review.like', {'id': review.id}) }}" class="btn btn-success"><i class="fa fa-thumbs-up"></i> {{ review.likeCounter }}</a>
                                 </td>
