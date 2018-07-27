@@ -9,8 +9,10 @@
 namespace App\Services;
 
 
+use App\Entity\Advert\AdvertDescription;
 use App\Entity\Advert\Banner;
 use App\Entity\Advert\LogBanner;
+use App\Entity\Company\Company;
 use App\Entity\User;
 use App\Repository\Advert\BannerRepository;
 use App\Repository\Advert\LogBannerRepository;
@@ -117,6 +119,45 @@ class AdvertService
 
         $this->manager->flush();
     }
+
+
+
+    // Dynamic Descriptions
+
+    public function addDescription(AdvertDescription $description, Company $company)
+    {
+        $description->setStatus(AdvertDescription::STATUS_WAIT);
+        $description->setCompany($company);
+
+        $this->manager->persist($description);
+        $this->manager->flush();
+    }
+
+    public function verifyDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_READY_TO_PAY);
+
+        $this->manager->flush();
+    }
+
+    public function rejectDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_REJECTED);
+
+        $this->manager->flush();
+    }
+
+    public function payDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_ACTIVE);
+        $description->setEndDate(new DateTime('now + 1 month'));
+
+        $this->manager->flush();
+    }
+
+
+
+
 
     private function isSeen(Banner $banner, $user)
     {

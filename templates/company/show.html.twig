@@ -21,6 +21,14 @@
         <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
     {% endif %}
     <hr>
+    {% if company.advertDescription %}
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6 class="card-text">{{ company.advertDescription.description }}</h6>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
     <table class="table table-striped">
         <thead>
             <tr>

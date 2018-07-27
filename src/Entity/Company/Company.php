@@ -2,6 +2,7 @@
 
 namespace App\Entity\Company;
 
+use App\Entity\Advert\AdvertDescription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -116,6 +117,11 @@ class Company
      * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company", orphanRemoval=true, cascade={"persist"})
      */
     private $businessRequests;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Advert\AdvertDescription", mappedBy="company")
+     */
+    private $advertDescription;
 
 
     public function calcAssessment()
@@ -438,6 +444,24 @@ class Company
     public function setFixedAssessment($fixedAssessment): self
     {
         $this->fixedAssessment = $fixedAssessment;
+
+        return $this;
+    }
+
+    public function getAdvertDescription(): ?AdvertDescription
+    {
+        return $this->advertDescription;
+    }
+
+    public function setAdvertDescription(?AdvertDescription $advertDescription): self
+    {
+        $this->advertDescription = $advertDescription;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newCompany = $advertDescription === null ? null : $this;
+        if ($newCompany !== $advertDescription->getCompany()) {
+            $advertDescription->setCompany($newCompany);
+        }
 
         return $this;
     }

@@ -49,4 +49,33 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% if app.user.businessCompanies|length > 0 %}
+        <h4>Динамические описания</h4>
+        <hr>
+        <table class="table table-striped">
+            {% for company in app.user.businessCompanies %}
+                <tr>
+                    <td>{{ company.name }}</td>
+                    <td>
+                        {% if company.advertDescription and not company.advertDescription.isRejected %}
+                            {% set advertDesc = company.advertDescription %}
+                            {% if advertDesc.isWait %}
+                                <td>{{ advertDesc.description }}</td>
+                                <td><span class="badge badge-primary">Ожидает подтверждения</span></td>
+                            {% elseif advertDesc.isReadyToPay %}
+                                <td>{{ advertDesc.description }}</td>
+                                <td><a href="{{ path('advert.description.pay', {'id' : advertDesc.id}) }}" class="btn btn-primary">Оплатить</a></td>
+                            {% elseif advertDesc.isActive %}
+                                <td>{{ advertDesc.description }}</td>
+                                <td>Доступно до <span class="badge badge-success">{{ advertDesc.endDate.format('d-m-Y') }}</span></td>
+                            {% endif %}
+                        {% else %}
+                            <td><span class="badge badge-primary">Нет описания</span></td>
+                            <td><a href="{{ path('advert.description.create', {'id' : company.id}) }}" class="btn btn-success">Добавить</a></td>
+                        {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Новое динамическое описание{% endblock %}
+
+{% block body %}
+    <h1>Создать динамическое описание</h1>
+
+    <a class="btn btn-primary" href="{{ path('cabinet.business.adverts') }}">< Реклама</a>
+    <hr>
+    <div class="card card-body">
+        Загрузите любое желаемое описание для вашей компании, это может быть приглашение на бизнес-ланч, или анонс нового купона на скидку.
+    </div>
+    <hr>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Сохранить</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/cabinet/business/adverts")
+ * @Route("/cabinet/business/adverts/banners")
  */
 class BannerController extends Controller
 {

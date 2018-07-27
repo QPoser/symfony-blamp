@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Advert\Banner;
+use App\Repository\Advert\AdvertDescriptionRepository;
 use App\Repository\Advert\BannerRepository;
 use App\Repository\Company\BusinessRequestRepository;
 use App\Repository\Company\CompanyRepository;
@@ -45,7 +46,8 @@ class AdminController extends Controller
                                 ReviewRepository $reviewRepository,
                                 ReviewCommentRepository $commentRepository,
                                 BusinessRequestRepository $requestRepository,
-                                BannerRepository $bannerRepository
+                                BannerRepository $bannerRepository,
+                                AdvertDescriptionRepository $adDescriptionRepository
                                 )
     {
         $this->companyRepository = $companyRepository;
@@ -53,11 +55,13 @@ class AdminController extends Controller
         $this->commentRepository = $commentRepository;
         $this->requestRepository = $requestRepository;
         $this->bannerRepository = $bannerRepository;
+        $this->adDescriptionRepository = $adDescriptionRepository;
 
         $this->counts['companies'] = count($companyRepository->getWaitCompanies());
         $this->counts['reviews'] = count($reviewRepository->getWaitReviews());
         $this->counts['requests'] = count($requestRepository->getWaitRequests());
-        $this->counts['banners'] = count($bannerRepository->getWaitBanners());
+        $this->counts['adverts'] = count($bannerRepository->getWaitBanners());
+        $this->counts['adverts'] += count($adDescriptionRepository->getWaitDescriptions());
     }
 
     /**
@@ -110,6 +114,20 @@ class AdminController extends Controller
         return $this->render('admin/adverts.html.twig', [
            'banners' => $banners,
            'waitCounts' => $this->counts,
+        ]);
+    }
+
+    /**
+     * @Route("/adverts/descriptions", name="admin.adverts.descriptions")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function advertDescriptions()
+    {
+        $descriptions = $this->adDescriptionRepository->findBy([], ['status' => 'DESC']);
+
+        return $this->render('admin/ad_descriptions.html.twig', [
+            'descriptions' => $descriptions,
+            'waitCounts' => $this->counts,
         ]);
     }
 }
