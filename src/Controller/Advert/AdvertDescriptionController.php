@@ -39,6 +39,8 @@ class AdvertDescriptionController extends Controller
      */
     public function create(Request $request, Company $company): Response
     {
+        $this->denyAccessUnlessGranted('EDIT', $company);
+
         $description = new AdvertDescription();
         $form = $this->createForm(AdvertDescriptionType::class, $description);
 
@@ -65,6 +67,8 @@ class AdvertDescriptionController extends Controller
      */
     public function pay(AdvertDescription $description): Response
     {
+        $this->denyAccessUnlessGranted('PAY', $description);
+
         $this->service->payDescription($description);
 
         $this->addFlash('notice', 'Вы успешно оплатили динамическое описание для компании '
@@ -80,6 +84,8 @@ class AdvertDescriptionController extends Controller
      */
     public function verify(AdvertDescription $description)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $description);
+
         $this->service->verifyDescription($description);
 
         $this->addFlash('notice', 'Описание было верифицировано, и готово к оплате для пользователя');
@@ -94,6 +100,8 @@ class AdvertDescriptionController extends Controller
      */
     public function reject(AdvertDescription $description)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $description);
+
         $this->service->rejectDescription($description);
 
         $this->addFlash('notice', 'Описание было успешно отклонено!');

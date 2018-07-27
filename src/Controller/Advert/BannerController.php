@@ -61,6 +61,8 @@ class BannerController extends Controller
      */
     public function pay(Banner $banner): Response
     {
+        $this->denyAccessUnlessGranted('PAY', $banner);
+
         $this->service->pay($banner);
 
         $this->addFlash('notice', 'Вы успешно оплатили данный баннер на тысячу показов');
@@ -98,6 +100,8 @@ class BannerController extends Controller
      */
     public function verify(Banner $banner)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $banner);
+
         $this->service->verifyBanner($banner);
 
         $this->addFlash('notice', 'Баннер был верифицирован, и готов к оплате для пользователя');
@@ -112,6 +116,8 @@ class BannerController extends Controller
      */
     public function reject(Banner $banner)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $banner);
+
         $this->service->rejectBanner($banner);
 
         $this->addFlash('notice', 'Баннер был успешно отклонен!');

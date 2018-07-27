@@ -18,18 +18,27 @@
 
         <main class="py-4">
             <div class="container">
-                {% include 'partials/flash.html.twig' %}
+                <div class="row">
+                    <div class="col-sm-11">
 
-                <div class="banner-horizontal">
+                        {% include 'partials/flash.html.twig' %}
 
+                        {% block body %}{% endblock %}
+
+                        <hr>
+
+                        <div class="banner-horizontal">
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+
+                    <div class="banner-vertical">
+
+                    </div>
+                    </div>
                 </div>
-                <hr>
-
-                {% block body %}{% endblock %}
-            </div>
-
-            <div class="banner-vertical">
-
             </div>
         </main>
 
