@@ -116,7 +116,7 @@ class CabinetController extends Controller
     }
 
     /**
-     * @Route("/business/profile", name="cabinet.business.profile")
+     * @Route("/business/companies", name="cabinet.business.profile")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function businessProfile()

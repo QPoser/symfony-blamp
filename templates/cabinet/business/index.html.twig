@@ -29,6 +29,11 @@
                 <tr>
                     <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
                     <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a></td>
+                    {% if company.couponTypes|length > 0 %}
+                        <td>Проверить купон</td>
+                        {% else %}
+                        <td><a href="{{ path('company.coupon.create', {'id' : company.id}) }}">Добавить новый купон</a></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>
@@ -45,8 +50,51 @@
                             {% endif %}
                         </p>
                     </td>
+                    {% if company.couponTypes|length > 0 %}
+                        <td>Выдано купонов: </td>
+                        {% else %}
+                        <td>Пока нет купонов</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <h4>Купоны</h4>
+    <hr>
+    {% for company in app.user.businessCompanies %}
+        <h5>{{ company.name }}</h5>
+        {% if company.couponTypes|length > 0 %}
+            <a href="{{ path('company.coupon.create', {'id' : company.id}) }}">Добавить новый купон</a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Описание</th>
+                        <th>Статус</th>
+                        <th>Выдано купонов</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coupon in company.couponTypes %}
+                        <tr>
+                            <td>{{ coupon.description }}</td>
+                            <td><span class="badge badge-primary">{{ coupon.status }}</span></td>
+                            <td>999</td>
+                            <td>
+                                {% if coupon.isActive %}
+                                    <a href="{{ path('company.coupon.close', {'id' : coupon.id}) }}">Закрыть</a>
+                                {% elseif coupon.isClosed %}
+                                    <a href="{{ path('company.coupon.open', {'id' : coupon.id}) }}">Открыть</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>У данной компании нет купонов, хотите <a href="{{ path('company.coupon.create', {'id' : company.id}) }}">добавить новый</a>?</p>
+        {% endif %}
+        <hr>
+    {% endfor %}
 {% endblock %}
