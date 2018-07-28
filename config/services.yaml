@@ -33,10 +33,10 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Services\CompanyService:
-        arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     App\Services\ReviewService:
-        arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     App\Services\UserService:
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']

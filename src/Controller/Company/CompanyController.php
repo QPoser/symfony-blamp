@@ -11,6 +11,7 @@ use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
+use App\Repository\Company\CouponTypeRepository;
 use App\Services\AdvertService;
 use App\Services\CompanyService;
 use App\Services\ReviewService;
@@ -84,13 +85,16 @@ class CompanyController extends Controller
     /**
      * @Route("/{id}", name="company.show")
      * @param Company $company
+     * @param CouponTypeRepository $couponRepository
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function show(Company $company)
+    public function show(Company $company, CouponTypeRepository $couponRepository)
     {
         $this->denyAccessUnlessGranted('SHOW', $company);
 
-        return $this->render('company/show.html.twig', compact('company'));
+        $coupons = $couponRepository->findActiveByCompany($company);
+
+        return $this->render('company/show.html.twig', compact('company', 'coupons'));
     }
 
 
@@ -204,7 +208,7 @@ class CompanyController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->service->addReview($company, $review);
+            $this->service->addReview($company, $review, $this->getUser());
 
             if ($this->getUser()->isAdmin()) {
                 $reviewService->verify($review);

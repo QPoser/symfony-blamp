@@ -4,6 +4,7 @@
 
 {% block body %}
     <h2>{{ company.name }} {% if company.assessment %}<i class="fa fa-star"></i> {{ company.assessment }}{% endif %}</h2>
+    <h5><span class="badge badge-primary">{{ coupons ? 'Купоны за отзыв' : '' }}</span></h5>
     <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
     {% if app.user and app.user.favoriteCompanies.contains(company) %}
         <a href="{{ path('company.remove.favorites', {'id' : company.id}) }}" class="btn btn-warning">Убрать из избранного</a>

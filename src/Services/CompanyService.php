@@ -41,13 +41,11 @@ class CompanyService
      * CompanyService constructor.
      * @param EntityManager $manager
      * @param Container $container
-     * @param TokenStorage $storage
      */
-    public function __construct(EntityManager $manager, Container $container, TokenStorage $storage)
+    public function __construct(EntityManager $manager, Container $container)
     {
         $this->manager = $manager;
         $this->container = $container;
-        $this->storage = $storage;
     }
 
 
@@ -94,11 +92,11 @@ class CompanyService
         $this->manager->flush($company);
     }
 
-    public function addReview(Company $company, Review $review)
+    public function addReview(Company $company, Review $review, User $user)
     {
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
-        $review->setUser($this->storage->getToken()->getUser());
+        $review->setUser($user);
 
         $this->manager->persist($review);
         $this->manager->flush();

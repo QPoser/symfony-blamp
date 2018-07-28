@@ -3,8 +3,10 @@
 namespace App\Controller\Company;
 
 use App\Entity\Company\Company;
+use App\Entity\Company\Coupon;
 use App\Entity\Company\CouponType;
 use App\Form\Company\CouponForm;
+use App\Repository\Company\CouponRepository;
 use App\Repository\Company\CouponTypeRepository;
 use App\Services\CouponService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,6 +28,32 @@ class CouponTypeController extends Controller
     public function __construct(CouponService $service)
     {
         $this->service = $service;
+    }
+
+    /**
+     * @Route("/{id}/accept", name="company.coupon.accept")
+     * @param Company $company
+     * @param Request $request
+     * @param CouponRepository $coupons
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function acceptCoupon(Company $company, Request $request, CouponRepository $coupons)
+    {
+        $coupon = $coupons->findOneBy(['code' => $request->get('coupon'), 'company' => $company, 'status' => Coupon::STATUS_ACTIVE]);
+
+        if (!$coupon) {
+            $this->addFlash('warning', 'Данный купон неактивен!');
+
+            return $this->redirectToRoute('cabinet.business.profile');
+        }
+
+        $this->denyAccessUnlessGranted('ACCEPT', $coupon);
+
+        $this->service->acceptCoupon($coupon);
+
+        $this->addFlash('notice', 'Купон ' . $coupon->getCode() . ' был успешно принят!');
+
+        return $this->redirectToRoute('cabinet.business.profile');
     }
 
     /**

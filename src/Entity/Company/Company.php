@@ -273,6 +273,11 @@ class Company
      */
     private $couponTypes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\Coupon", mappedBy="company")
+     */
+    private $coupons;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -280,6 +285,7 @@ class Company
         $this->businessUsers = new ArrayCollection();
         $this->businessRequests = new ArrayCollection();
         $this->couponTypes = new ArrayCollection();
+        $this->coupons = new ArrayCollection();
     }
     public function setNewPhoto(?string $photo): self
     {
@@ -497,6 +503,37 @@ class Company
             // set the owning side to null (unless already changed)
             if ($couponType->getCompany() === $this) {
                 $couponType->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Coupon[]
+     */
+    public function getCoupons(): Collection
+    {
+        return $this->coupons;
+    }
+
+    public function addCoupon(Coupon $coupon): self
+    {
+        if (!$this->coupons->contains($coupon)) {
+            $this->coupons[] = $coupon;
+            $coupon->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoupon(Coupon $coupon): self
+    {
+        if ($this->coupons->contains($coupon)) {
+            $this->coupons->removeElement($coupon);
+            // set the owning side to null (unless already changed)
+            if ($coupon->getCompany() === $this) {
+                $coupon->setCompany(null);
             }
         }
 

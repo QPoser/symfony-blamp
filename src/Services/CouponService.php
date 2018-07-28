@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Entity\Company\Company;
+use App\Entity\Company\Coupon;
 use App\Entity\Company\CouponType;
 use Doctrine\ORM\EntityManager;
 
@@ -24,6 +25,13 @@ class CouponService
     public function __construct(EntityManager $manager)
     {
         $this->manager = $manager;
+    }
+
+    public function acceptCoupon(Coupon $coupon)
+    {
+        $coupon->setUsed();
+
+        $this->manager->flush();
     }
 
     public function addCouponType(CouponType $couponType, Company $company)

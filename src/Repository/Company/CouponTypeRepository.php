@@ -2,6 +2,7 @@
 
 namespace App\Repository\Company;
 
+use App\Entity\Company\Company;
 use App\Entity\Company\CouponType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -27,6 +28,18 @@ class CouponTypeRepository extends ServiceEntityRepository
     public function getActiveCoupons()
     {
         return $this->findBy(['status' => CouponType::STATUS_ACTIVE]);
+    }
+
+    public function findActiveByCompany(Company $company)
+    {
+        return $this->findBy(['status' => CouponType::STATUS_ACTIVE, 'company' => $company]);
+    }
+
+    public function getRandomActiveCouponByCompany(Company $company)
+    {
+        $coupons = $this->findActiveByCompany($company);
+
+        return $coupons[array_rand($coupons)];
     }
 
 //    /**
