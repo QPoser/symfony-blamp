@@ -2,11 +2,13 @@
 
 namespace App\Entity\Company;
 
+use App\Entity\Category\Category;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OrderBy;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -29,6 +31,11 @@ class Company
      * @ORM\Column(type="string", length=100)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="text", length=2048, nullable=true)//TODO remove nullable
+     */
+    private $description;
 
     /**
      * @ORM\Column(type="string", length=12)
@@ -117,6 +124,17 @@ class Company
      */
     private $businessRequests;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category\Category", mappedBy="companies", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="companies_categories")
+     * @OrderBy({"num" = "ASC"})
+     */
+    private $categories;
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 
     public function calcAssessment()
     {
@@ -268,6 +286,7 @@ class Company
         $this->usersFavor = new ArrayCollection();
         $this->businessUsers = new ArrayCollection();
         $this->businessRequests = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
     public function setNewPhoto(?string $photo): self
     {
@@ -438,6 +457,52 @@ class Company
     public function setFixedAssessment($fixedAssessment): self
     {
         $this->fixedAssessment = $fixedAssessment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        //if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->addCompany($this);
+       // }
+        return $this;
+    }
+
+    public function removeAllCategories()
+    {
+        foreach ($this->categories as $category) {
+            $this->removeCategory($category);
+        }
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            $category->removeCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

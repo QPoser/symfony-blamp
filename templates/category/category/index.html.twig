@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Рубрики{% endblock %}
+
+{% block body %}
+    <h1>Рубрики</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        {% import _self as macros %}
+                        {% macro category_list(category) %}
+                            {% import _self as macros %}
+                            <ul>
+                                <li class="list-group-item rounded border border-light">
+                                    <div class="row">
+                                        <div class="col-sm-1"></div>
+                                        <div class="col-sm-9">
+                                            <a class="" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            {% if app.user.isAdmin %}
+                                                <a class="btn btn-success" href="{{ path('category.edit', {'id': category.id}) }}">Edit</a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <span class="badge badge-pill badge-primary">{{ category.companiesCounter }}</span>
+                                        </div>
+                                    </div>
+                                    {% if category.childrenCategories %}
+                                        {% for children in category.childrenCategories %}
+                                            {{ macros.category_list(children) }}
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        {% endmacro %}
+
+
+                        <ul>
+                        {% for category in categories %}
+                            {% if category.level == 0 %}
+                            <li class="list-group-item rounded ">
+                                <div class="row">
+                                    <div class="col-sm-1"></div>
+                                    <div class="col-sm-9">
+                                        <a class="" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        {% if app.user.isAdmin %}
+                                            <a class="btn btn-success" href="{{ path('category.edit', {'id': category.id}) }}">Edit</a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <span class="badge badge-pill badge-primary">{{ category.companiesCounter }}</span>
+                                    </div>
+                                </div>
+                                {% if category.childrenCategories %}
+                                    {% for children in category.childrenCategories %}
+                                        {{ macros.category_list(children) }}
+                                    {% endfor %}
+                                {% endif %}
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+            <tr>
+                <td>
+                    {% if category.childrenCategories|length == 0 %}
+                        <i class="fa fa-check"></i>
+                    {% else %}
+                        <i class="fa fa-minus"></i>
+                    {% endif %}
+                </td>
+                <td>{{ category.name }}</td>
+                <td>
+                    {% if category.childrenCategories %}
+                        {% for subcategory in category.childrenCategories %}
+                            <span><a href="{{ path('category.show', {'id': subcategory.id}) }}">{{ subcategory.name }}</a>, </span>
+                        {% endfor %}
+                    {% endif %}
+
+                </td>
+                <td>{{ category.companiesCounter }}</td>
+                <td>
+                    {% if category.companies %}
+                        {% for company in category.companies|slice(0, 3) %}
+                            <span><a href="{{ path('company.show', {'id': company.id}) }}">{{ company.name }}</a>, </span>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('category.show', {'id': category.id}) }}">Обзор</a>
+                    <a href="{{ path('category.edit', {'id': category.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}  #}
+
+    {% if app.user.isAdmin %}
+        <a class="btn btn-primary" href="{{ path('category.new') }}">Создать категорию</a>
+    {% endif %}
+
+{% endblock %}

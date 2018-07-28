@@ -73,6 +73,11 @@ class CompanyService
             $this->setPhoto($file, $company);
         }
 
+        foreach ($form['categories']->getData()->getValues() as $category) {
+          $company->setDescription($company->getDescription() . (string)$category);
+            $company->addCategory($category);
+        }
+
         $this->manager->flush();
         return $company;
     }

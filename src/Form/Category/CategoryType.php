@@ -1,32 +1,26 @@
 <?php
 
-namespace App\Form\Company;
+namespace App\Form\Category;
 
-use App\Entity\Company\Company;
+use App\Entity\Category\Category;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CompanyCreateForm extends AbstractType
+class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
-            ->add('description')
-            ->add('phone')
-            ->add('site')
-            ->add('photo', FileType::class, [
-                'required' => false,
-            ])
+            ->add('parentCategory')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Company::class,
+            'data_class' => Category::class,
         ]);
     }
 }

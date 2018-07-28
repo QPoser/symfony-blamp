@@ -2,10 +2,13 @@
 
 namespace App\Controller\Company;
 
+use App\Entity\Category\Category;
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Event;
 use App\Entity\Review\Review;
+use App\Entity\User;
+use App\Form\Category\CategoryType;
 use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
@@ -16,6 +19,8 @@ use App\Services\AdvertService;
 use App\Services\CompanyService;
 use App\Services\EventService;
 use App\Services\UserService;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,7 +115,24 @@ class CompanyController extends Controller
     {
         $this->denyAccessUnlessGranted('EDIT', $company);
 
+        $company->removeAllCategories();
+
         $form = $this->createForm(CompanyEditForm::class, $company);
+
+        if (in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
+            $form->add('categories', EntityType::class, [
+                'class' => 'App\Entity\Category\Category',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.num', 'ASC');
+                },
+                'choice_label' => 'path',
+                'multiple' => true,
+                'required' => false,
+
+            ]);
+
+        }
 
         $form->handleRequest($request);
 

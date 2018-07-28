@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category{% endblock %}
+
+{% block body %}
+    <h2>{{ category.name }}</h2>
+    <a href="{{ path('company.create') }}" class="btn btn-success">Добавить компанию</a>
+    <hr>
+        <small class="category-path">
+            <style>
+                .category-path {
+                    display: table;
+                    direction: rtl;
+                }
+
+                .category-path span {
+                    display: table-cell;
+                    border: none;
+                    box-sizing: border-box;
+                    text-align: center;
+                    text-decoration: none;
+                    direction: rtl;
+                }
+            </style>
+            {% import _self as macros %}
+            {% macro category_path(category, currentPath) %}
+                {% import _self as macros %}
+                {% if category.parentCategory %}
+                    <span><a class="btn {% if currentPath == path('category.show', {'id': category.id}) %}disabled{% endif %}" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a>/</span>
+                {% else %}
+                    <span><a class="btn {% if currentPath == path('category.show', {'id': category.id}) %}disabled{% endif %}" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a></span>
+                {% endif %}
+                {% if category.parentCategory %}
+                    {{ macros.category_path(category.parentCategory, currentPath) }}
+                {% endif %}
+            {% endmacro %}
+
+            {{ macros.category_path(category, currentPath) }}
+        </small>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Оценка</th>
+            <th scope="col">Телефон</th>
+            <th scope="col">Сайт</th>
+            {% if app.user and app.user.isAdmin %}
+                <th scope="col">Изменить</th>
+                <th scope="col">Удалить</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Действие</th>
+            {% endif %}
+            <th scope="col">Добавить отзыв</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for company in category.companies %}
+            <tr>
+                <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                <td><i class="fa fa-star"></i> {{ company.assessment }}</td>
+                <td>{{ company.phone }}</td>
+                <td><a href="{{ company.site }}" class="btn btn-primary">Перейти</a></td>
+                {% if app.user and app.user.isAdmin %}
+
+                    <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Перейти</a></td>
+                    <td><a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a></td>
+
+                    {% if company.isRejected %}
+                        <td><span class="badge badge-danger">{{ company.status }}</span></td>
+                    {% elseif company.isActive %}
+                        <td><span class="badge badge-success">{{ company.status }}</span></td>
+                    {% else %}
+                        <td><span class="badge">{{ company.status }}</span></td>
+                    {% endif %}
+
+
+                    {% if company.isActive %}
+                        <td><a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-danger">Отклонить</a></td>
+                    {% else %}
+                        <td><a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success">Принять</a></td>
+                    {% endif %}
+                {% endif %}
+                <td><a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+    <a href="{{ path('category.index') }}" class="btn btn-info">Назад к рубрикам</a>
+{% endblock %}

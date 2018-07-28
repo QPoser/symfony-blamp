@@ -67,69 +67,77 @@
             <th scope="col">Comment</th>
         </tr>
         </thead>
-    </table>
-    {# macros #}
-    {% macro comment_tree(comment) %}
+        <tbody>
         {% import _self as macros %}
-        <ul class="nested-comments" style="list-style: none">
-            <li style="margin-left: 1em">
-                <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 15px;">
-                    <div class="col-sm-2">
-                        {% if comment.isCompany %}
-                            <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
-                        {% else %}
-                            <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
-                        {% endif %}
-                        {% if comment.updatedAt %}
-                            <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
-                        {% else %}
-                            <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="col-sm-8"><p>{{ comment.text }}</p></div>
-                    <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
-                    <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
-                </div>
-                {% if comment.childrenComments %}
-                    {% for children in comment.childrenComments %}
-                        {{ macros.comment_tree(children) }}
-                    {% endfor %}
-                {% endif %}
-            </li>
-        </ul>
-    {% endmacro %}
-
-    {% import _self as macros %}
-    {% for comment in review.comments %}
+        {% for comment in review.comments %}
         {% if comment.root == true %}
-            <ul class="nested-comments" style="list-style: none; padding-left: 1em">
-                <li>
-                    <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 10px;">
-                        <div class="col-sm-2">
-                            {% if comment.isCompany %}
-                                <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
-                            {% else %}
-                                <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+        <tr>
+            <td colspan="2">
+                {# macros #}
+                {% macro comment_tree(comment) %}
+                    {% import _self as macros %}
+                    <ul class="nested-comments" style="list-style: none">
+                        <li style="margin-left: 1em">
+                            <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 15px;">
+                                <div class="col-sm-2">
+                                    {% if comment.isCompany %}
+                                        <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                                    {% else %}
+                                        <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                                    {% endif %}
+                                    {% if comment.updatedAt %}
+                                        <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
+                                    {% else %}
+                                        <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-sm-8"><p style="word-wrap: break-word">{{ comment.text }}</p></div>
+                                <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
+                                <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
+                            </div>
+                            {% if comment.childrenComments %}
+                                {% for children in comment.childrenComments %}
+                                    {{ macros.comment_tree(children) }}
+                                {% endfor %}
                             {% endif %}
-                            {% if comment.updatedAt %}
-                                <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
-                            {% else %}
-                                <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="col-sm-8"><p>{{ comment.text }}</p></div>
-                        <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
-                        <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
-                    </div>
-                    {% if comment.childrenComments %}
-                        {% for children in comment.childrenComments %}
-                            {{ macros.comment_tree(children) }}
-                        {% endfor %}
-                    {% endif %}
-                </li>
-            </ul>
+                        </li>
+                    </ul>
+                {% endmacro %}
+
+
+                        <ul class="nested-comments" style="list-style: none; padding-left: 1em">
+                            <li>
+                                <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 10px;">
+                                    <div class="col-sm-2">
+                                        {% if comment.isCompany %}
+                                            <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                                        {% else %}
+                                            <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                                        {% endif %}
+                                        {% if comment.updatedAt %}
+                                            <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
+                                        {% else %}
+                                            <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-8"><p style="word-wrap: break-word">{{ comment.text }}</p></div>
+                                    <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
+                                    <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
+                                </div>
+                                {% if comment.childrenComments %}
+                                    {% for children in comment.childrenComments %}
+                                        {{ macros.comment_tree(children) }}
+                                    {% endfor %}
+                                {% endif %}
+                            </li>
+                        </ul>
+            </td>
+        </tr>
         {% endif %}
-    {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+
 
 
 

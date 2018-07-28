@@ -15,11 +15,12 @@ class CompanyFixtures extends Fixture
         for ($i = 1; $i <=10; $i++) {
             $company = new Company();
             $company->setName('Company '.$i);
+            $company->setDescription('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad aliquam animi assumenda consequatur culpa dolores eius enim facilis inventore ipsa magnam nemo nesciunt odio pariatur qui, ratione sapiente suscipit?');
             $company->setPhone('+79876543210');
             $company->setStartWork(new \DateTime("09:00"));
             $company->setEndWork(new \DateTime("18:00"));
             $company->setSite('https://www.google'.$i.'.ru');
-            $company->setPhoto('public/source/img/company-logo.png');
+            //$company->setPhoto('public/source/img/company-logo.png');
             $company->setStatus(Company::STATUS_ACTIVE);
 
             $manager->persist($company);

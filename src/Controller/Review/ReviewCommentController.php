@@ -59,7 +59,6 @@ class ReviewCommentController extends Controller
 
             $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
-//            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
 
             return $this->redirectToRoute('review.show', ['id' => $reviewComment->getReview()->getId()]);
         }
