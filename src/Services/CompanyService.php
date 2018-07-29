@@ -13,6 +13,7 @@ use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Review\Review;
 use App\Entity\User;
+use App\Services\App\EmailService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -36,25 +37,35 @@ class CompanyService
      * @var TokenStorage
      */
     private $storage;
+    /**
+     * @var EmailService
+     */
+    private $emailService;
 
     /**
      * CompanyService constructor.
      * @param EntityManager $manager
      * @param Container $container
+     * @param EmailService $emailService
      */
-    public function __construct(EntityManager $manager, Container $container)
+    public function __construct(EntityManager $manager, Container $container, EmailService $emailService)
     {
         $this->manager = $manager;
         $this->container = $container;
+        $this->emailService = $emailService;
     }
 
 
-    public function create(Company $company, Form $form): Company
+    public function create(Company $company, Form $form, $email = null): Company
     {
 
         if ($form['photo']) {
             $file = $form['photo']->getData();
             $this->setPhoto($file, $company);
+        }
+
+        if (!$company->getCreatorEmail() && $email) {
+            $company->setCreatorEmail($email);
         }
 
         $company->setStatus(Company::STATUS_WAIT);
@@ -83,12 +94,25 @@ class CompanyService
     public function verify(Company $company)
     {
         $company->setStatus(Company::STATUS_ACTIVE);
+        if ($company->getCreatorEmail()) {
+            $this->emailService->sendSimpleMessage('Компания ' . $company->getName() . ' успешно принята!',
+                'Компания ' . $company->getName() . ' которую вы добавили ранее, была успешно принята на сайт, и доступна для просмотра!',
+                $company->getCreatorEmail());
+        }
+
         $this->manager->flush($company);
     }
 
     public function reject(Company $company)
     {
         $company->setStatus(Company::STATUS_REJECTED);
+
+        if ($company->getCreatorEmail()) {
+            $this->emailService->sendSimpleMessage('Компания ' . $company->getName() . ' была отклонена!',
+                'Компания ' . $company->getName() . ' которую вы добавили ранее, была отклонена по причине: ' . $company->getRejectReason(),
+                $company->getCreatorEmail());
+        }
+
         $this->manager->flush($company);
     }
 

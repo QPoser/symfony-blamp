@@ -8,16 +8,14 @@ use App\Entity\Review\Review;
 use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
-use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
 use App\Repository\Company\CouponTypeRepository;
-use App\Services\AdvertService;
 use App\Services\CompanyService;
 use App\Services\ReviewService;
 use App\Services\UserService;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -65,11 +63,19 @@ class CompanyController extends Controller
 
         $form = $this->createForm(CompanyCreateForm::class, $company);
 
+        $email = null;
+
+        if (!$this->getUser() || !$this->getUser()->getEmail()) {
+            $form->add('creatorEmail', EmailType::class);
+        } else {
+            $email = $this->getUser()->getEmail();
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $company = $this->service->create($company, $form);
+            $company = $this->service->create($company, $form, $email);
 
             $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно добавлена.');
 

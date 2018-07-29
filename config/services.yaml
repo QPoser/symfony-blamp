@@ -7,6 +7,7 @@ parameters:
     locale: 'en'
     img_dir: '%kernel.project_dir%/public/uploads/img'
     img_banner_dir: '%kernel.project_dir%/public/uploads/img/banners'
+    default_mail_to: 'andystory@mail.ru'
 
 services:
     # default configuration for services in *this* file
@@ -45,7 +46,7 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
 
     App\Services\AuthService:
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
 
     App\Services\EventService:
         arguments: ['@doctrine.orm.entity_manager']
@@ -61,6 +62,10 @@ services:
 
     App\Services\CouponService:
         arguments: ['@doctrine.orm.entity_manager']
+
+    AppBundle\Services\EmailService:
+        arguments: ['@twig', '@mailer', '%default_mail_to%']
+
 
 
 hwi_oauth:

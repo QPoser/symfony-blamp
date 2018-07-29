@@ -123,6 +123,24 @@ class Company
      */
     private $advertDescription;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\CouponType", mappedBy="company")
+     */
+    private $couponTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\Coupon", mappedBy="company")
+     */
+    private $coupons;
+
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     * @Assert\Email()
+     */
+    private $creatorEmail;
+
+    private $newPhoto;
+
 
     public function calcAssessment()
     {
@@ -265,19 +283,6 @@ class Company
         return $this;
     }
 
-
-    private $new_photo;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Company\CouponType", mappedBy="company")
-     */
-    private $couponTypes;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Company\Coupon", mappedBy="company")
-     */
-    private $coupons;
-
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -287,9 +292,10 @@ class Company
         $this->couponTypes = new ArrayCollection();
         $this->coupons = new ArrayCollection();
     }
+
     public function setNewPhoto(?string $photo): self
     {
-        $this->new_photo = $photo;
+        $this->newPhoto = $photo;
 
         return $this;
     }
@@ -536,6 +542,18 @@ class Company
                 $coupon->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatorEmail(): ?string
+    {
+        return $this->creatorEmail;
+    }
+
+    public function setCreatorEmail(?string $creatorEmail): self
+    {
+        $this->creatorEmail = $creatorEmail;
 
         return $this;
     }
