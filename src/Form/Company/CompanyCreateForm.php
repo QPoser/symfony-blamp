@@ -29,6 +29,10 @@ class CompanyCreateForm extends AbstractType
                 'required' => false,
                 'label' => 'Логотип компании'
             ])
+            ->add('address', TextType::class, [
+                'label' => 'Адрес',
+                'required' => false,
+            ])
             ->add('startWork', TimeType::class, [
                 'label' => 'Начало работы'
             ])

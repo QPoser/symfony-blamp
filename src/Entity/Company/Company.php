@@ -53,6 +53,11 @@ class Company
     private $end_work;
 
     /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $address;
+
+    /**
      * @ORM\Column(type="string", length=100, nullable=true)
      *
      * @Assert\Url(
@@ -554,6 +559,18 @@ class Company
     public function setCreatorEmail(?string $creatorEmail): self
     {
         $this->creatorEmail = $creatorEmail;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

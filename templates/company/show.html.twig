@@ -70,6 +70,20 @@
                     <td>Фотография</td>
                     <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="Без фото" style="width: auto; height: 120px;"></td>
                 </tr>
+                {% if company.address %}
+                    <tr>
+                        <td>Адрес</td>
+                        <td>
+                            <script type="text/javascript">
+                                let address = "{{ company.address }}";
+                                let companyName = "{{ company.name }}";
+                            </script>
+                            <div id="map" style="width:100%; height: auto; min-height: 280px;">
+
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
                 {% if company.startWork and company.endWork %}
                     <tr>
                         <td>Часы работы</td>
