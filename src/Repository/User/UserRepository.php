@@ -5,6 +5,7 @@ namespace App\Repository\User;
 use App\Entity\User;
 use App\Repository\User\NetworkRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -41,6 +42,20 @@ class UserRepository extends ServiceEntityRepository
         return $this->findOneBy(['passwordResetToken' => $token]);
     }
 
+    public function search($search = null, $page = 1)
+    {
+        $query = $this->createQueryBuilder('user')
+            ->where('user.username LIKE :search')
+            ->setParameters([
+                'search' => '%' . $search . '%',
+            ])
+        ;
+
+        $paginator = $this->paginate($query->getQuery(), $page ?: 1);
+
+        return $paginator;
+    }
+
     public function findUserByNetworkIdentity($identity)
     {
         $network = $this->networks->findByIdentity('vk', $identity);
@@ -48,5 +63,16 @@ class UserRepository extends ServiceEntityRepository
             return null;
         }
         return $network->getUser();
+    }
+
+    public function paginate($dql, $page = 1, $limit = 15)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
     }
 }

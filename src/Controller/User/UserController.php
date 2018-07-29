@@ -32,13 +32,17 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/", name="user.index", methods="GET")
+     * @Route("", name="user.index", methods="GET")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = $this->users->findAll();
+        $users = $this->users->search($request->get('search'), $request->get('page') ?: 1);
 
-        return $this->render('user/index.html.twig', compact('users'));
+        $thisPage = $request->get('page') ?: 1;
+
+        $maxPages = ceil($users->count() / 15);
+
+        return $this->render('user/index.html.twig', compact('users', 'thisPage', 'maxPages'));
     }
 
     /**

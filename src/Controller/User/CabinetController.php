@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class CabinetController extends Controller
 {
     /**
-     * @Route("/", name="cabinet")
+     * @Route("", name="cabinet")
      * @param EventService $eventService
      * @return \Symfony\Component\HttpFoundation\Response
      */

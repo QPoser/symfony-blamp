@@ -43,21 +43,19 @@ class CompanyController extends Controller
     }
 
     /**
-     * @Route("/", name="company")
+     * @Route("", name="company")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request)
     {
-        $companies = [];
+        $companies = $this->repository->search($request->get('search'), $request->get('page') ?: 1);
 
-        if ($request->get('search')) {
-            $companies = $this->repository->search($request->get('search'));
-        } else {
-            $companies = $this->repository->getActiveCompanies();
-        }
+        $thisPage = $request->get('page') ?: 1;
 
-        return $this->render('company/index.html.twig', compact('companies'));
+        $maxPages = ceil($companies->count() / 15);
+
+        return $this->render('company/index.html.twig', compact('companies', 'maxPages', 'thisPage'));
     }
 
     /**

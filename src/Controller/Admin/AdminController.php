@@ -74,7 +74,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/", name="admin")
+     * @Route("", name="admin")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function companies()
