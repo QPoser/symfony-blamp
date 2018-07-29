@@ -5,7 +5,7 @@
 {% block body %}
     <h1>{{ user.username }}</h1>
     <a href="{{ path('user.index') }}" class="btn btn-primary">< Пользователи</a>
-    {% if user.id != app.user.id %}
+    {% if app.user and user.id != app.user.id %}
         {% if user.subscribers.contains(app.user) %}
             <a href="{{ path('user.unsubscribe', {'id' : user.id}) }}" class="btn btn-warning">Отписаться</a>
         {% else %}

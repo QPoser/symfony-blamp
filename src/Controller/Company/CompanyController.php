@@ -66,7 +66,10 @@ class CompanyController extends Controller
         $email = null;
 
         if (!$this->getUser() || !$this->getUser()->getEmail()) {
-            $form->add('creatorEmail', EmailType::class);
+            $form->add('creatorEmail', EmailType::class, [
+                'required' => false,
+                'label' => 'Email для уведомлений'
+            ]);
         } else {
             $email = $this->getUser()->getEmail();
         }

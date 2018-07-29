@@ -3,7 +3,6 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
-use App\Form\UserType;
 use App\Repository\User\UserRepository;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

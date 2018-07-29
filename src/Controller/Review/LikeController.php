@@ -4,7 +4,6 @@ namespace App\Controller\Review;
 
 use App\Entity\Review\Like;
 use App\Entity\Review\Review;
-use App\Form\Review\LikeType;
 use App\Repository\Review\LikeRepository;
 use App\Services\LikeService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

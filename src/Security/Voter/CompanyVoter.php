@@ -22,6 +22,17 @@ class CompanyVoter extends Voter
         /** @var Company $subject */
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
+
+        if ($attribute == 'SHOW') {
+            if ($subject->isActive()) {
+                return true;
+            }
+
+            if ($user instanceof UserInterface && $user->isAdmin()) {
+                return true;
+            }
+        }
+
         if (!$user instanceof UserInterface) {
             return false;
         }
@@ -35,9 +46,6 @@ class CompanyVoter extends Voter
                 break;
             case 'VERIFY':
                 if ($user->isAdmin()) { return true; }
-                break;
-            case 'SHOW':
-                if ($subject->isActive() || $user->isAdmin()) { return true; }
                 break;
             case 'BUSINESS':
                 if ($user->isBusiness()) { return true; }

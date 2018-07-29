@@ -55,14 +55,6 @@ class AuthController extends Controller
             return $this->redirectToRoute('homepage');
         }
 
-        try {
-            $this->denyAccessUnlessGranted('AUTH', null);
-        } catch (AccessDeniedException $e) {
-            $this->addFlash('notice', $e->getMessage());
-
-            return $this->redirectToRoute('homepage');
-        }
-
         $error = $this->authenticationUtils->getLastAuthenticationError();
 
         $lastUsername = $this->authenticationUtils->getLastUsername();

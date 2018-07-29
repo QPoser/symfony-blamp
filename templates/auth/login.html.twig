@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello!{% endblock %}
+{% block title %}Вход{% endblock %}
 
 {% block body %}
 <style>
@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Login page! ✅</h1>
+    <h1>Вход!</h1>
 
     {% if error %}
         <span class="error">{{ error.messageKey }}</span>
@@ -17,16 +17,16 @@
 
     <form action="{{ path('login') }}" method="POST">
 
-        <input type="text" name="_username" value="{{ lastUsername }}" placeholder="Username here...">
+        <input type="text" name="_username" value="{{ lastUsername }}" placeholder="Введите логин...">
 
         <input type="password" name="_password">
 
-        <button type="submit">Login</button>
+        <button type="submit">Войти</button>
 
     </form>
     <a href="{{ path('reset.password.request') }}">Забыл пароль!</a>
 </div>
 
-    <a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80">VK</a>
+    <a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80" class="btn btn-primary"><i class="fa fa-vk"></i></a>
 
 {% endblock %}
