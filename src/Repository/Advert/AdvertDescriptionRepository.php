@@ -29,6 +29,16 @@ class AdvertDescriptionRepository extends ServiceEntityRepository
         return $this->findBy(['status' => AdvertDescription::STATUS_ACTIVE]);
     }
 
+    public function getCountOfNewAdverts()
+    {
+        $query = $this->createQueryBuilder('ad')
+            ->select('count(ad.id)')
+            ->where('ad.status = :status')
+            ->setParameter('status', AdvertDescription::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return AdvertDescription[] Returns an array of AdvertDescription objects
 //     */

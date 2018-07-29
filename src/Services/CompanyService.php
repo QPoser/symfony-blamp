@@ -18,7 +18,6 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -33,10 +32,6 @@ class CompanyService
      * @var Container
      */
     private $container;
-    /**
-     * @var TokenStorage
-     */
-    private $storage;
     /**
      * @var EmailService
      */
@@ -56,10 +51,10 @@ class CompanyService
     }
 
 
-    public function create(Company $company, Form $form, $email = null): Company
+    public function create(Company $company, Form $form = null, $email = null): Company
     {
 
-        if ($form['photo']) {
+        if ($form && $form['photo']) {
             $file = $form['photo']->getData();
             $this->setPhoto($file, $company);
         }

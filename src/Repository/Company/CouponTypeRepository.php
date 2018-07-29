@@ -42,6 +42,16 @@ class CouponTypeRepository extends ServiceEntityRepository
         return $coupons[array_rand($coupons)];
     }
 
+    public function getCountOfNewCoupons()
+    {
+        $query = $this->createQueryBuilder('coupon')
+            ->select('count(coupon.id)')
+            ->where('coupon.status = :status')
+            ->setParameter('status', CouponType::STATUS_ON_MODERATION);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return CouponType[] Returns an array of CouponType objects
 //     */

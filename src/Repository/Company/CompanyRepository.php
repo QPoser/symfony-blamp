@@ -33,13 +33,23 @@ class CompanyRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('company')
             ->where('company.name LIKE :search')
-            ->andWhere('company.status LIKE :status')
+            ->andWhere('company.status = :status')
             ->setParameters([
                 'search' => '%' . $search . '%',
                 'status' => Company::STATUS_ACTIVE,
             ])
             ->getQuery();
         return $query->getResult();
+    }
+
+    public function getCountOfNewCompanies()
+    {
+        $query = $this->createQueryBuilder('company')
+            ->select('count(company.id)')
+            ->where('company.status = :status')
+            ->setParameter('status', Company::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
     }
 //    /**
 //     * @return Company[] Returns an array of Company objects

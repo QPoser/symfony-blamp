@@ -13,7 +13,10 @@
         <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
+        <env name="DATABASE_URL" value="mysql://app:secret@mysql-test:3306/app"/>
         <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="VK_CLIENT_ID" value="123"/>
+        <env name="VK_SECRET_KEY" value="123"/>
         <!-- define your env variables for the test env here -->
     </php>
 

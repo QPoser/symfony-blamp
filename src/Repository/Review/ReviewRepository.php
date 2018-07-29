@@ -29,6 +29,16 @@ class ReviewRepository extends ServiceEntityRepository
         return $this->findBy(['status' => Review::STATUS_WAIT]);
     }
 
+    public function getCountOfNewReviews()
+    {
+        $query = $this->createQueryBuilder('review')
+            ->select('count(review.id)')
+            ->where('review.status = :status')
+            ->setParameter('status', Review::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return Review[] Returns an array of Review objects
 //     */

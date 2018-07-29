@@ -65,12 +65,12 @@ class AdminController extends Controller
         $this->adDescriptionRepository = $adDescriptionRepository;
         $this->couponTypeRepository = $couponTypeRepository;
 
-        $this->counts['companies'] = count($companyRepository->getWaitCompanies());
-        $this->counts['reviews'] = count($reviewRepository->getWaitReviews());
-        $this->counts['requests'] = count($requestRepository->getWaitRequests());
-        $this->counts['adverts'] = count($bannerRepository->getWaitBanners());
-        $this->counts['adverts'] += count($adDescriptionRepository->getWaitDescriptions());
-        $this->counts['coupons'] = count($couponTypeRepository->getWaitCoupons());
+        $this->counts['companies'] = $companyRepository->getCountOfNewCompanies();
+        $this->counts['reviews'] = $reviewRepository->getCountOfNewReviews();
+        $this->counts['requests'] = $requestRepository->getCountOfNewRequests();
+        $this->counts['adverts'] = $bannerRepository->getCountOfNewBanners();
+        $this->counts['adverts'] += $adDescriptionRepository->getCountOfNewAdverts();
+        $this->counts['coupons'] = $couponTypeRepository->getCountOfNewCoupons();
     }
 
     /**
