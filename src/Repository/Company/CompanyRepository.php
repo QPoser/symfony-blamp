@@ -28,6 +28,19 @@ class CompanyRepository extends ServiceEntityRepository
     {
         return $this->findBy(['status' => Company::STATUS_WAIT]);
     }
+
+    public function search(string $search)
+    {
+        $query = $this->createQueryBuilder('company')
+            ->where('company.name LIKE :search')
+            ->andWhere('company.status LIKE :status')
+            ->setParameters([
+                'search' => '%' . $search . '%',
+                'status' => Company::STATUS_ACTIVE,
+            ])
+            ->getQuery();
+        return $query->getResult();
+    }
 //    /**
 //     * @return Company[] Returns an array of Company objects
 //     */

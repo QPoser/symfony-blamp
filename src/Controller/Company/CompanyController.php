@@ -44,10 +44,18 @@ class CompanyController extends Controller
 
     /**
      * @Route("/", name="company")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $companies = $this->repository->getActiveCompanies();
+        $companies = [];
+
+        if ($request->get('search')) {
+            $companies = $this->repository->search($request->get('search'));
+        } else {
+            $companies = $this->repository->getActiveCompanies();
+        }
 
         return $this->render('company/index.html.twig', compact('companies'));
     }

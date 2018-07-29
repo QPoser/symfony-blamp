@@ -6,6 +6,26 @@
     <h2>Компании</h2>
     <a href="{{ path('company.create') }}" class="btn btn-success">Добавить компанию</a>
     <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <form action="{{ path('company') }}" method="GET">
+                    <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="search" value="{{ app.request.get('search') }}" placeholder="Введите название компании">
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <button class="btn btn-primary border" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <hr>
     <table class="table table-striped">
         <thead>
             <tr>

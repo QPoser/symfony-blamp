@@ -25,11 +25,9 @@ $( document ).ready(function () {
         function init(){
             var myGeocoder = ymaps.geocode('Новосибирск, ' + address);
 
-            var center = 1;
-
             myGeocoder.then(
                 function (res) {
-                    center = res.geoObjects.get(0).geometry.getCoordinates();
+                    var center = res.geoObjects.get(0).geometry.getCoordinates();
 
                     var myMap = new ymaps.Map("map", {
                         // Координаты центра карты.
@@ -52,21 +50,6 @@ $( document ).ready(function () {
                 function (err) {
                     console.log('Ошибка загрузки карты')
                 }
-            );
-
-            // Создание карты.
-
-
-
-            myGeocoder.then(
-                function (res) {
-                    var nearest = res.geoObjects.get(0);
-                    var name = nearest.properties.get('name');
-                    nearest.properties.set('iconContent', name);
-                    nearest.options.set('preset', 'islands#redStretchyIcon');
-
-                },
-
             );
         }
     }
