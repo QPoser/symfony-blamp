@@ -3,30 +3,41 @@
 {% block title %}Вход{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Вход!</h1>
+    <h1>Вход</h1>
 
     {% if error %}
         <span class="error">{{ error.messageKey }}</span>
     {% endif %}
 
     <form action="{{ path('login') }}" method="POST">
+        <div class="form-group col-sm-4">
+            <label for="loginInput">Логин</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-user"></i></div>
+                </div>
+                <input type="text" name="_username" value="{{ lastUsername }}" class="form-control" id="loginInput" placeholder="Введите логин...">
+            </div>
+        </div>
 
-        <input type="text" name="_username" value="{{ lastUsername }}" placeholder="Введите логин...">
+        <div class="form-group col-sm-4">
+            <label for="passwordInput">Пароль</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                </div>
+                <input type="password" class="form-control" name="_password" id="passwordInput" placeholder="Введите пароль...">
+            </div>
+        </div>
 
-        <input type="password" name="_password">
-
-        <input type="submit" value="submit">
-
+        <div class="form-group col-sm-4">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Войти</button>
+                <a href="{{ networks.vk }}" class="btn btn-dark"><i class="fa fa-vk"></i></a>
+            </div>
+        </div>
     </form>
     <a href="{{ path('reset.password.request') }}">Забыл пароль!</a>
-</div>
-
-    <a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80" class="btn btn-primary"><i class="fa fa-vk"></i></a>
 
 {% endblock %}

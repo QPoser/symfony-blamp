@@ -3,7 +3,7 @@
 namespace App\Entity\Company;
 
 use App\Entity\Category\Category;
-use App\Entity\Tag;
+use App\Entity\Company\Tag;
 use App\Entity\Advert\AdvertDescription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -139,7 +139,7 @@ class Company
     private $categories;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="companies", cascade={"persist", "merge"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Tag", mappedBy="companies", cascade={"persist", "merge"})
      * @ORM\JoinTable(name="companies_tags")
      * @OrderBy({"name" = "ASC"})
      */
@@ -332,6 +332,23 @@ class Company
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+
+    public function getNormalStatus(): ?string
+    {
+        switch($this->status) {
+            case self::STATUS_ACTIVE:
+                return 'Активен';
+                break;
+            case self::STATUS_WAIT:
+                return 'В ожидании';
+                break;
+            case self::STATUS_REJECTED:
+                return 'Отклонен';
+                break;
+        }
+
+        return 'Недоступно';
     }
 
     public function setStatus(string $status): self

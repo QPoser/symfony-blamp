@@ -16,6 +16,7 @@ use App\Entity\Company\Company;
 use App\Entity\User;
 use App\Repository\Advert\BannerRepository;
 use App\Repository\Advert\LogBannerRepository;
+use App\Services\App\EmailService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
@@ -37,12 +38,17 @@ class AdvertService
      * @var LogBannerRepository
      */
     private $logs;
+    /**
+     * @var EmailService
+     */
+    private $emailService;
 
-    public function __construct(EntityManager $manager, Container $container, LogBannerRepository $logs)
+    public function __construct(EntityManager $manager, Container $container, LogBannerRepository $logs, EmailService $emailService)
     {
         $this->manager = $manager;
         $this->container = $container;
         $this->logs = $logs;
+        $this->emailService = $emailService;
     }
 
     public function getRandomBanner(BannerRepository $bannerRepository, $format = Banner::FORMAT_VERTICAL, $user)
@@ -97,6 +103,10 @@ class AdvertService
         $banner->setViews(1000);
 
         $this->manager->flush();
+
+        if ($email = $banner->getUser()->getEmail()) {
+            $this->emailService->sendSimpleMessage('Ваш баннер был успешно оплачен!', 'Ваш баннер был успешно оплачен и добавлен на сайт Blamp!', $email);
+        }
     }
 
     public function addView(Banner $banner)
@@ -111,6 +121,12 @@ class AdvertService
         $banner->setStatus(Banner::STATUS_READY_TO_PAY);
 
         $this->manager->flush();
+
+        if ($email = $banner->getUser()->getEmail()) {
+            $this->emailService->sendSimpleMessage('Ваш баннер был успешно проверифицирован!',
+                'Ваш баннер был успешно проверифицирован и готов к оплате!',
+                $email);
+        }
     }
 
     public function rejectBanner(Banner $banner)
@@ -118,6 +134,12 @@ class AdvertService
         $banner->setStatus(Banner::STATUS_REJECTED);
 
         $this->manager->flush();
+
+        if ($email = $banner->getUser()->getEmail()) {
+            $this->emailService->sendSimpleMessage('Ваш баннер был отклонен!',
+                'Ваш баннер был отклонен, и недоступен для публикации!',
+                $email);
+        }
     }
 
 

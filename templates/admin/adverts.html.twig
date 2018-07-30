@@ -24,11 +24,11 @@
                     <td><a href="{{ path('user.show', {'id' : banner.user.id}) }}">{{ banner.user.username }}</a></td>
                     <td>
                         {% if banner.isRejected %}
-                            <span class="badge badge-danger">{{ banner.status }}</span>
+                            <span class="badge badge-danger">{{ banner.normalStatus }}</span>
                         {% elseif banner.isActive %}
-                            <span class="badge badge-success">{{ banner.status }}</span>
+                            <span class="badge badge-success">{{ banner.normalStatus }}</span>
                         {% else %}
-                            <span class="badge badge-primary">{{ banner.status }}</span>
+                            <span class="badge badge-primary">{{ banner.normalStatus }}</span>
                         {% endif %}
                     </td>
                     <td>

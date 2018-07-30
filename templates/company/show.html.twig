@@ -3,24 +3,54 @@
 {% block title %}{{ company.name }}{% endblock %}
 
 {% block body %}
-    <h2>{{ company.name }} {% if company.assessment %}<i class="fa fa-star"></i> {{ company.assessment }}{% endif %}</h2>
-    <h5><span class="badge badge-primary">{{ coupons ? 'Купоны за отзыв' : '' }}</span></h5>
-    <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
-    {% if app.user and app.user.favoriteCompanies.contains(company) %}
-        <a href="{{ path('company.remove.favorites', {'id' : company.id}) }}" class="btn btn-warning">Убрать из избранного</a>
-    {% else %}
-        <a href="{{ path('company.add.favorites', {'id' : company.id}) }}" class="btn btn-success">Добавить в избранное</a>
-    {% endif %}
 
-    {% if app.user and (app.user.isAdmin or company.businessUsers.contains(app.user)) %}
-        <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a>
-        {% if app.user.isAdmin %}
-            <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a>
+    <div class="row company-head">
+        <div class="col-sm-1">
+            <div class="logo">
+                <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+
+            <h1>{{ company.name }}</h1>
+            {% if company.startWork and company.endWork %}
+                <span class="badge badge-info">Часы работы: {{ company.startWork.format('H:i') }} - {{ company.endWork.format('H:i') }}</span>
+            {% endif %}
+
+            <span class="badge badge-primary">{{ coupons ? 'Купоны за отзыв!' : '' }}</span>
+
+            {% if app.user and app.user.isAdmin %}
+                <span class="badge badge-success">{{ company.normalStatus }}</span>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-6 text-right company-head-stats">
+            <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Пока нет оценки' }}</p>
+            <p><i class="fa fa-comment"></i> {{ company.reviews|length }}</p>
+        </div>
+    </div>
+    <hr>
+    <p class="company-nav">
+        <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
+
+        {% if app.user and app.user.favoriteCompanies.contains(company) %}
+            <a href="{{ path('company.remove.favorites', {'id' : company.id}) }}" class="btn btn-warning">Убрать из избранного</a>
+        {% else %}
+            <a href="{{ path('company.add.favorites', {'id' : company.id}) }}" class="btn btn-success">Добавить в избранное</a>
         {% endif %}
-    {% endif %}
-    {% if app.user and app.user.isBusiness and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
-        <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
-    {% endif %}
+
+        {% if app.user and (app.user.isAdmin or company.businessUsers.contains(app.user)) %}
+            <a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a>
+            {% if app.user.isAdmin %}
+                <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-danger">Удалить</a>
+            {% endif %}
+        {% endif %}
+
+        {% if app.user and app.user.isBusiness and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
+            <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
+        {% endif %}
+    </p>
     <hr>
     <small class="category-path">
         <style>
@@ -57,110 +87,93 @@
         {% endfor %}
     </small>
     {% if company.advertDescription %}
-        <div class="card text-white bg-info">
+        <div class="card advert-description bg-primary text-light">
             <div class="card-body">
-                <h6 class="card-text">{{ company.advertDescription.description }}</h6>
+                <p>{{ company.advertDescription.description }}</p>
             </div>
         </div>
-        <hr>
     {% endif %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Характеристика</th>
-                <th scope="col">Значение</th>
-            </tr>
-        </thead>
-        <tbody>
-                <tr>
-                    <td>Название</td>
-                    <td>{{ company.name }}</td>
-                </tr>
-                <tr>
-                    <td>Телефон</td>
-                    <td>{{ company.phone }}</td>
-                </tr>
-                <tr>
-                    <td>Сайт</td>
-                    <td><a href="{{ company.site }}" class="btn btn-primary">{{ company.site }}</a></td>
-                </tr>
-                <tr>
-                    <td>Статус</td>
-                    {% if company.isRejected %}
-                        <td><span class="badge badge-danger">{{ company.status }}</span></td>
-                    {% elseif company.isActive %}
-                        <td><span class="badge badge-success">{{ company.status }}</span></td>
-                    {% else %}
-                        <td><span class="badge">{{ company.status }}</span></td>
-                    {% endif %}
-                </tr>
-                {% if company.isRejected %}
-                    <tr>
-                        <td>Причина отклонения</td>
-                        <td>{{ company.rejectReason }}</td>
-                    </tr>
-                {% endif %}
-                <tr>
-                    <td>Фотография</td>
-                    <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="Без фото" style="width: auto; height: 120px;"></td>
-                </tr>
-                {% if company.address %}
-                    <tr>
-                        <td>Адрес</td>
-                        <td>
-                            <script type="text/javascript">
-                                let address = "{{ company.address }}";
-                                let companyName = "{{ company.name }}";
-                            </script>
-                            <div id="map" style="width:100%; height: auto; min-height: 280px;">
 
-                            </div>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if company.startWork and company.endWork %}
-                    <tr>
-                        <td>Часы работы</td>
-                        <td>{{ company.startWork.format('H:i') }} - {{ company.endWork.format('H:i') }}</td>
-                    </tr>
-                {% endif %}
+    <br>
+
+    {% if company.address %}
+        <script type="text/javascript">
+            let address = "{{ company.address }}";
+            let companyName = "{{ company.name }}";
+        </script>
+        <div class="company-map row">
+            <div class="col-sm-12">
+                <h4><i class="fa fa-map-marker"></i> Новосибирск, {{ company.address }}</h4>
+                <div class="map" id="map">
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <td>Телефон</td>
+            <td>{{ company.phone }}</td>
+        </tr>
+
+        <tr>
+            <td>Сайт</td>
+            <td><a href="{{ company.site }}" class="btn btn-info">Перейти</a></td>
+        </tr>
         </tbody>
     </table>
-    {% if company.reviews|length > 0 %}
-        <h2>Отзывы</h2>
-        <hr>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Пользователь</th>
-                        <th>Отзыв</th>
-                        <th>Балл</th>
-                        <th>Кол-во комменатиев</th>
-                        <th>Перейти</th>
-                        <th>Добавить комментарий</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for review in company.reviews %}
-                        {% if review.isActive %}
-                            <tr>
-                                <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
-                                <td>{{ review.text }}</td>
-                                <td><i class="fa fa-star"></i> {{ review.assessment }}</td>
-                                <td><i class="fa fa-comment"></i> {{ review.comments|length }}</td>
-                                <td><a href="{{ path('review.show', {'id' : review.id}) }}" class="btn btn-primary">Перейти</a></td>
-                                <td><a href="{{ path('review.add.comment.outside', {'id' : review.id}) }}" class="btn btn-success">Добавить комментарий</a></td>
-                                <td>
-                                    <a href="{{ path('review.like', {'id': review.id}) }}" class="btn btn-success"><i class="fa fa-thumbs-up"></i> {{ review.likeCounter }}</a>
-                                </td>
-                                <td>
-                                    <a href="{{ path('review.dislike', {'id': review.id}) }}" class="btn btn-danger"><i class="fa fa-thumbs-down"></i>{{ review.dislikeCounter }}</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
+
+    <hr>
+    <h4>Отзывы</h4>
+    <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
+    <hr>
+
+    {% if company.reviews|length < 1 %}
+        <p>Пока здесь нет отзывов</p>
+    {% else %}
+        {% for review in company.reviews %}
+            {% if review.isActive %}
+                <div class="row review">
+                    <div class="col-sm-2 review-info">
+                        <p><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></p>
+                        <p>
+                            {% set count = 5 %}
+                            {% for i in 1..review.assessment %}
+                                <i class="fa fa-star active-star"></i>
+                                {% set count = 5 - i %}
+                            {% endfor %}
+                            {% if count > 0 %}
+                                {% for i in 1..count %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-sm-8 review-content">
+                        <p>{{ review.text }}</p>
+                        <p>
+                        <div>
+                            <a href="{{ path('review.like', {id: review.id}) }}" class="btn btn-success"><i class="fa fa-thumbs-up"></i> {{ review.likeCounter }}</a>
+                            &nbsp;
+                            <a href="{{ path('review.dislike', {id: review.id}) }}" class="btn btn-danger"><i class="fa fa-thumbs-down"></i> {{ review.dislikeCounter }}</a>
+                            &nbsp;
+                            <div class="btn-group">
+                                <a href="{{ path('review.show', {id: review.id}) }}" class="btn btn-dark"><i class="fa fa-commenting-o"></i> {{ review.comments|length }}</a>
+                                <a href="{{ path('review.add.comment.outside', {id: review.id}) }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                            </div>
+                        </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-2 review-date text-muted">
+                        Отзывов у пользователя: {{ review.user.reviews|length }}
+                    </div>
+                </div>
+                <hr>
+            {% endif %}
+        {% endfor %}
+
     {% endif %}
 
 {% endblock %}

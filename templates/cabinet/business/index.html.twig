@@ -87,7 +87,7 @@
                     {% for coupon in company.couponTypes %}
                         <tr>
                             <td>{{ coupon.description }}</td>
-                            <td><span class="badge badge-primary">{{ coupon.status }}</span></td>
+                            <td><span class="badge badge-primary">{{ coupon.normalStatus }}</span></td>
                             <td>{{ coupon.coupons|length }}</td>
                             <td>
                                 {% if coupon.isActive %}

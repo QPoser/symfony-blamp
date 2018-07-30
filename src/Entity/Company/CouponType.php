@@ -123,6 +123,26 @@ class CouponType
         return $this->status;
     }
 
+    public function getNormalStatus(): ?string
+    {
+        switch($this->status) {
+            case self::STATUS_ACTIVE:
+                return 'Активен';
+                break;
+            case self::STATUS_ON_MODERATION:
+                return 'На модерации';
+                break;
+            case self::STATUS_CLOSED:
+                return 'Закрыто';
+                break;
+            case self::STATUS_REJECTED:
+                return 'Отклонен';
+                break;
+        }
+
+        return 'Недоступно';
+    }
+
     public function setStatus(string $status): self
     {
         $this->status = $status;

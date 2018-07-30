@@ -65,7 +65,7 @@ class CompanyController extends Controller
 
         $thisPage = $request->get('page') ?: 1;
 
-        $maxPages = ceil($companies->count() / 15);
+        $maxPages = ceil($companies->count() / 4);
 
         return $this->render('company/index.html.twig', compact('companies', 'maxPages', 'thisPage'));
     }
@@ -155,7 +155,24 @@ class CompanyController extends Controller
                     return [];
                     },
 
-            ]);
+            ])
+//                ->add('tags', EntityType::class, [
+//                    'class' => 'App\Entity\Company\Tag',
+//                    'query_builder' => function (EntityRepository $er) {
+//                        return $er->createQueryBuilder('u')
+//                            ->orderBy('u.num', 'ASC');
+//                    },
+//                    'choice_label' => 'path',
+//                    'multiple' => true,
+//                    'required' => false,
+//                    'choice_attr' => function($choiceValue, $key, $value) {
+//                        if ($this->getDoctrine()->getRepository('App:Category\Category')->findOneBy(['id' => $value])->getChildrenCategories()->getValues())
+//                            return ['disabled' => 'disabled'];
+//                        return [];
+//                    },
+//
+//                ])
+            ;
 
         }
 
@@ -254,6 +271,8 @@ class CompanyController extends Controller
      */
     public function addReview(Request $request, Company $company, ReviewService $reviewService)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $review = new Review();
 
         $form = $this->createForm(ReviewCreateForm::class, $review);

@@ -61,27 +61,12 @@ class CategoryRepository extends ServiceEntityRepository
             ])
         ;
 
-
-
-//        $query = $this->createQueryBuilder('category')
-//            ->leftJoin(Company::class, 'companies', 'with', 'category MEMBER OF companies.categories')
-//            ->leftJoin(Tag::class, 'tag', 'with', 'companies MEMBER OF tag.companies')
-//            ->where('companies.name LIKE :search OR tag.name LIKE :search OR companies.description LIKE :search')
-//            ->andWhere('companies.status = :status')
-//            ->andWhere('category.id = ' . $category->getId())
-//            ->orderBy('companies.name', 'ASC')
-//            ->setParameters([
-//                'search' => '%' . $search . '%',
-//                'status' => Company::STATUS_ACTIVE,
-//            ])
-//        ;
-
         $paginator = $this->paginate($query->getQuery(), $page ?: 1);
 
         return $paginator;
     }
 
-    public function paginate($dql, $page = 1, $limit = 15)
+    public function paginate($dql, $page = 1, $limit = 4)
     {
         $paginator = new Paginator($dql);
 

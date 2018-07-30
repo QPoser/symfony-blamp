@@ -22,11 +22,11 @@
                     <td>{{ company.assessment ?: 'Нет оценки' }}</td>
                     <td>
                         {% if company.isRejected %}
-                            <span class="badge badge-danger">{{ company.status }}</span>
+                            <span class="badge badge-danger">{{ company.normalStatus }}</span>
                         {% elseif company.isActive %}
-                            <span class="badge badge-success">{{ company.status }}</span>
+                            <span class="badge badge-success">{{ company.normalStatus }}</span>
                         {% else %}
-                            <span class="badge">{{ company.status }}</span>
+                            <span class="badge">{{ company.normalStatus }}</span>
                         {% endif %}
                     </td>
                     <td>

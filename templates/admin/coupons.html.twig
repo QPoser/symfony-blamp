@@ -23,11 +23,11 @@
                      <td>{{ coupon.description }}</td>
                      <td>
                          {% if coupon.isRejected %}
-                             <span class="badge badge-danger">{{ coupon.status }}</span>
+                             <span class="badge badge-danger">{{ coupon.normalStatus }}</span>
                          {% elseif coupon.isActive %}
-                             <span class="badge badge-success">{{ coupon.status }}</span>
+                             <span class="badge badge-success">{{ coupon.normalStatus }}</span>
                          {% else %}
-                             <span class="badge">{{ coupon.status }}</span>
+                             <span class="badge">{{ coupon.normalStatus }}</span>
                          {% endif %}
                      </td>
                      <td>

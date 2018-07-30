@@ -75,11 +75,11 @@
                 <td>{{ review.likeCounter }}/-{{ review.dislikeCounter }}</td>
                 <td>
                     {% if review.isRejected %}
-                        <span class="badge badge-danger">{{ review.status }}</span>
+                        <span class="badge badge-danger">{{ review.normalStatus }}</span>
                     {% elseif review.isActive %}
-                        <span class="badge badge-success">{{ review.status }}</span>
+                        <span class="badge badge-success">{{ review.normalStatus }}</span>
                     {% else %}
-                        <span class="badge">{{ review.status }}</span>
+                        <span class="badge">{{ review.normalStatus }}</span>
                     {% endif %}
                 </td>
                 <td>{{ review.likes|length }}</td>

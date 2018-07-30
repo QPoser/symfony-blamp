@@ -117,6 +117,23 @@ class ReviewComment
         return $this->status;
     }
 
+    public function getNormalStatus(): ?string
+    {
+        switch($this->status) {
+            case self::STATUS_ACTIVE:
+                return 'Активен';
+                break;
+            case self::STATUS_WAIT:
+                return 'В ожидании';
+                break;
+            case self::STATUS_REJECTED:
+                return 'Отклонен';
+                break;
+        }
+
+        return 'Недоступно';
+    }
+
     public function setStatus(string $status): self
     {
         $this->status = $status;

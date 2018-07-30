@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Company;
 
 use App\Entity\Company\Company;
 use Doctrine\Common\Collections\ArrayCollection;

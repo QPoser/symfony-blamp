@@ -52,7 +52,7 @@ class CategoryController extends Controller
 
         $thisPage = $request->get('page') ?: 1;
 
-        $maxPages = ceil($companies->count() / 15);
+        $maxPages = ceil($companies->count() / 4);
 
         return $this->render('category/category/show.html.twig', compact('companies', 'category', 'maxPages', 'thisPage'));
     }

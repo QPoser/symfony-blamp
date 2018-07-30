@@ -61,7 +61,7 @@ class CompanyRepository extends ServiceEntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function paginate($dql, $page = 1, $limit = 15)
+    public function paginate($dql, $page = 1, $limit = 4)
     {
         $paginator = new Paginator($dql);
 

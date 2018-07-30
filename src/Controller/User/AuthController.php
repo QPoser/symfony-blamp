@@ -60,9 +60,8 @@ class AuthController extends Controller
         $lastUsername = $this->authenticationUtils->getLastUsername();
 
         $networks = [
-            'vk' => [
-                'clientId' => getenv('VK_CLIENT_ID'),
-            ]
+            'vk' =>
+                'https://oauth.vk.com/authorize?client_id=' . getenv('VK_CLIENT_ID') . '&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80',
         ];
 
         return $this->render('auth/login.html.twig', [

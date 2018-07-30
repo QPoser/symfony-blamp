@@ -2,7 +2,7 @@
 
 namespace App\Repository\Company;
 
-use App\Entity\Tag;
+use App\Entity\Company\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
