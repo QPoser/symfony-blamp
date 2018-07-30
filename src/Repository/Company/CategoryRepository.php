@@ -4,7 +4,7 @@ namespace App\Repository\Company;
 
 use App\Entity\Category\Category;
 use App\Entity\Company\Company;
-use App\Entity\Tag;
+use App\Entity\Company\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;

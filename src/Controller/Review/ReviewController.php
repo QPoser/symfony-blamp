@@ -2,13 +2,14 @@
 
 namespace App\Controller\Review;
 
-use App\Controller\TextType;
+//use App\Controller\TextType;
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Form\Review\ReviewAddCommentForm;
 use App\Services\ReviewService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -79,7 +80,7 @@ class ReviewController extends Controller
             $comment->setText($request->request->get('_text'));
             if ($request->request->get('_isCompany') == 'isCompany')
             {$comment->setIsCompany(true);}
-            $this->service->addComment($review, $comment);
+            $this->service->addComment($review, $comment, $this->getUser());
 
             $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
