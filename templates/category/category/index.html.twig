@@ -8,6 +8,8 @@
             <tbody>
                 <tr>
                     <td>
+
+
                         {% import _self as macros %}
                         {% macro category_list(category) %}
                             {% import _self as macros %}
@@ -19,7 +21,7 @@
                                             <a class="" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a>
                                         </div>
                                         <div class="col-sm-1">
-                                            {% if app.user.isAdmin %}
+                                            {% if app.user and app.user.isAdmin %}
                                                 <a class="btn btn-success" href="{{ path('category.edit', {'id': category.id}) }}">Edit</a>
                                             {% endif %}
                                         </div>
@@ -47,7 +49,7 @@
                                         <a class="" href="{{ path('category.show', {'id': category.id}) }}">{{ category.name }}</a>
                                     </div>
                                     <div class="col-sm-1">
-                                        {% if app.user.isAdmin %}
+                                        {% if app.user and app.user.isAdmin %}
                                             <a class="btn btn-success" href="{{ path('category.edit', {'id': category.id}) }}">Edit</a>
                                         {% endif %}
                                     </div>
@@ -69,63 +71,7 @@
             </tbody>
         </table>
         <ul>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{#
-            <tr>
-                <td>
-                    {% if category.childrenCategories|length == 0 %}
-                        <i class="fa fa-check"></i>
-                    {% else %}
-                        <i class="fa fa-minus"></i>
-                    {% endif %}
-                </td>
-                <td>{{ category.name }}</td>
-                <td>
-                    {% if category.childrenCategories %}
-                        {% for subcategory in category.childrenCategories %}
-                            <span><a href="{{ path('category.show', {'id': subcategory.id}) }}">{{ subcategory.name }}</a>, </span>
-                        {% endfor %}
-                    {% endif %}
-
-                </td>
-                <td>{{ category.companiesCounter }}</td>
-                <td>
-                    {% if category.companies %}
-                        {% for company in category.companies|slice(0, 3) %}
-                            <span><a href="{{ path('company.show', {'id': company.id}) }}">{{ company.name }}</a>, </span>
-                        {% endfor %}
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('category.show', {'id': category.id}) }}">Обзор</a>
-                    <a href="{{ path('category.edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}  #}
-
-    {% if app.user.isAdmin %}
+    {% if app.user and app.user.isAdmin %}
         <a class="btn btn-primary" href="{{ path('category.new') }}">Создать категорию</a>
     {% endif %}
-
 {% endblock %}

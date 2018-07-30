@@ -3,6 +3,7 @@
 namespace App\Entity\Company;
 
 use App\Entity\Category\Category;
+use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -130,6 +131,13 @@ class Company
      * @OrderBy({"num" = "ASC"})
      */
     private $categories;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="companies", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="companies_tags")
+     * @OrderBy({"name" = "ASC"})
+     */
+    private $tags;
 
     public function __toString()
     {
@@ -287,6 +295,7 @@ class Company
         $this->businessUsers = new ArrayCollection();
         $this->businessRequests = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
     public function setNewPhoto(?string $photo): self
     {
@@ -503,6 +512,34 @@ class Company
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
+            $tag->removeCompany($this);
+        }
 
         return $this;
     }

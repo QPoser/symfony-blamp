@@ -4,7 +4,7 @@ namespace App\Controller\Category;
 
 use App\Entity\Category\Category;
 use App\Form\Category\CategoryType;
-use App\Repository\CategoryRepository;
+use App\Repository\Company\CategoryRepository;
 use App\Services\CategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

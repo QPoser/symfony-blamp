@@ -129,6 +129,11 @@ class CompanyController extends Controller
                 'choice_label' => 'path',
                 'multiple' => true,
                 'required' => false,
+                'choice_attr' => function($choiceValue, $key, $value) {
+                    if ($this->getDoctrine()->getRepository('App:Category\Category')->findOneBy(['id' => $value])->getChildrenCategories()->getValues())
+                        return ['disabled' => 'disabled'];
+                    return [];
+                    },
 
             ]);
 

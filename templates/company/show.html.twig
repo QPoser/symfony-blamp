@@ -49,8 +49,11 @@
                 {{ macros.category_path(category.parentCategory, currentPath) }}
             {% endif %}
         {% endmacro %}
-
-        {{ macros.category_path(company.category, currentPath) }}
+        {% for category in company.categories %}
+            {% if category.childrenCategories|length == 0 %}
+                {{ macros.category_path(category, currentPath) }}
+            {% endif %}
+        {% endfor %}
     </small>
     <table class="table table-striped">
         <thead>
