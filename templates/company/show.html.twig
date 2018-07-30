@@ -21,7 +21,7 @@
             <span class="badge badge-primary">{{ coupons ? 'Купоны за отзыв!' : '' }}</span>
 
             {% if app.user and app.user.isAdmin %}
-                <span class="badge badge-success">{{ company.status }}</span>
+                <span class="badge badge-success">{{ company.normalStatus }}</span>
             {% endif %}
         </div>
 

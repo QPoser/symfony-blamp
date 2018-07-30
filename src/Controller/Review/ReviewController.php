@@ -38,6 +38,8 @@ class ReviewController extends Controller
      */
     public function addComment(Request $request, Review $review): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $comment = new ReviewComment();
 
         $form = $this->createForm(ReviewAddCommentForm::class, $comment);

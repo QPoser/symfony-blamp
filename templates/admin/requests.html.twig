@@ -25,11 +25,11 @@
                      <td><a href="{{ path('user.show', {'id' : request.user.id}) }}">{{ request.user.username }}</a></td>
                      <td>
                          {% if request.isRejected %}
-                             <span class="badge badge-danger">{{ request.status }}</span>
+                             <span class="badge badge-danger">{{ request.normalStatus }}</span>
                          {% elseif request.isSuccess %}
-                             <span class="badge badge-success">{{ request.status }}</span>
+                             <span class="badge badge-success">{{ request.normalStatus }}</span>
                          {% else %}
-                             <span class="badge">{{ request.status }}</span>
+                             <span class="badge">{{ request.normalStatus }}</span>
                          {% endif %}
                      </td>
                      <td>{{ request.phone }}</td>

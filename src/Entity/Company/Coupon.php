@@ -127,6 +127,20 @@ class Coupon
         return $this->status;
     }
 
+    public function getNormalStatus(): ?string
+    {
+        switch($this->status) {
+            case self::STATUS_ACTIVE:
+                return 'Активен';
+                break;
+            case self::STATUS_USED:
+                return 'Использован';
+                break;
+        }
+
+        return 'Недоступно';
+    }
+
     public function setStatus(string $status): self
     {
         $this->status = $status;

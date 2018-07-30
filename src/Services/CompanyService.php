@@ -36,18 +36,24 @@ class CompanyService
      * @var EmailService
      */
     private $emailService;
+    /**
+     * @var EventService
+     */
+    private $eventService;
 
     /**
      * CompanyService constructor.
      * @param EntityManager $manager
      * @param Container $container
      * @param EmailService $emailService
+     * @param EventService $eventService
      */
-    public function __construct(EntityManager $manager, Container $container, EmailService $emailService)
+    public function __construct(EntityManager $manager, Container $container, EmailService $emailService, EventService $eventService)
     {
         $this->manager = $manager;
         $this->container = $container;
         $this->emailService = $emailService;
+        $this->eventService = $eventService;
     }
 
 
@@ -141,6 +147,8 @@ class CompanyService
         $request->setStatus(BusinessRequest::STATUS_SUCCESS);
         $company->addBusinessUser($user);
 
+        $this->eventService->addEventByCompany($user, 'Вы успешно стали владельцем компании', $company);
+
         $this->manager->flush();
     }
 
@@ -150,12 +158,16 @@ class CompanyService
 
         $this->deattachUser($request->getCompany(), $request->getUser());
 
+        $this->eventService->addEventByCompany($request->getUser(), 'Вам отказано в привязке компании', $request->getCompany());
+
         $this->manager->flush();
     }
 
     public function deattachUser(Company $company, User $user)
     {
         $company->removeBusinessUser($user);
+
+        $this->eventService->addEventByCompany($user, 'Вы были отвязаны от компании, и больше не являетесь её владельцем', $company);
 
         $this->manager->flush();
     }

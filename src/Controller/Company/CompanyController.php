@@ -216,6 +216,8 @@ class CompanyController extends Controller
      */
     public function addReview(Request $request, Company $company, ReviewService $reviewService)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $review = new Review();
 
         $form = $this->createForm(ReviewCreateForm::class, $review);
