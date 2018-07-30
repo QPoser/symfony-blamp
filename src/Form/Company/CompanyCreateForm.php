@@ -6,7 +6,7 @@ use App\Entity\Company\Company;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextAreaType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +20,7 @@ class CompanyCreateForm extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Название компании'
             ])
-            ->add('description', TextAreaType::class, [
+            ->add('description', TextareaType::class, [
                 'label' => 'Сфера деятельности'
             ])
             ->add('phone', TextType::class, [

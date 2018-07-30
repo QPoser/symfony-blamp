@@ -2,7 +2,9 @@
 
 namespace App\Repository\Company;
 
+use App\Entity\Category\Category;
 use App\Entity\Company\Company;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -33,13 +35,16 @@ class CompanyRepository extends ServiceEntityRepository
     public function search(string $search = null, $page = 1)
     {
         $query = $this->createQueryBuilder('company')
-            ->where('company.name LIKE :search')
+            ->leftJoin(Category::class, 'category', 'with', 'company MEMBER OF category.companies')
+            ->leftJoin(Tag::class, 'tag', 'with', 'company MEMBER OF tag.companies')
+            ->where('company.name LIKE :search OR category.name LIKE :search OR tag.name LIKE :search OR company.description LIKE :search')
             ->andWhere('company.status = :status')
+            ->orderBy('company.name', 'ASC')
             ->setParameters([
                 'search' => '%' . $search . '%',
                 'status' => Company::STATUS_ACTIVE,
             ])
-            ;
+        ;
 
         $paginator = $this->paginate($query->getQuery(), $page ?: 1);
 

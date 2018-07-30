@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "48205e60fbdc6f6571381b892dfd5f05",
+    "content-hash": "eb0894092fcf5d5de8e8f6bd1cc71ad4",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -3841,16 +3841,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v1.0.87",
+            "version": "v1.0.89",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "c2856dddbbb7c9e9327890d6f1a96e79f305236b"
+                "reference": "26be754f42c3c3f21139af2bdd74118ef8f82757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/c2856dddbbb7c9e9327890d6f1a96e79f305236b",
-                "reference": "c2856dddbbb7c9e9327890d6f1a96e79f305236b",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/26be754f42c3c3f21139af2bdd74118ef8f82757",
+                "reference": "26be754f42c3c3f21139af2bdd74118ef8f82757",
                 "shasum": ""
             },
             "require": {
@@ -3884,7 +3884,7 @@
                 }
             ],
             "description": "Composer plugin for Symfony",
-            "time": "2018-07-27T09:19:27+00:00"
+            "time": "2018-07-29T16:20:30+00:00"
         },
         {
             "name": "symfony/form",
@@ -6366,16 +6366,16 @@
         },
         {
             "name": "easycorp/easy-log-handler",
-            "version": "v1.0.5",
+            "version": "v1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/easy-log-handler.git",
-                "reference": "21c442f5d08b6761a6fa7653e08a5525fb4ccd2b"
+                "reference": "5f95717248d20684f88cfb878d8bf3d78aadcbba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/easy-log-handler/zipball/21c442f5d08b6761a6fa7653e08a5525fb4ccd2b",
-                "reference": "21c442f5d08b6761a6fa7653e08a5525fb4ccd2b",
+                "url": "https://api.github.com/repos/EasyCorp/easy-log-handler/zipball/5f95717248d20684f88cfb878d8bf3d78aadcbba",
+                "reference": "5f95717248d20684f88cfb878d8bf3d78aadcbba",
                 "shasum": ""
             },
             "require": {
@@ -6412,7 +6412,7 @@
                 "monolog",
                 "productivity"
             ],
-            "time": "2018-06-12T06:27:09+00:00"
+            "time": "2018-07-27T15:41:37+00:00"
         },
         {
             "name": "nikic/php-parser",

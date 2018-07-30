@@ -3,7 +3,10 @@
 namespace App\Repository\Company;
 
 use App\Entity\Category\Category;
+use App\Entity\Company\Company;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -17,27 +20,6 @@ class CategoryRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Category::class);
-    }
-
-    public function getPreferredCategories()
-    {
-        $preferredArray = array();
-        $categories = $this->findBy(['level' => 0]);
-        $this->fetchCategories($categories, $preferredArray);
-        return $preferredArray;
-    }
-
-    public function fetchCategories($categories, array $preferredArray)
-    {
-        /**
-         * @var $category Category
-         */
-        foreach ($categories as $category) {
-            array_push($preferredArray, $categories);
-            if ($category->getChildrenCategories() == null) {
-                $this->fetchCategories($category->getChildrenCategories(), $preferredArray);
-            }
-        }
     }
 
     public function generateRoad() {
@@ -60,6 +42,55 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+
+    public function search(Category $category, $search = null, $page = 1)
+    {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('company')
+            ->from(Company::class, 'company')
+            ->leftJoin(Category::class, 'category', 'with', 'company MEMBER OF category.companies')
+            ->leftJoin(Tag::class, 'tag', 'with', 'company MEMBER OF tag.companies')
+            ->where('company.name LIKE :search  OR category.name LIKE :search OR tag.name LIKE :search OR company.description LIKE :search')
+            ->andWhere('company.status = :status')
+            ->andWhere('category.id = ' . $category->getId())
+            ->orderBy('company.name', 'ASC')
+            ->setParameters([
+                'search' => '%' . $search . '%',
+                'status' => Company::STATUS_ACTIVE,
+            ])
+        ;
+
+
+
+//        $query = $this->createQueryBuilder('category')
+//            ->leftJoin(Company::class, 'companies', 'with', 'category MEMBER OF companies.categories')
+//            ->leftJoin(Tag::class, 'tag', 'with', 'companies MEMBER OF tag.companies')
+//            ->where('companies.name LIKE :search OR tag.name LIKE :search OR companies.description LIKE :search')
+//            ->andWhere('companies.status = :status')
+//            ->andWhere('category.id = ' . $category->getId())
+//            ->orderBy('companies.name', 'ASC')
+//            ->setParameters([
+//                'search' => '%' . $search . '%',
+//                'status' => Company::STATUS_ACTIVE,
+//            ])
+//        ;
+
+        $paginator = $this->paginate($query->getQuery(), $page ?: 1);
+
+        return $paginator;
+    }
+
+    public function paginate($dql, $page = 1, $limit = 15)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
+    }
 
 
 
