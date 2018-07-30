@@ -53,7 +53,7 @@ class CompanyController extends Controller
 
         $thisPage = $request->get('page') ?: 1;
 
-        $maxPages = ceil($companies->count() / 15);
+        $maxPages = ceil($companies->count() / 4);
 
         return $this->render('company/index.html.twig', compact('companies', 'maxPages', 'thisPage'));
     }

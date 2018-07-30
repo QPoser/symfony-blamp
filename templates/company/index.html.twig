@@ -3,9 +3,10 @@
 {% block title %}Компании{% endblock %}
 
 {% block body %}
-    <h2>Компании</h2>
+    <h1>Компании</h1>
     <a href="{{ path('company.create') }}" class="btn btn-success">Добавить компанию</a>
     <hr>
+
         <div class="row">
             <div class="col-md-12">
                 <form action="{{ path('company') }}" method="GET">
@@ -25,55 +26,40 @@
                 </form>
             </div>
         </div>
-    <hr>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Название</th>
-                <th scope="col">Оценка</th>
-                <th scope="col">Телефон</th>
-                <th scope="col">Сайт</th>
-                {% if app.user and app.user.isAdmin %}
-                    <th scope="col">Изменить</th>
-                    <th scope="col">Удалить</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Действие</th>
-                {% endif %}
-                <th scope="col">Добавить отзыв</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for company in companies %}
-                <tr>
-                    <td><a href="{{ path('company.show', { id : company.id}) }}">{{ company.name }}</a></td>
-                    <td><i class="fa fa-star"></i> {{ company.assessment }}</td>
-                    <td>{{ company.phone }}</td>
-                    <td><a href="{{ company.site }}" class="btn btn-primary">Перейти</a></td>
-                    {% if app.user and app.user.isAdmin %}
 
-                        <td><a href="{{ path('company.edit', {id : company.id}) }}" class="btn btn-primary">Перейти</a></td>
-                        <td><a href="{{ path('company.remove', {id : company.id}) }}" class="btn btn-warning">Удалить</a></td>
+    <br>
 
-                        {% if company.isRejected %}
-                            <td><span class="badge badge-danger">{{ company.status }}</span></td>
-                        {% elseif company.isActive %}
-                            <td><span class="badge badge-success">{{ company.status }}</span></td>
-                        {% else %}
-                            <td><span class="badge">{{ company.status }}</span></td>
-                        {% endif %}
-
-
-                        {% if company.isActive %}
-                            <td><a href="{{ path('company.reject', {id : company.id}) }}" class="btn btn-danger">Отклонить</a></td>
-                        {% else %}
-                            <td><a href="{{ path('company.verify', {id : company.id}) }}" class="btn btn-success">Принять</a></td>
-                        {% endif %}
-                    {% endif %}
-                    <td><a href="{{ path('company.add.review', {id : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>
-                </tr>
+    {% for row in companies|batch(4) %}
+        <p>
+        <div class="row">
+            {% for chunk in row|batch(2) %}
+                <div class="col-md-6">
+                    <div class="row">
+                        {% for company in chunk %}
+                            <div class="card company-card col-md-5 mr-5">
+                                <div class="normal">
+                                    <div class="card-body">
+                                        <div class="img">
+                                            <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                                        </div>
+                                        <div class="company-name">
+                                            <p>{{ company.name }}</p>
+                                        </div>
+                                        <div class="stats">
+                                            <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Пока нет оценки' }}</p>
+                                            <p><i class="fa fa-comment"></i> {{ company.reviews|length ?: 'Нет комментариев' }}</p>
+                                            <p><a href="{{ path('company.show', { id : company.id}) }}" class="btn btn-light">Перейти</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+        </p>
+    {% endfor %}
 
     <nav>
         <ul class="pagination justify-content-center">
@@ -82,9 +68,11 @@
             </li>
 
             {% for i in 1..maxPages %}
-                <li class="page-item {{ thisPage == i ? 'active' }}" >
-                    <a class="page-link" href="{{ path('company', {page: i, search: app.request.get('search')}) }}">{{ i }}</a>
-                </li>
+                {% if i > 0 %}
+                    <li class="page-item {{ thisPage == i ? 'active' }}" >
+                        <a class="page-link" href="{{ path('company', {page: i, search: app.request.get('search')}) }}">{{ i }}</a>
+                    </li>
+                {% endif %}
             {% endfor %}
 
             <li class="page-item" {{ thisPage == maxPages ? 'class="disabled"' }}>

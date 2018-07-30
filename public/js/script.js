@@ -53,4 +53,10 @@ $( document ).ready(function () {
             );
         }
     }
+
+    $( window ).scroll(function () {
+        var aTop = $( window ).scrollTop();
+        $('.banner-vertical img').css('top', aTop);
+    });
 });
+
