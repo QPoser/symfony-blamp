@@ -3,9 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Advert\Banner;
+use App\Entity\Company\CouponType;
+use App\Repository\Advert\AdvertDescriptionRepository;
 use App\Repository\Advert\BannerRepository;
 use App\Repository\Company\BusinessRequestRepository;
 use App\Repository\Company\CompanyRepository;
+use App\Repository\Company\CouponTypeRepository;
 use App\Repository\Review\ReviewCommentRepository;
 use App\Repository\Review\ReviewRepository;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +40,10 @@ class AdminController extends Controller
      * @var BannerRepository
      */
     private $bannerRepository;
+    /**
+     * @var CouponTypeRepository
+     */
+    private $couponTypeRepository;
 
     private $counts = [];
 
@@ -45,7 +52,9 @@ class AdminController extends Controller
                                 ReviewRepository $reviewRepository,
                                 ReviewCommentRepository $commentRepository,
                                 BusinessRequestRepository $requestRepository,
-                                BannerRepository $bannerRepository
+                                BannerRepository $bannerRepository,
+                                AdvertDescriptionRepository $adDescriptionRepository,
+                                CouponTypeRepository $couponTypeRepository
                                 )
     {
         $this->companyRepository = $companyRepository;
@@ -53,15 +62,19 @@ class AdminController extends Controller
         $this->commentRepository = $commentRepository;
         $this->requestRepository = $requestRepository;
         $this->bannerRepository = $bannerRepository;
+        $this->adDescriptionRepository = $adDescriptionRepository;
+        $this->couponTypeRepository = $couponTypeRepository;
 
-        $this->counts['companies'] = count($companyRepository->getWaitCompanies());
-        $this->counts['reviews'] = count($reviewRepository->getWaitReviews());
-        $this->counts['requests'] = count($requestRepository->getWaitRequests());
-        $this->counts['banners'] = count($bannerRepository->getWaitBanners());
+        $this->counts['companies'] = $companyRepository->getCountOfNewCompanies();
+        $this->counts['reviews'] = $reviewRepository->getCountOfNewReviews();
+        $this->counts['requests'] = $requestRepository->getCountOfNewRequests();
+        $this->counts['adverts'] = $bannerRepository->getCountOfNewBanners();
+        $this->counts['adverts'] += $adDescriptionRepository->getCountOfNewAdverts();
+        $this->counts['coupons'] = $couponTypeRepository->getCountOfNewCoupons();
     }
 
     /**
-     * @Route("/", name="admin")
+     * @Route("", name="admin")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function companies()
@@ -110,6 +123,33 @@ class AdminController extends Controller
         return $this->render('admin/adverts.html.twig', [
            'banners' => $banners,
            'waitCounts' => $this->counts,
+        ]);
+    }
+
+    /**
+     * @Route("/coupons", name="admin.coupons")
+     */
+    public function coupons()
+    {
+        $coupons = $this->couponTypeRepository->findBy([], ['status' => 'DESC']);
+
+        return $this->render('admin/coupons.html.twig', [
+            'coupons' => $coupons,
+            'waitCounts' => $this->counts,
+        ]);
+    }
+
+    /**
+     * @Route("/adverts/descriptions", name="admin.adverts.descriptions")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function advertDescriptions()
+    {
+        $descriptions = $this->adDescriptionRepository->findBy([], ['status' => 'DESC']);
+
+        return $this->render('admin/ad_descriptions.html.twig', [
+            'descriptions' => $descriptions,
+            'waitCounts' => $this->counts,
         ]);
     }
 }

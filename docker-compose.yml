@@ -20,6 +20,7 @@ services:
       - ./:/var/www
     links:
       - mysql
+      - mysql-test
       - redis
     environment:
       - "DB_PORT=3306"
@@ -51,6 +52,17 @@ services:
       - "MYSQL_DATABASE=app"
     ports:
       - "33061:3306"
+  mysql-test:
+    image: mysql:5.7
+    volumes:
+      - ./storage/docker/mysql-test:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+      - "MYSQL_USER=app"
+      - "MYSQL_PASSWORD=secret"
+      - "MYSQL_DATABASE=app"
+    ports:
+      - "33062:3306"
   redis:
     image: redis:3.0
     ports:

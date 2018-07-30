@@ -9,20 +9,13 @@ body {
     background-color: #f5f8fa!important;
 }
 
-.banner {
-    border: solid 2px white;
-    position: absolute;
-    width: 240px;
-    right: calc(100vw * 0.008);
-    top: 150px;
+.container {
+    max-width: 1300px!important;
 }
 
-@media (max-width: 1600px) {
-    .banner {
-        position: relative;
-        width: 240px;
-        right: 0px;
-        left: 180px;
-        top: 0px;
-    }
+.banner-vertical {
+    width: 100%;
+    height: auto;
+    right: calc(100vw * 0.008);
+    top: 150px;
 }

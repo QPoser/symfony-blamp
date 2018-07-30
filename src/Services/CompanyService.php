@@ -14,11 +14,11 @@ use App\Entity\Company\Company;
 use App\Entity\Event;
 use App\Entity\Review\Review;
 use App\Entity\User;
+use App\Services\App\EmailService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -34,30 +34,34 @@ class CompanyService
      */
     private $container;
     /**
-     * @var TokenStorage
+     * @var EmailService
      */
-    private $storage;
+    private $emailService;
 
     /**
      * CompanyService constructor.
      * @param EntityManager $manager
      * @param Container $container
-     * @param TokenStorage $storage
+     * @param EmailService $emailService
      */
-    public function __construct(EntityManager $manager, Container $container, TokenStorage $storage)
+    public function __construct(EntityManager $manager, Container $container, EmailService $emailService)
     {
         $this->manager = $manager;
         $this->container = $container;
-        $this->storage = $storage;
+        $this->emailService = $emailService;
     }
 
 
-    public function create(Company $company, Form $form): Company
+    public function create(Company $company, Form $form = null, $email = null): Company
     {
 
-        if ($form['photo']) {
+        if ($form && $form['photo']) {
             $file = $form['photo']->getData();
             $this->setPhoto($file, $company);
+        }
+
+        if (!$company->getCreatorEmail() && $email) {
+            $company->setCreatorEmail($email);
         }
 
         $company->setStatus(Company::STATUS_WAIT);
@@ -91,20 +95,33 @@ class CompanyService
     public function verify(Company $company)
     {
         $company->setStatus(Company::STATUS_ACTIVE);
+        if ($company->getCreatorEmail()) {
+            $this->emailService->sendSimpleMessage('Компания ' . $company->getName() . ' успешно принята!',
+                'Компания ' . $company->getName() . ' которую вы добавили ранее, была успешно принята на сайт, и доступна для просмотра!',
+                $company->getCreatorEmail());
+        }
+
         $this->manager->flush($company);
     }
 
     public function reject(Company $company)
     {
         $company->setStatus(Company::STATUS_REJECTED);
+
+        if ($company->getCreatorEmail()) {
+            $this->emailService->sendSimpleMessage('Компания ' . $company->getName() . ' была отклонена!',
+                'Компания ' . $company->getName() . ' которую вы добавили ранее, была отклонена по причине: ' . $company->getRejectReason(),
+                $company->getCreatorEmail());
+        }
+
         $this->manager->flush($company);
     }
 
-    public function addReview(Company $company, Review $review)
+    public function addReview(Company $company, Review $review, User $user)
     {
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
-        $review->setUser($this->storage->getToken()->getUser());
+        $review->setUser($user);
 
         $this->manager->persist($review);
         $this->manager->flush();

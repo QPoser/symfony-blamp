@@ -2,17 +2,17 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
-hwi_oauth_redirect:
-    resource: "routes/sources/redirect_41.xml"
-    prefix:   /connect
+#hwi_oauth_redirect:
+#    resource: "routes/sources/redirect_41.xml"
+#    prefix:   /connect
+#
+#hwi_oauth_connect:
+#    resource: "routes/sources/connect_41.xml"
+#    prefix:   /connect
 
-hwi_oauth_connect:
-    resource: "routes/sources/connect_41.xml"
-    prefix:   /connect
-
-hwi_oauth_login:
-    resource: "routes/sources/login_41.xml"
-    prefix:   /login
+#hwi_oauth_login:
+#    resource: "routes/sources/login_41.xml"
+#    prefix:   /login
 
 vkontakte_login:
     path: /login/check-vkontakte

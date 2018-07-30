@@ -7,12 +7,13 @@ use App\Form\Advert\BannerType;
 use App\Repository\Advert\BannerRepository;
 use App\Services\AdvertService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/cabinet/business/adverts")
+ * @Route("/cabinet/business/adverts/banners")
  */
 class BannerController extends Controller
 {
@@ -36,6 +37,7 @@ class BannerController extends Controller
     {
         $banner = new Banner();
         $form = $this->createForm(BannerType::class, $banner);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -59,6 +61,8 @@ class BannerController extends Controller
      */
     public function pay(Banner $banner): Response
     {
+        $this->denyAccessUnlessGranted('PAY', $banner);
+
         $this->service->pay($banner);
 
         $this->addFlash('notice', 'Вы успешно оплатили данный баннер на тысячу показов');
@@ -96,6 +100,8 @@ class BannerController extends Controller
      */
     public function verify(Banner $banner)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $banner);
+
         $this->service->verifyBanner($banner);
 
         $this->addFlash('notice', 'Баннер был верифицирован, и готов к оплате для пользователя');
@@ -110,6 +116,8 @@ class BannerController extends Controller
      */
     public function reject(Banner $banner)
     {
+        $this->denyAccessUnlessGranted('VERIFY', $banner);
+
         $this->service->rejectBanner($banner);
 
         $this->addFlash('notice', 'Баннер был успешно отклонен!');

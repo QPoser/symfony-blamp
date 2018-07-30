@@ -29,6 +29,26 @@ class BannerRepository extends ServiceEntityRepository
         return $this->findBy(['status' => Banner::STATUS_WAIT]);
     }
 
+    public function getVerticalBanners()
+    {
+        return $this->findBy(['status' => Banner::STATUS_ACTIVE, 'format' => Banner::FORMAT_VERTICAL]);
+    }
+
+    public function getHorizontalBanners()
+    {
+        return $this->findBy(['status' => Banner::STATUS_ACTIVE, 'format' => Banner::FORMAT_HORIZONTAL]);
+    }
+
+    public function getCountOfNewBanners()
+    {
+        $query = $this->createQueryBuilder('banner')
+            ->select('count(banner.id)')
+            ->where('banner.status = :status')
+            ->setParameter('status', Banner::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return Banner[] Returns an array of Banner objects
 //     */

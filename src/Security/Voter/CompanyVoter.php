@@ -12,7 +12,7 @@ class CompanyVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, ['EDIT', 'DELETE', 'VERIFY', 'SHOW'])
+        return in_array($attribute, ['EDIT', 'DELETE', 'VERIFY', 'SHOW', 'BUSINESS'])
             && $subject instanceof Company;
     }
 
@@ -22,6 +22,17 @@ class CompanyVoter extends Voter
         /** @var Company $subject */
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
+
+        if ($attribute == 'SHOW') {
+            if ($subject->isActive()) {
+                return true;
+            }
+
+            if ($user instanceof UserInterface && $user->isAdmin()) {
+                return true;
+            }
+        }
+
         if (!$user instanceof UserInterface) {
             return false;
         }
@@ -36,8 +47,8 @@ class CompanyVoter extends Voter
             case 'VERIFY':
                 if ($user->isAdmin()) { return true; }
                 break;
-            case 'SHOW':
-                if ($subject->isActive() || $user->isAdmin()) { return true; }
+            case 'BUSINESS':
+                if ($user->isBusiness()) { return true; }
                 break;
         }
 

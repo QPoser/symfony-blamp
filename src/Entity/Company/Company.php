@@ -4,6 +4,7 @@ namespace App\Entity\Company;
 
 use App\Entity\Category\Category;
 use App\Entity\Tag;
+use App\Entity\Advert\AdvertDescription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -58,6 +59,11 @@ class Company
      * @Assert\Time()
      */
     private $end_work;
+
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $address;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
@@ -139,10 +145,29 @@ class Company
      */
     private $tags;
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Advert\AdvertDescription", mappedBy="company")
+     */
+    private $advertDescription;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\CouponType", mappedBy="company")
+     */
+    private $couponTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\Coupon", mappedBy="company")
+     */
+    private $coupons;
+
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     * @Assert\Email()
+     */
+    private $creatorEmail;
+
+    private $newPhoto;
+
 
     public function calcAssessment()
     {
@@ -285,9 +310,6 @@ class Company
         return $this;
     }
 
-
-    private $new_photo;
-
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -296,10 +318,13 @@ class Company
         $this->businessRequests = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->couponTypes = new ArrayCollection();
+        $this->coupons = new ArrayCollection();
     }
+
     public function setNewPhoto(?string $photo): self
     {
-        $this->new_photo = $photo;
+        $this->newPhoto = $photo;
 
         return $this;
     }
@@ -540,6 +565,110 @@ class Company
             $this->tags->removeElement($tag);
             $tag->removeCompany($this);
         }
+
+        return $this;
+    }
+
+    public function getAdvertDescription(): ?AdvertDescription
+    {
+        return $this->advertDescription;
+    }
+
+    public function setAdvertDescription(?AdvertDescription $advertDescription): self
+    {
+        $this->advertDescription = $advertDescription;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newCompany = $advertDescription === null ? null : $this;
+        if ($newCompany !== $advertDescription->getCompany()) {
+            $advertDescription->setCompany($newCompany);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CouponType[]
+     */
+    public function getCouponTypes(): Collection
+    {
+        return $this->couponTypes;
+    }
+
+    public function addCouponType(CouponType $couponType): self
+    {
+        if (!$this->couponTypes->contains($couponType)) {
+            $this->couponTypes[] = $couponType;
+            $couponType->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCouponType(CouponType $couponType): self
+    {
+        if ($this->couponTypes->contains($couponType)) {
+            $this->couponTypes->removeElement($couponType);
+            // set the owning side to null (unless already changed)
+            if ($couponType->getCompany() === $this) {
+                $couponType->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Coupon[]
+     */
+    public function getCoupons(): Collection
+    {
+        return $this->coupons;
+    }
+
+    public function addCoupon(Coupon $coupon): self
+    {
+        if (!$this->coupons->contains($coupon)) {
+            $this->coupons[] = $coupon;
+            $coupon->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoupon(Coupon $coupon): self
+    {
+        if ($this->coupons->contains($coupon)) {
+            $this->coupons->removeElement($coupon);
+            // set the owning side to null (unless already changed)
+            if ($coupon->getCompany() === $this) {
+                $coupon->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatorEmail(): ?string
+    {
+        return $this->creatorEmail;
+    }
+
+    public function setCreatorEmail(?string $creatorEmail): self
+    {
+        $this->creatorEmail = $creatorEmail;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

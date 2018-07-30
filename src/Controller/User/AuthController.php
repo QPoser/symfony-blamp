@@ -49,10 +49,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $this->denyAccessUnlessGranted('AUTH', null);
-        } catch (AccessDeniedException $e) {
-            $this->addFlash('notice', $e->getMessage());
-
+            $this->guardLogin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
             return $this->redirectToRoute('homepage');
         }
 
@@ -80,6 +79,13 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        try {
+            $this->guardLogin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
+
         $user = new User();
 
         $form = $this->createForm(RegisterFormType::class, $user);
@@ -106,6 +112,13 @@ class AuthController extends Controller
      */
     public function requestReset(Request $request)
     {
+        try {
+            $this->guardLogin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
+
         if ($username = $request->request->get('_username')) {
             if ($user = $this->repository->findUserByUsername($username)) {
                 $this->service->requestReset($user);
@@ -128,6 +141,13 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request, string $token)
     {
+        try {
+            $this->guardLogin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
+
         $user = $this->repository->findUserByPasswordResetToken($token);
 
         if (!$user) {
@@ -159,6 +179,12 @@ class AuthController extends Controller
      */
     public function verifyToken(string $token)
     {
+        try {
+            $this->guardLogin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+            return $this->redirectToRoute('homepage');
+        }
         //$this->generateUrl('verify', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
         $user = $this->repository->findUserByEmailToken($token);
 
@@ -178,4 +204,11 @@ class AuthController extends Controller
      * @Route("/logout", name="logout")
      */
     public function logout() {}
+
+    private function guardLogin()
+    {
+        if ($this->getUser()) {
+            throw new \DomainException('Вы уже авторизованы в системе.');
+        }
+    }
 }

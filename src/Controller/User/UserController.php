@@ -3,7 +3,6 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
-use App\Form\UserType;
 use App\Repository\User\UserRepository;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -33,13 +32,17 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/", name="user.index", methods="GET")
+     * @Route("", name="user.index", methods="GET")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = $this->users->findAll();
+        $users = $this->users->search($request->get('search'), $request->get('page') ?: 1);
 
-        return $this->render('user/index.html.twig', compact('users'));
+        $thisPage = $request->get('page') ?: 1;
+
+        $maxPages = ceil($users->count() / 15);
+
+        return $this->render('user/index.html.twig', compact('users', 'thisPage', 'maxPages'));
     }
 
     /**

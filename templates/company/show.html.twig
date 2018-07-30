@@ -4,6 +4,7 @@
 
 {% block body %}
     <h2>{{ company.name }} {% if company.assessment %}<i class="fa fa-star"></i> {{ company.assessment }}{% endif %}</h2>
+    <h5><span class="badge badge-primary">{{ coupons ? 'Купоны за отзыв' : '' }}</span></h5>
     <a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a>
     {% if app.user and app.user.favoriteCompanies.contains(company) %}
         <a href="{{ path('company.remove.favorites', {'id' : company.id}) }}" class="btn btn-warning">Убрать из избранного</a>
@@ -17,7 +18,7 @@
             <a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a>
         {% endif %}
     {% endif %}
-    {% if app.user and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
+    {% if app.user and app.user.isBusiness and not company.businessUsers.contains(app.user) and not app.user.isAdmin %}
         <a href="{{ path('company.business.attach', {'id' : company.id}) }}" class="btn btn-dark">Это ваша компания?</a>
     {% endif %}
     <hr>
@@ -55,6 +56,14 @@
             {% endif %}
         {% endfor %}
     </small>
+    {% if company.advertDescription %}
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6 class="card-text">{{ company.advertDescription.description }}</h6>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -95,6 +104,20 @@
                     <td>Фотография</td>
                     <td><img src="{{ absolute_url(asset(company.photo)) }}" alt="Без фото" style="width: auto; height: 120px;"></td>
                 </tr>
+                {% if company.address %}
+                    <tr>
+                        <td>Адрес</td>
+                        <td>
+                            <script type="text/javascript">
+                                let address = "{{ company.address }}";
+                                let companyName = "{{ company.name }}";
+                            </script>
+                            <div id="map" style="width:100%; height: auto; min-height: 280px;">
+
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
                 {% if company.startWork and company.endWork %}
                     <tr>
                         <td>Часы работы</td>

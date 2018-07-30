@@ -13,6 +13,44 @@
         {% endif %}
     </ul>
 
+    <hr>
+    {% if app.user.coupons|length > 0 %}
+
+        <p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
+            Просмотреть купоны
+        </button>
+        </p>
+
+        <div class="collapse" id="collapseEx">
+             <div class="card">
+                 <div class="card-body">
+                     <table class="table">
+                         <thead>
+                            <tr>
+                                <th>Компания</th>
+                                <th>Описание купона</th>
+                                <th>Код купона</th>
+                                <th>Статус</th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            {% for coupon in app.user.coupons %}
+                                <tr>
+                                    <td><a href="{{ path('company.show', {'id' : coupon.company.id}) }}">{{ coupon.company.name }}</a></td>
+                                    <td>{{ coupon.couponType.description }}</td>
+                                    <td>{{ coupon.code }}</td>
+                                    <td>{{ coupon.isActive ? 'Активен' : 'Использован' }}</td>
+                                </tr>
+                            {% endfor %}
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+        </div>
+
+    {% endif %}
+
     <table class="table table-striped">
         <thead>
             <tr>

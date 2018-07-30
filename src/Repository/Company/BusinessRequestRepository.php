@@ -29,6 +29,16 @@ class BusinessRequestRepository extends ServiceEntityRepository
         return $this->findBy(['status' => BusinessRequest::STATUS_SUCCESS]);
     }
 
+    public function getCountOfNewRequests()
+    {
+        $query = $this->createQueryBuilder('request')
+            ->select('count(request.id)')
+            ->where('request.status = :status')
+            ->setParameter('status', BusinessRequest::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return BusinessRequest[] Returns an array of BusinessRequest objects
 //     */

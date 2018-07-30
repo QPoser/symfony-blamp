@@ -4,6 +4,7 @@ namespace App\Repository\Company;
 
 use App\Entity\Company\Company;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -28,6 +29,44 @@ class CompanyRepository extends ServiceEntityRepository
     {
         return $this->findBy(['status' => Company::STATUS_WAIT]);
     }
+
+    public function search(string $search = null, $page = 1)
+    {
+        $query = $this->createQueryBuilder('company')
+            ->where('company.name LIKE :search')
+            ->andWhere('company.status = :status')
+            ->setParameters([
+                'search' => '%' . $search . '%',
+                'status' => Company::STATUS_ACTIVE,
+            ])
+            ;
+
+        $paginator = $this->paginate($query->getQuery(), $page ?: 1);
+
+        return $paginator;
+    }
+
+    public function getCountOfNewCompanies()
+    {
+        $query = $this->createQueryBuilder('company')
+            ->select('count(company.id)')
+            ->where('company.status = :status')
+            ->setParameter('status', Company::STATUS_WAIT);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function paginate($dql, $page = 1, $limit = 15)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
+    }
+
 //    /**
 //     * @return Company[] Returns an array of Company objects
 //     */

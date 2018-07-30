@@ -19,5 +19,10 @@
     {% if currentPath == path('admin.adverts') %}
     active
     {% endif %}
-    " href="{{ path('admin.adverts') }}">Реклама <span class="badge badge-pill badge-primary">{{ waitCounts.banners }}</span></a></li>
+    " href="{{ path('admin.adverts') }}">Реклама <span class="badge badge-pill badge-primary">{{ waitCounts.adverts }}</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.coupons') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.coupons') }}">Купоны <span class="badge badge-pill badge-primary">{{ waitCounts.coupons }}</span></a></li>
 </ul>

@@ -49,7 +49,7 @@ class ReviewController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->service->addComment($review, $comment);
+            $this->service->addComment($review, $comment, $this->getUser());
 
             $this->addFlash('notice', 'Комментарий успешно добавлен.');
 

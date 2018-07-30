@@ -9,9 +9,14 @@
 namespace App\Services;
 
 
+use App\Entity\Advert\AdvertDescription;
 use App\Entity\Advert\Banner;
+use App\Entity\Advert\LogBanner;
+use App\Entity\Company\Company;
 use App\Entity\User;
 use App\Repository\Advert\BannerRepository;
+use App\Repository\Advert\LogBannerRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -28,20 +33,36 @@ class AdvertService
      * @var Container
      */
     private $container;
+    /**
+     * @var LogBannerRepository
+     */
+    private $logs;
 
-    public function __construct(EntityManager $manager, Container $container)
+    public function __construct(EntityManager $manager, Container $container, LogBannerRepository $logs)
     {
         $this->manager = $manager;
         $this->container = $container;
+        $this->logs = $logs;
     }
 
-    public function getRandomBanner(BannerRepository $bannerRepository)
+    public function getRandomBanner(BannerRepository $bannerRepository, $format = Banner::FORMAT_VERTICAL, $user)
     {
-        $banners = $bannerRepository->getActiveBanners();
+        $banners = [];
+        if ($format == Banner::FORMAT_VERTICAL) {
+            $banners = $bannerRepository->getVerticalBanners();
+        } elseif ($format == Banner::FORMAT_HORIZONTAL) {
+            $banners = $bannerRepository->getHorizontalBanners();
+        }
+
+        if (empty($banners)) {
+            return false;
+        }
 
         $banner = $banners[array_rand($banners)];
 
-        $banner->addView();
+        if (!$this->isSeen($banner, $user)) {
+            $banner->addView();
+        }
 
         if ($banner->getViews() == 0) {
             $banner->setStatus(Banner::STATUS_READY_TO_PAY);
@@ -96,6 +117,81 @@ class AdvertService
     {
         $banner->setStatus(Banner::STATUS_REJECTED);
 
+        $this->manager->flush();
+    }
+
+
+
+    // Dynamic Descriptions
+
+    public function addDescription(AdvertDescription $description, Company $company)
+    {
+        $description->setStatus(AdvertDescription::STATUS_WAIT);
+        $description->setCompany($company);
+
+        $this->manager->persist($description);
+        $this->manager->flush();
+    }
+
+    public function verifyDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_READY_TO_PAY);
+
+        $this->manager->flush();
+    }
+
+    public function rejectDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_REJECTED);
+
+        $this->manager->flush();
+    }
+
+    public function payDescription(AdvertDescription $description)
+    {
+        $description->setStatus(AdvertDescription::STATUS_ACTIVE);
+        $description->setEndDate(new DateTime('now + 1 month'));
+
+        $this->manager->flush();
+    }
+
+
+
+
+
+    private function isSeen(Banner $banner, $user)
+    {
+        if ($user instanceof User) {
+            $logRow = $this->logs->findOneBy(['user' => $user->getId(), 'banner' => $banner->getId()]);
+        } else {
+            $logRow = $this->logs->findOneBy(['ip' => $user, 'banner' => $banner->getId()]);
+        }
+
+        if ($logRow) {
+            if ($logRow->getSeenAt() < new \DateTime('now - 1 hour')) {
+                $logRow->setSeenAt(new DateTime());
+                $this->manager->flush();
+                return false;
+            }
+            return true;
+        }
+
+        $this->fixLog($banner, $user);
+
+        return false;
+    }
+
+    private function fixLog(Banner $banner, $user)
+    {
+        $logRow = new LogBanner();
+        $logRow->setSeenAt(new DateTime());
+        $logRow->setBanner($banner);
+        if ($user instanceof User) {
+            $logRow->setUser($user);
+        } else {
+            $logRow->setIp($user);
+        }
+        $this->manager->persist($logRow);
         $this->manager->flush();
     }
 

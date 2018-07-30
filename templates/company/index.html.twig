@@ -6,6 +6,26 @@
     <h2>Компании</h2>
     <a href="{{ path('company.create') }}" class="btn btn-success">Добавить компанию</a>
     <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <form action="{{ path('company') }}" method="GET">
+                    <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="search" value="{{ app.request.get('search') }}" placeholder="Введите название компании">
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <button class="btn btn-primary border" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <hr>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -25,14 +45,14 @@
         <tbody>
             {% for company in companies %}
                 <tr>
-                    <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                    <td><a href="{{ path('company.show', { id : company.id}) }}">{{ company.name }}</a></td>
                     <td><i class="fa fa-star"></i> {{ company.assessment }}</td>
                     <td>{{ company.phone }}</td>
                     <td><a href="{{ company.site }}" class="btn btn-primary">Перейти</a></td>
                     {% if app.user and app.user.isAdmin %}
 
-                        <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Перейти</a></td>
-                        <td><a href="{{ path('company.remove', {'id' : company.id}) }}" class="btn btn-warning">Удалить</a></td>
+                        <td><a href="{{ path('company.edit', {id : company.id}) }}" class="btn btn-primary">Перейти</a></td>
+                        <td><a href="{{ path('company.remove', {id : company.id}) }}" class="btn btn-warning">Удалить</a></td>
 
                         {% if company.isRejected %}
                             <td><span class="badge badge-danger">{{ company.status }}</span></td>
@@ -44,16 +64,34 @@
 
 
                         {% if company.isActive %}
-                            <td><a href="{{ path('company.reject', {'id' : company.id}) }}" class="btn btn-danger">Отклонить</a></td>
+                            <td><a href="{{ path('company.reject', {id : company.id}) }}" class="btn btn-danger">Отклонить</a></td>
                         {% else %}
-                            <td><a href="{{ path('company.verify', {'id' : company.id}) }}" class="btn btn-success">Принять</a></td>
+                            <td><a href="{{ path('company.verify', {id : company.id}) }}" class="btn btn-success">Принять</a></td>
                         {% endif %}
                     {% endif %}
-                    <td><a href="{{ path('company.add.review', {'id' : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>
+                    <td><a href="{{ path('company.add.review', {id : company.id}) }}" class="btn btn-success">Добавить отзыв</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" {{ thisPage == 1 ? 'class="disabled"' }}>
+                <a class="page-link" href="{{ path('company', {page: thisPage-1 < 1 ? 1 : thisPage-1, search: app.request.get('search')}) }}">«</a>
+            </li>
+
+            {% for i in 1..maxPages %}
+                <li class="page-item {{ thisPage == i ? 'active' }}" >
+                    <a class="page-link" href="{{ path('company', {page: i, search: app.request.get('search')}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item" {{ thisPage == maxPages ? 'class="disabled"' }}>
+                <a class="page-link" href="{{ path('company', {page: thisPage+1 <= maxPages ? thisPage+1 : thisPage, search: app.request.get('search')}) }}">»</a>
+            </li>
+        </ul>
+    </nav>
 
 
 {% endblock %}

@@ -12,17 +12,17 @@ use App\Form\Category\CategoryType;
 use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
-use App\Form\Company\Review\ReviewAddCommentForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
-use App\Services\AdvertService;
+use App\Repository\Company\CouponTypeRepository;
 use App\Services\CompanyService;
 use App\Services\EventService;
+use App\Services\ReviewService;
 use App\Services\UserService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -55,13 +55,19 @@ class CompanyController extends Controller
     }
 
     /**
-     * @Route("/", name="company")
+     * @Route("", name="company")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $companies = $this->repository->getActiveCompanies();
+        $companies = $this->repository->search($request->get('search'), $request->get('page') ?: 1);
 
-        return $this->render('company/index.html.twig', compact('companies'));
+        $thisPage = $request->get('page') ?: 1;
+
+        $maxPages = ceil($companies->count() / 15);
+
+        return $this->render('company/index.html.twig', compact('companies', 'maxPages', 'thisPage'));
     }
 
     /**
@@ -75,11 +81,22 @@ class CompanyController extends Controller
 
         $form = $this->createForm(CompanyCreateForm::class, $company);
 
+        $email = null;
+
+        if (!$this->getUser() || !$this->getUser()->getEmail()) {
+            $form->add('creatorEmail', EmailType::class, [
+                'required' => false,
+                'label' => 'Email для уведомлений'
+            ]);
+        } else {
+            $email = $this->getUser()->getEmail();
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $company = $this->service->create($company, $form);
+            $company = $this->service->create($company, $form, $email);
 
             $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно добавлена.');
 
@@ -95,13 +112,16 @@ class CompanyController extends Controller
     /**
      * @Route("/{id}", name="company.show")
      * @param Company $company
+     * @param CouponTypeRepository $couponRepository
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function show(Company $company)
+    public function show(Company $company, CouponTypeRepository $couponRepository)
     {
         $this->denyAccessUnlessGranted('SHOW', $company);
 
-        return $this->render('company/show.html.twig', compact('company'));
+        $coupons = $couponRepository->findActiveByCompany($company);
+
+        return $this->render('company/show.html.twig', compact('company', 'coupons'));
     }
 
 
@@ -229,9 +249,10 @@ class CompanyController extends Controller
      * @Route("/{id}/reviews/create", name="company.add.review")
      * @param Request $request
      * @param Company $company
+     * @param ReviewService $reviewService
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addReview(Request $request, Company $company)
+    public function addReview(Request $request, Company $company, ReviewService $reviewService)
     {
         $review = new Review();
 
@@ -240,7 +261,11 @@ class CompanyController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->service->addReview($company, $review);
+            $this->service->addReview($company, $review, $this->getUser());
+
+            if ($this->getUser()->isAdmin()) {
+                $reviewService->verify($review);
+            }
 
             $this->addFlash('notice', 'Отзыв успешно добавлен.');
 
@@ -292,6 +317,8 @@ class CompanyController extends Controller
      */
     public function requestBusiness(Request $request, Company $company)
     {
+        $this->denyAccessUnlessGranted('BUSINESS', $company);
+
         $businessRequest = new BusinessRequest();
 
         $form = $this->createForm(BusinessRequestForm::class, $businessRequest);

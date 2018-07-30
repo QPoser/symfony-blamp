@@ -8,7 +8,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReviewCreateForm extends AbstractType
@@ -16,7 +18,9 @@ class ReviewCreateForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('text')
+            ->add('text', TextareaType::class, [
+                'label' => 'Отзыв',
+            ])
             ->add('assessment', ChoiceType::class, [
                 'choices' => [
                     1 => 1,
@@ -24,7 +28,8 @@ class ReviewCreateForm extends AbstractType
                     3 => 3,
                     4 => 4,
                     5 => 5,
-                ]
+                ],
+                'label' => 'Ваша оценка'
             ]);
 //            ->add('photos', CollectionType::class, array(
 //                'entry_type'   		=> ReviewPhotoType::class,

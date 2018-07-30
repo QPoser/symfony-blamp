@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet!{% endblock %}
+
+{% block body %}
+    {% include 'admin/_nav.html.twig' %}
+    <ul class="nav nav-pills nav-fill mb-3">
+
+        <li class="nav-item"><a class="nav-link" href="{{ path('admin.adverts') }}">Баннеры</a></li>
+
+        <li class="nav-item"><a class="nav-link active" href="#">Динамические описания</a></li>
+
+    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Компания</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for description in descriptions %}
+            <tr>
+                <td>{{ description.id }}</td>
+                <td><a href="{{ path('company.show', {'id' : description.company.id}) }}">{{ description.company.name }}</a></td>
+                <td>{{ description.description }}</td>
+                <td><span class="badge badge-primary">{{ description.status }}</span></td>
+                <td>
+                    <a href="{{ path('advert.description.verify', {'id' : description.id}) }}" class="btn btn-success">Принять</a>
+                    <a href="{{ path('advert.description.pay', {'id' : description.id}) }}" class="btn btn-primary">Оплатить</a>
+                    <a href="{{ path('advert.description.reject', {'id' : description.id}) }}" class="btn btn-warning">Отклонить</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
