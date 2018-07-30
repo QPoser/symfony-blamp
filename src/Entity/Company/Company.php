@@ -2,14 +2,16 @@
 
 namespace App\Entity\Company;
 
+use App\Entity\Advert\AdvertDescription;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Review;
+use App\Entity\Review\Review;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Company\CompanyRepository")
  */
 class Company
 {
@@ -51,6 +53,11 @@ class Company
     private $end_work;
 
     /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $address;
+
+    /**
      * @ORM\Column(type="string", length=100, nullable=true)
      *
      * @Assert\Url(
@@ -63,11 +70,12 @@ class Company
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @Assert\Image()
-     *     minWidth="200"
-     *     maxWidth="400"
-     *     minHeight="200"
-     *     maxHeight="400"
+     * @Assert\Image(
+     * )
+     *     minWidth= 200,
+     *     maxWidth= 200,
+     *     minHeight= 200,
+     *     maxHeight= 400
      */
     private $photo;
 
@@ -86,7 +94,7 @@ class Company
     private $reject_reason;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="App\Entity\Review\Review", mappedBy="company", orphanRemoval=true, cascade={"persist"})
      */
     private $reviews;
 
@@ -95,14 +103,75 @@ class Company
      */
     private $assessment;
 
+    /**
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
+     */
+    private $fixedAssessment;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="favoriteCompanies")
+     */
+    private $usersFavor;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="businessCompanies")
+     */
+    private $businessUsers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\BusinessRequest", mappedBy="company", orphanRemoval=true, cascade={"persist"})
+     */
+    private $businessRequests;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Advert\AdvertDescription", mappedBy="company")
+     */
+    private $advertDescription;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\CouponType", mappedBy="company")
+     */
+    private $couponTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Company\Coupon", mappedBy="company")
+     */
+    private $coupons;
+
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     * @Assert\Email()
+     */
+    private $creatorEmail;
+
+    private $newPhoto;
+
+
     public function calcAssessment()
     {
         $assessment = null;
-        /** @var Review $review */
-        foreach ($this->reviews as $review) {
-            $assessment += $review->getAssessment();
+        $count = 0;
+        if (count($this->reviews) > 0) {
+            /** @var Review $review */
+            foreach ($this->reviews as $review) {
+                if ($review->isActive()) {
+                    $count++;
+                    $assessment += $review->getAssessment();
+                }
+            }
+
+            if ($count == 0) {
+                $this->assessment = null;
+                return true;
+            }
+
+            $this->assessment = $assessment / $count;
+
+            return true;
         }
-        $this->assessment = $assessment / count($this->reviews);
+
+        $this->assessment = null;
+
     }
 
 
@@ -114,7 +183,7 @@ class Company
         $this->status = self::STATUS_ACTIVE;
     }
 
-    public function setWaite()
+    public function setWait()
     {
         $this->status = self::STATUS_WAIT;
     }
@@ -127,6 +196,11 @@ class Company
     public function isRejected()
     {
         return $this->status == self::STATUS_REJECTED;
+    }
+
+    public function isWait()
+    {
+        return $this->status == self::STATUS_WAIT;
     }
 
 
@@ -214,16 +288,19 @@ class Company
         return $this;
     }
 
-
-    private $new_photo;
-
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->usersFavor = new ArrayCollection();
+        $this->businessUsers = new ArrayCollection();
+        $this->businessRequests = new ArrayCollection();
+        $this->couponTypes = new ArrayCollection();
+        $this->coupons = new ArrayCollection();
     }
+
     public function setNewPhoto(?string $photo): self
     {
-        $this->new_photo = $photo;
+        $this->newPhoto = $photo;
 
         return $this;
     }
@@ -291,6 +368,209 @@ class Company
     public function setAssessment(float $assessment): self
     {
         $this->assessment = $assessment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersFavor(): Collection
+    {
+        return $this->usersFavor;
+    }
+
+    public function addUsersFavor(User $usersFavor): self
+    {
+        if (!$this->usersFavor->contains($usersFavor)) {
+            $this->usersFavor[] = $usersFavor;
+            $usersFavor->addFavoriteCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFavor(User $usersFavor): self
+    {
+        if ($this->usersFavor->contains($usersFavor)) {
+            $this->usersFavor->removeElement($usersFavor);
+            $usersFavor->removeFavoriteCompany($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getBusinessUsers(): Collection
+    {
+        return $this->businessUsers;
+    }
+
+    public function addBusinessUser(User $businessUser): self
+    {
+        if (!$this->businessUsers->contains($businessUser)) {
+            $this->businessUsers[] = $businessUser;
+            $businessUser->addBusinessCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessUser(User $businessUser): self
+    {
+        if ($this->businessUsers->contains($businessUser)) {
+            $this->businessUsers->removeElement($businessUser);
+            $businessUser->removeBusinessCompany($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BusinessRequest[]
+     */
+    public function getBusinessRequests(): Collection
+    {
+        return $this->businessRequests;
+    }
+
+    public function addBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if (!$this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests[] = $businessRequest;
+            $businessRequest->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessRequest(BusinessRequest $businessRequest): self
+    {
+        if ($this->businessRequests->contains($businessRequest)) {
+            $this->businessRequests->removeElement($businessRequest);
+            // set the owning side to null (unless already changed)
+            if ($businessRequest->getUser() === $this) {
+                $businessRequest->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFixedAssessment()
+    {
+        return $this->fixedAssessment;
+    }
+
+    public function setFixedAssessment($fixedAssessment): self
+    {
+        $this->fixedAssessment = $fixedAssessment;
+
+        return $this;
+    }
+
+    public function getAdvertDescription(): ?AdvertDescription
+    {
+        return $this->advertDescription;
+    }
+
+    public function setAdvertDescription(?AdvertDescription $advertDescription): self
+    {
+        $this->advertDescription = $advertDescription;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newCompany = $advertDescription === null ? null : $this;
+        if ($newCompany !== $advertDescription->getCompany()) {
+            $advertDescription->setCompany($newCompany);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CouponType[]
+     */
+    public function getCouponTypes(): Collection
+    {
+        return $this->couponTypes;
+    }
+
+    public function addCouponType(CouponType $couponType): self
+    {
+        if (!$this->couponTypes->contains($couponType)) {
+            $this->couponTypes[] = $couponType;
+            $couponType->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCouponType(CouponType $couponType): self
+    {
+        if ($this->couponTypes->contains($couponType)) {
+            $this->couponTypes->removeElement($couponType);
+            // set the owning side to null (unless already changed)
+            if ($couponType->getCompany() === $this) {
+                $couponType->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Coupon[]
+     */
+    public function getCoupons(): Collection
+    {
+        return $this->coupons;
+    }
+
+    public function addCoupon(Coupon $coupon): self
+    {
+        if (!$this->coupons->contains($coupon)) {
+            $this->coupons[] = $coupon;
+            $coupon->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoupon(Coupon $coupon): self
+    {
+        if ($this->coupons->contains($coupon)) {
+            $this->coupons->removeElement($coupon);
+            // set the owning side to null (unless already changed)
+            if ($coupon->getCompany() === $this) {
+                $coupon->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatorEmail(): ?string
+    {
+        return $this->creatorEmail;
+    }
+
+    public function setCreatorEmail(?string $creatorEmail): self
+    {
+        $this->creatorEmail = $creatorEmail;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

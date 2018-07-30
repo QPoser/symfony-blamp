@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Купоны{% endblock %}
+
+{% block body %}
+    {% include 'admin/_nav.html.twig' %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Компания</th>
+                <th>Купон</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coupon in coupons %}
+                 <tr>
+                     <td>{{ coupon.id }}</td>
+                     <td><a href="{{ path('company.show', {'id' : coupon.company.id}) }}">{{ coupon.company.name }}</a></td>
+                     <td>{{ coupon.description }}</td>
+                     <td>
+                         {% if coupon.isRejected %}
+                             <span class="badge badge-danger">{{ coupon.status }}</span>
+                         {% elseif coupon.isActive %}
+                             <span class="badge badge-success">{{ coupon.status }}</span>
+                         {% else %}
+                             <span class="badge">{{ coupon.status }}</span>
+                         {% endif %}
+                     </td>
+                     <td>
+                         <a href="{{ path('company.coupon.verify', {'id' : coupon.id}) }}">Принять</a>
+                         <a href="{{ path('company.coupon.reject', {'id' : coupon.id}) }}">Отклонить</a>
+                     </td>
+                 </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

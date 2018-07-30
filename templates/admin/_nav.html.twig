@@ -1,0 +1,28 @@
+<ul class="nav nav-pills nav-fill mb-3">
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin') %}
+    active
+    {% endif %}
+    " href="{{ path('admin') }}">Компании <span class="badge badge-pill badge-primary">{{ waitCounts.companies }}</span></a></li>
+
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.review') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.review') }}">Отзывы <span class="badge badge-pill badge-primary">{{ waitCounts.reviews }}</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.request') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.request') }}">Запросы <span class="badge badge-pill badge-primary">{{ waitCounts.requests }}</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.adverts') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.adverts') }}">Реклама <span class="badge badge-pill badge-primary">{{ waitCounts.adverts }}</span></a></li>
+    <li class="nav-item"><a class="nav-link
+    {% if currentPath == path('admin.coupons') %}
+    active
+    {% endif %}
+    " href="{{ path('admin.coupons') }}">Купоны <span class="badge badge-pill badge-primary">{{ waitCounts.coupons }}</span></a></li>
+</ul>

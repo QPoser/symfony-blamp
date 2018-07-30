@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block body %}
+    <h1>Пользователи</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{{ path('user.index') }}" method="GET">
+                <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="search" value="{{ app.request.get('search') }}" placeholder="Введите название компании">
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <button class="btn btn-primary border" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Имя</th>
+                <th>Отзывы</th>
+                <th>Комментарии</th>
+                <th>Подписчики</th>
+                <th>Подписки</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>
+                    <a href="{{ path('user.show', {'id': user.id}) }}" class="btn btn-success"><i class="fa fa-eye"></i></a>
+                </td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.reviews|length }}</td>
+                <td>{{ user.comments|length }}</td>
+                <td>{{ user.subscribers|length }}</td>
+                <td>{{ user.subscriptions|length }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">No Users</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" {{ thisPage == 1 ? 'class="disabled"' }}>
+                <a class="page-link" href="{{ path('user.index', {page: thisPage-1 < 1 ? 1 : thisPage-1, search: app.request.get('search')}) }}">«</a>
+            </li>
+
+            {% for i in 1..maxPages %}
+                <li class="page-item {{ thisPage == i ? 'active' }}" >
+                    <a class="page-link" href="{{ path('user.index', {page: i, search: app.request.get('search')}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item" {{ thisPage == maxPages ? 'class="disabled"' }}>
+                <a class="page-link" href="{{ path('user.index', {page: thisPage+1 <= maxPages ? thisPage+1 : thisPage, search: app.request.get('search')}) }}">»</a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

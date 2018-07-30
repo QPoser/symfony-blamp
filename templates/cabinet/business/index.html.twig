@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet Reviews!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet') }}">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.favorites') }}">Избранное</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Бизнес</a></li>
+    </ul>
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link active" href="#">Компании</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.adverts') }}">Реклама</a></li>
+    </ul>
+    <hr>
+    <h2>Бизнес-панель</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Редактировать</th>
+                <th>Купоны</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in app.user.businessCompanies %}
+                <tr>
+                    <td><a href="{{ path('company.show', {'id' : company.id}) }}">{{ company.name }}</a></td>
+                    <td><a href="{{ path('company.edit', {'id' : company.id}) }}" class="btn btn-primary">Редактировать</a></td>
+                    {% if company.couponTypes|length > 0 %}
+                        <td>
+                            <form action="{{ path('company.coupon.accept', {'id' : company.id}) }}">
+                                <div class="row" style="margin: 0px;">
+                                    <input class="form-control col-sm-5 mr-3" type="number" name="coupon" required>
+                                    <button type="submit col-sm-3 ml-2" class="btn btn-primary">Проверить купон</button>
+                                </div>
+                            </form>
+                        </td>
+                        {% else %}
+                        <td><a class="btn btn-success" href="{{ path('company.coupon.create', {'id' : company.id}) }}">Добавить новый купон</a></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>
+                        <p>Рейтинг : <i class="fa fa-star"></i> {{ company.assessment }}</p>
+                    </td>
+                    <td>
+                        <p>Динамика <i class="fa fa-line-chart"></i> :
+                            {% if company.fixedAssessment < company.assessment %}
+                                <i class="fa fa-rocket"></i> Компания становится лучше!
+                            {% elseif company.fixedAssessment == company.assessment %}
+                                <i class="fa fa-ship"></i> Компания не изменилась в рейтинге
+                            {% else %}
+                                <i class="fa fa-arrow-down"></i> Компания теряет рейтинги!
+                            {% endif %}
+                        </p>
+                    </td>
+                    {% if company.couponTypes|length > 0 %}
+                        <td>Купонов выдано: {{ company.coupons|length }}</td>
+                        {% else %}
+                        <td>Пока нет купонов</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Купоны</h4>
+    <hr>
+    {% for company in app.user.businessCompanies %}
+        <h4>{{ company.name }}</h4>
+        {% if company.couponTypes|length > 0 %}
+            <p><a class="btn btn-success" href="{{ path('company.coupon.create', {'id' : company.id}) }}">Добавить новый купон</a></p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Описание</th>
+                        <th>Статус</th>
+                        <th>Выдано купонов</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coupon in company.couponTypes %}
+                        <tr>
+                            <td>{{ coupon.description }}</td>
+                            <td><span class="badge badge-primary">{{ coupon.status }}</span></td>
+                            <td>{{ coupon.coupons|length }}</td>
+                            <td>
+                                {% if coupon.isActive %}
+                                    <a href="{{ path('company.coupon.close', {'id' : coupon.id}) }}">Закрыть</a>
+                                {% elseif coupon.isClosed %}
+                                    <a href="{{ path('company.coupon.open', {'id' : coupon.id}) }}">Открыть</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>У данной компании нет купонов, хотите <a href="{{ path('company.coupon.create', {'id' : company.id}) }}">добавить новый</a>?</p>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock %}

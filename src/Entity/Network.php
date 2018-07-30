@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,8 +22,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Network
 {
 
+    public const NETWORK_VK = 'vk';
+    public const NETWORK_FACEBOOK = 'facebook';
+
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="user_network")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="networks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;

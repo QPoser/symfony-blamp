@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block body %}
+    <h2>Редактировать профиль</h2>
+    <hr>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+        <input type="submit" class="btn btn-primary" value="Принять">
+    {{ form_end(form) }}
+{% endblock %}

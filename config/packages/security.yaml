@@ -10,7 +10,7 @@ security:
 
     role_hierarchy:
         ROLE_BUSINESS:    ROLE_USER
-        ROLE_ADMIN:   ROLE_ADMIN
+        ROLE_ADMIN:   ROLE_BUSINESS
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -18,6 +18,11 @@ security:
         main:
             pattern: ^/
             anonymous: ~
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path:   /
 
             oauth:
                 resource_owners:
@@ -39,5 +44,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-#         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICATED_FULLY }
-#         - { path: ^/, roles: ROLE_USER }
+         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/cabinet, roles: ROLE_USER }
+         - { path: ^/network, roles: ROLE_USER }
+         - { path: ^/user/subs/, roles: ROLE_USER }
+         - { path: ^/company/favorites, roles: ROLE_USER }
+         - { path: ^/cabinet/business, roles: ROLE_BUSINESS }
+         - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

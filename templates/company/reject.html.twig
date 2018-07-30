@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reject company{% endblock %}
+{% block title %}Отклонить компанию{% endblock %}
 
 {% block body %}
-    <h2>Reject company {{ company.name }}</h2>
+    <h2>Отклонить компанию {{ company.name }}</h2>
     {#<a href="{{ path('company.create') }}" class="btn btn-success">Add company</a>#}
     {{ form_start(form) }}
     {{ form_widget(form) }}
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="Отклонить">
     {{ form_end(form) }}
 {% endblock %}

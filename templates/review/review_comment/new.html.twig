@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Новый комментарий{% endblock %}
+
+{% block body %}
+    <h1>Добавить новый комментарий</h1>
+
+    {{ include('review/review_comment/_form.html.twig') }}
+{% endblock %}

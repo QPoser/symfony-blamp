@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet!{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-pills nav-fill mb-3">
+        <li class="nav-item"><a class="nav-link active" href="#">Новое <span class="badge badge-pill badge-primary">{{ app.user.newEvents|length }}</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.reviews') }}">Отзывы</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.profile') }}">Профиль</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.favorites') }}">Избранное</a></li>
+        {% if app.user.isBusiness %}
+            <li class="nav-item"><a class="nav-link" href="{{ path('cabinet.business.profile') }}">Бизнес</a></li>
+        {% endif %}
+    </ul>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Событие</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in app.user.events %}
+                <tr>
+                    {% if (event.senderUser) %}
+                        <td><a href="#">{{ event.senderUser.username }}</a></td>
+                    {% else %}
+                        <td><a href="{{ path('company.show', {'id' : event.senderCompany.id}) }}">{{ event.senderCompany.name }}</a></td>
+                    {% endif %}
+                    <td>{{ event.eventMessage|raw }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

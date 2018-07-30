@@ -6,13 +6,15 @@
 parameters:
     locale: 'en'
     img_dir: '%kernel.project_dir%/public/uploads/img'
+    img_banner_dir: '%kernel.project_dir%/public/uploads/img/banners'
+    default_mail_to: 'andystory@mail.ru'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
+        public: true       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
 
@@ -37,8 +39,34 @@ services:
     App\Services\ReviewService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
+    App\Services\UserService:
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+
+    App\Services\NetworkService:
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+
     App\Services\AuthService:
+        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
+
+    App\Services\EventService:
         arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\AdvertService:
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    App\Services\CommentService:
+        arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+
+    App\Services\LikeService:
+            arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+
+    App\Services\CouponService:
+        arguments: ['@doctrine.orm.entity_manager']
+
+    AppBundle\Services\EmailService:
+        arguments: ['@twig', '@mailer', '%default_mail_to%']
+
+
 
 hwi_oauth:
     firewall_names:     ['main']
