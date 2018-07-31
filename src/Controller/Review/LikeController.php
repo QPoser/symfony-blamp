@@ -4,7 +4,6 @@ namespace App\Controller\Review;
 
 use App\Entity\Review\Like;
 use App\Entity\Review\Review;
-use App\Repository\Review\LikeRepository;
 use App\Services\LikeService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +35,8 @@ class LikeController extends Controller
      */
     public function addLike(Request $request, Review $review): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if ($this->service->addLike($review)) {
             $this->addFlash('notice', 'Лайк успешно добавлен.');
         }else {
@@ -53,6 +54,8 @@ class LikeController extends Controller
      */
     public function addDislike(Review $review): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if ($this->service->addLike($review, Like::DISLIKE)) {
         $this->addFlash('notice', 'Дизлайк успешно добавлен.');
     }else {

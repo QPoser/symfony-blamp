@@ -4,7 +4,6 @@ namespace App\Controller\Review;
 
 use App\Entity\Review\ReviewComment;
 use App\Form\Review\ReviewCommentType;
-use App\Repository\Review\ReviewCommentRepository;
 use App\Services\CommentService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,14 +25,6 @@ class ReviewCommentController extends Controller
         $this->service = $service;
     }
 
-//    /**
-//     * @Route("/", name="review_review_comment_index", methods="GET")
-//     */
-//    public function index(ReviewCommentRepository $reviewCommentRepository): Response
-//    {
-//        return $this->render('review_review_comment/index.html.twig', ['review_comments' => $reviewCommentRepository->findAll()]);
-//    }
-
     /**
      * @Route("/{id}/answer", name="comment.answer", methods="GET|POST")
      * @param Request $request
@@ -44,6 +35,8 @@ class ReviewCommentController extends Controller
      */
     public function new(Request $request, ReviewComment $reviewComment): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $comment = new ReviewComment();
         $form = $this->createForm(ReviewCommentType::class, $comment);
 
@@ -69,14 +62,6 @@ class ReviewCommentController extends Controller
         ]);
     }
 
-//    /**
-//     * @Route("/{id}", name="review_review_comment_show", methods="GET")
-//     */
-//    public function show(ReviewComment $reviewComment): Response
-//    {
-//        return $this->render('review_review_comment/show.html.twig', ['review_comment' => $reviewComment]);
-//    }
-//
     /**
      * @Route("/{id}/edit", name="comment.edit", methods="GET|POST")
      * @param Request $request

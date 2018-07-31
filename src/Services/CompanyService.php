@@ -11,17 +11,21 @@ namespace App\Services;
 
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
-use App\Entity\Event;
+use App\Entity\Review\Photo;
 use App\Entity\Review\Review;
 use App\Entity\User;
+use App\Form\Company\TagsTextType;
 use App\Services\App\EmailService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+
 
 class CompanyService
 {
@@ -130,6 +134,24 @@ class CompanyService
 
     public function addReview(Company $company, Review $review, User $user)
     {
+        $attachments = $review->getPhotos();
+        if ($attachments) {
+            foreach($attachments as $attachment)
+            {
+                $file = $attachment->getPhoto();
+
+                var_dump($attachment);
+                $filename = md5(uniqid()) . '.' .$file->guessExtension();
+
+                $file->move(
+                    $this->getParameter('img_dir'), $filename
+                );
+                var_dump($filename);
+                $attachment->setPhoto($filename);
+            }
+        }
+
+
         $review->setCompany($company);
         $review->setStatus(Review::STATUS_WAIT);
         $review->setUser($user);
@@ -214,6 +236,18 @@ class CompanyService
         }
     }
 
+    private function setReviewPhoto(?UploadedFile $file, Review $review)
+    {
+        $package = new Package(new EmptyVersionStrategy());
+        if ($file) {
+            $someFileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move($this->container->getParameter('img_dir'), $someFileName);
+            $photo = new Photo();
+            $photo->setPhoto($package->getUrl('uploads/img/' . $someFileName));
+            $review->addPhoto($photo);
+        }
+    }
+
     public function addReviewFixtureMod(Company $company, Review $review, User $user)
     {
         $review->setCompany($company);
@@ -223,5 +257,27 @@ class CompanyService
         $this->manager->flush();
         $company->calcAssessment();
         $this->manager->flush();
+    }
+
+    public function addAdditionFields(FormInterface $form)
+    {
+        $form->add('categories', EntityType::class, [
+            'class' => 'App\Entity\Category\Category',
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('u')
+                    ->orderBy('u.num', 'ASC');
+            },
+            'choice_label' => 'path',
+            'multiple' => true,
+            'required' => false,
+            'choice_attr' => function($choiceValue, $key, $value) {
+                if ($this->manager->getRepository('App:Category\Category')->findOneBy(['id' => $value])->getChildrenCategories()->getValues())
+                    return ['disabled' => 'disabled'];
+                return [];
+            },
+
+        ])
+             ->add('tagsText', TagsTextType::class, ['required' => false, 'label' => 'Теги'])
+        ;
     }
 }

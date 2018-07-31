@@ -3,35 +3,27 @@
 {% block title %}Tag index{% endblock %}
 
 {% block body %}
-    <h1>Tag index</h1>
-
+    <h1>Теги</h1>
     <table class="table">
-        <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>CompanyCounter</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for tag in tags %}
-            <tr>
-                <td>{{ tag.id }}</td>
-                <td>{{ tag.name }}</td>
-                <td>{{ tag.companyCounter }}</td>
                 <td>
-                    <a href="{{ path('company_tag_show', {'id': tag.id}) }}">show</a>
-                    <a href="{{ path('company_tag_edit', {'id': tag.id}) }}">edit</a>
+                    {% for tag in tags %}
+                        {% if app.user and app.user.isAdmin %}
+                        <div class="btn-group">
+                            <a href="{{ path('company') }}?search={{ tag.name }}" class="btn btn-outline-primary">
+                                {{ tag.name }}
+                            </a>
+                            {% include 'company/tag/_delete_form.html.twig' with {'id': tag.id} %}
+                        </div>
+                        {% else %}
+                            <a  href="{{ path('company') }}?search={{ tag.name }}" class="btn btn-outline-primary">{{ tag.name }}</a>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
     </table>
 
-    <a href="{{ path('company_tag_new') }}">Create new</a>
+    {% if app.user and app.user.isAdmin %}
+        <a class="btn btn-primary" href="{{ path('company.tag.new') }}">Новый тег</a>
+    {% endif %}
 {% endblock %}

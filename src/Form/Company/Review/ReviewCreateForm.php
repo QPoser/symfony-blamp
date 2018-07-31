@@ -3,7 +3,7 @@
 namespace App\Form\Company\Review;
 
 use App\Entity\Review\Review;
-use App\Form\Review\ReviewPhotoType;
+use App\Form\Review\PhotoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -30,17 +30,31 @@ class ReviewCreateForm extends AbstractType
                     5 => 5,
                 ],
                 'label' => 'Ваша оценка'
-            ]);
-//            ->add('photos', CollectionType::class, array(
-//                'entry_type'   		=> ReviewPhotoType::class,
-//                'prototype'			=> true,
-//                'allow_add'			=> true,
-//                'allow_delete'		=> true,
-//                'by_reference' 		=> false,
-//                'required'			=> false,
-//                'label'			=> false,
-//
-//            ));
+            ])
+            ->add('photos', CollectionType::class,array(
+                'entry_type' => PhotoType::class,
+                'allow_add' => true,
+                'by_reference' => false,
+            ))
+            ;
+
+
+
+
+
+
+
+
+
+
+//            ->add('photos', FileType::class, [
+//                'multiple' => true,
+//                'attr'     => [
+//                    'accept' => 'image/*',
+//                    'multiple' => 'multiple'
+//                ]
+//            ])
+//        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -48,5 +62,13 @@ class ReviewCreateForm extends AbstractType
         $resolver->setDefaults([
             'data_class' => Review::class,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }

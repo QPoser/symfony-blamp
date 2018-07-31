@@ -50,7 +50,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->select('company')
             ->from(Company::class, 'company')
             ->leftJoin(Category::class, 'category', 'with', 'company MEMBER OF category.companies')
-            ->leftJoin(Tag::class, 'tag', 'with', 'company MEMBER OF tag.companies')
+            ->leftJoin(Tag::class, 'tag', 'with', 'tag MEMBER OF company.tags')
             ->where('company.name LIKE :search  OR category.name LIKE :search OR tag.name LIKE :search')
             ->andWhere('company.status = :status')
             ->andWhere('category.id = ' . $category->getId())
