@@ -606,6 +606,17 @@ class Company
         return $this->couponTypes;
     }
 
+    public function getActiveCouponTypes(): array
+    {
+        $couponTypes = [];
+        foreach ($this->couponTypes as $couponType) {
+            if ($couponType->isActive()) {
+                $couponTypes[] = $couponType;
+            }
+        }
+        return $couponTypes;
+    }
+
     public function addCouponType(CouponType $couponType): self
     {
         if (!$this->couponTypes->contains($couponType)) {

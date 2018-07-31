@@ -133,7 +133,7 @@ class ReviewService
             'Ваш отзыв для компании ' . $review->getCompany()->getName() . ' был успешно одобрен, и опубликован!',
             $review->getCompany());
 
-        if (!empty($review->getCompany()->getCouponTypes())) {
+        if (!empty($review->getCompany()->getActiveCouponTypes())) {
             $couponType = $this->couponRepository->getRandomActiveCouponByCompany($review->getCompany());
 
             $coupon = new Coupon();
