@@ -2,7 +2,6 @@
 
 namespace App\Controller\Review;
 
-//use App\Controller\TextType;
 use App\Entity\Review\Review;
 use App\Entity\Review\ReviewComment;
 use App\Form\Company\Review\ReviewCreateForm;

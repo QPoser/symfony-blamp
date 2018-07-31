@@ -562,20 +562,20 @@ class Company
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tags->contains($tag)) {
+        //if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
             $tag->addCompany($this);
-        }
+        //}
 
         return $this;
     }
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tags->contains($tag)) {
+        //if ($this->tags->contains($tag)) {
             $this->tags->removeElement($tag);
             $tag->removeCompany($this);
-        }
+        //}
 
         return $this;
     }

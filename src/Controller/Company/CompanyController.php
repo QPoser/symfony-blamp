@@ -2,13 +2,11 @@
 
 namespace App\Controller\Company;
 
-use App\Entity\Category\Category;
 use App\Entity\Company\BusinessRequest;
 use App\Entity\Company\Company;
 use App\Entity\Event;
 use App\Entity\Review\Review;
 use App\Entity\User;
-use App\Form\Category\CategoryType;
 use App\Form\Company\BusinessRequestForm;
 use App\Form\Company\CompanyCreateForm;
 use App\Form\Company\CompanyEditForm;
@@ -19,8 +17,6 @@ use App\Services\CompanyService;
 use App\Services\EventService;
 use App\Services\ReviewService;
 use App\Services\UserService;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,7 +122,7 @@ class CompanyController extends Controller
 
 
     /**
-     * @Route("/edit/{id}", name="company.edit")
+     * @Route("/{id}/edit", name="company.edit")
      * @param Request $request
      * @param Company $company
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -140,40 +136,7 @@ class CompanyController extends Controller
         $form = $this->createForm(CompanyEditForm::class, $company);
 
         if (in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
-            $form->add('categories', EntityType::class, [
-                'class' => 'App\Entity\Category\Category',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('u')
-                        ->orderBy('u.num', 'ASC');
-                },
-                'choice_label' => 'path',
-                'multiple' => true,
-                'required' => false,
-                'choice_attr' => function($choiceValue, $key, $value) {
-                    if ($this->getDoctrine()->getRepository('App:Category\Category')->findOneBy(['id' => $value])->getChildrenCategories()->getValues())
-                        return ['disabled' => 'disabled'];
-                    return [];
-                    },
-
-            ])
-//                ->add('tags', EntityType::class, [
-//                    'class' => 'App\Entity\Company\Tag',
-//                    'query_builder' => function (EntityRepository $er) {
-//                        return $er->createQueryBuilder('u')
-//                            ->orderBy('u.num', 'ASC');
-//                    },
-//                    'choice_label' => 'path',
-//                    'multiple' => true,
-//                    'required' => false,
-//                    'choice_attr' => function($choiceValue, $key, $value) {
-//                        if ($this->getDoctrine()->getRepository('App:Category\Category')->findOneBy(['id' => $value])->getChildrenCategories()->getValues())
-//                            return ['disabled' => 'disabled'];
-//                        return [];
-//                    },
-//
-//                ])
-            ;
-
+            $this->service->addAdditionFields($form);
         }
 
         $form->handleRequest($request);
@@ -194,7 +157,7 @@ class CompanyController extends Controller
 
 
     /**
-     * @Route("/remove/{id}", name="company.remove")
+     * @Route("/{id}/remove", name="company.remove")
      * @param Company $company
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -215,7 +178,7 @@ class CompanyController extends Controller
 
 
     /**
-     * @Route("/verify/{id}", name="company.verify")
+     * @Route("/{id}/verify", name="company.verify")
      * @param Company $company
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -231,7 +194,7 @@ class CompanyController extends Controller
     }
 
     /**
-     * @Route("/reject/{id}", name="company.reject")
+     * @Route("/{id}/reject", name="company.reject")
      * @param Request $request
      * @param Company $company
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

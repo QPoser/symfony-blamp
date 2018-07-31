@@ -11,20 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/company/tag")
+ * @Route("/tags")
  */
 class TagController extends Controller
 {
     /**
-     * @Route("/", name="company_tag_index", methods="GET")
+     * @Route("/", name="company.tag.index", methods="GET")
+     * @param TagRepository $tagRepository
+     * @return Response
      */
     public function index(TagRepository $tagRepository): Response
     {
-        return $this->render('company_tag/index.html.twig', ['tags' => $tagRepository->findAll()]);
+        return $this->render('company/tag/index.html.twig', ['tags' => $tagRepository->findAll()]);
     }
 
     /**
-     * @Route("/new", name="company_tag_new", methods="GET|POST")
+     * @Route("/new", name="company.tag.new", methods="GET|POST")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
@@ -37,25 +41,30 @@ class TagController extends Controller
             $em->persist($tag);
             $em->flush();
 
-            return $this->redirectToRoute('company_tag_index');
+            return $this->redirectToRoute('company.tag.index');
         }
 
-        return $this->render('company_tag/new.html.twig', [
+        return $this->render('company/tag/new.html.twig', [
             'tag' => $tag,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="company_tag_show", methods="GET")
+     * @Route("/{id}", name="company.tag.show", methods="GET")
+     * @param Tag $tag
+     * @return Response
      */
     public function show(Tag $tag): Response
     {
-        return $this->render('company_tag/show.html.twig', ['tag' => $tag]);
+        return $this->render('company/tag/show.html.twig', ['tag' => $tag]);
     }
 
     /**
-     * @Route("/{id}/edit", name="company_tag_edit", methods="GET|POST")
+     * @Route("/{id}/edit", name="company.tag.edit", methods="GET|POST")
+     * @param Request $request
+     * @param Tag $tag
+     * @return Response
      */
     public function edit(Request $request, Tag $tag): Response
     {
@@ -65,17 +74,20 @@ class TagController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('company_tag_edit', ['id' => $tag->getId()]);
+            return $this->redirectToRoute('company.tag.edit', ['id' => $tag->getId()]);
         }
 
-        return $this->render('company_tag/edit.html.twig', [
+        return $this->render('company/tag/edit.html.twig', [
             'tag' => $tag,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="company_tag_delete", methods="DELETE")
+     * @Route("/{id}", name="company.tag.delete", methods="DELETE")
+     * @param Request $request
+     * @param Tag $tag
+     * @return Response
      */
     public function delete(Request $request, Tag $tag): Response
     {
@@ -85,6 +97,6 @@ class TagController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('company_tag_index');
+        return $this->redirectToRoute('company.tag.index');
     }
 }

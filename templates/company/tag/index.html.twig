@@ -15,23 +15,17 @@
             </tr>
         </thead>
         <tbody>
-        {% for tag in tags %}
             <tr>
-                <td>{{ tag.id }}</td>
-                <td>{{ tag.name }}</td>
-                <td>{{ tag.companyCounter }}</td>
                 <td>
-                    <a href="{{ path('company_tag_show', {'id': tag.id}) }}">show</a>
-                    <a href="{{ path('company_tag_edit', {'id': tag.id}) }}">edit</a>
+                    {% for tag in tags %}
+                        {% if tag.companies|length == 0 %}
+                            <button type="button" class="btn btn-outline-primary">{{ tag.name }} <span class="badge badge-pill badge-primary">{{ tag.companies|length }}</span></button>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('company_tag_new') }}">Create new</a>
+    <a href="{{ path('company.tag.new') }}">Create new</a>
 {% endblock %}
