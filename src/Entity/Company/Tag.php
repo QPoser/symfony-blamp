@@ -2,17 +2,16 @@
 
 namespace App\Entity\Company;
 
-use App\Entity\Company\Company;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Beelab\TagBundle\Tag\TagInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Company\TagRepository")
  * @UniqueEntity("name")
  */
-class Tag
+class Tag implements TagInterface
 {
     /**
      * @ORM\Id()
@@ -27,19 +26,11 @@ class Tag
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Company", inversedBy="categories", cascade={"persist"})
-     * @ORM\OrderBy({"assessment" = "ASC"})
+     * @return string
      */
-    private $companies;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    public $companyCounter;
-
-    public function __construct()
+    public function __toString(): string
     {
-        $this->companies = new ArrayCollection();
+        return $this->name;
     }
 
     public function getId()
@@ -52,53 +43,10 @@ class Tag
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName($name): self
     {
         $this->name = $name;
 
         return $this;
-    }
-
-    /**
-     * @return Collection|Company[]
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
-
-    public function addCompany(Company $company): self
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies[] = $company;
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Company $company): self
-    {
-        if ($this->companies->contains($company)) {
-            $this->companies->removeElement($company);
-        }
-
-        return $this;
-    }
-
-    public function getCompanyCounter(): ?int
-    {
-        return $this->companyCounter;
-    }
-
-    public function setCompanyCounter(?int $companyCounter): self
-    {
-        $this->companyCounter = $companyCounter;
-
-        return $this;
-    }
-
-    public function updateCompanyCounter()
-    {
-        $this->companyCounter = count($this->getCompanies());
     }
 }

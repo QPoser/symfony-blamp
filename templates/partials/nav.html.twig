@@ -28,6 +28,11 @@
                     {% if currentPath == path('category.index') %}active{% endif %}
                     ">Рубрики</a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ path('company.tag.index') }}" class="nav-link
+                    {% if currentPath == path('company.tag.index') %}active{% endif %}
+                    ">Теги</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav ml-auto">

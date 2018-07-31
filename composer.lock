@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb0894092fcf5d5de8e8f6bd1cc71ad4",
+    "content-hash": "6a36979a55d29a6a21ed44a9f7208b2f",
     "packages": [
+        {
+            "name": "beelab/tag-bundle",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Bee-Lab/BeelabTagBundle.git",
+                "reference": "781175ab80f7aed01adf837582f30449332fb754"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Bee-Lab/BeelabTagBundle/zipball/781175ab80f7aed01adf837582f30449332fb754",
+                "reference": "781175ab80f7aed01adf837582f30449332fb754",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": "^2.5",
+                "php": ">=7.0",
+                "symfony/config": "^2.8.12|^3.3|^4.0",
+                "symfony/dependency-injection": "^2.8.12|^3.3|^4.0",
+                "symfony/form": "^2.8.12|^3.3|^4.0",
+                "symfony/http-kernel": "^2.8.12|^3.3|^4.0",
+                "symfony/routing": "^2.8.12|^3.3|^4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Beelab\\TagBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Massimiliano Arione",
+                    "email": "massimiliano.arione@bee-lab.net"
+                }
+            ],
+            "description": "Provide tags for Doctrine entities in Symfony",
+            "homepage": "https://github.com/bee-lab/",
+            "keywords": [
+                "symfony",
+                "tag",
+                "tags"
+            ],
+            "time": "2018-01-22T10:53:13+00:00"
+        },
         {
             "name": "clue/stream-filter",
             "version": "v1.4.0",

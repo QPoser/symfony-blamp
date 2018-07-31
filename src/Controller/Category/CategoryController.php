@@ -37,7 +37,7 @@ class CategoryController extends Controller
      */
     public function index(): Response
     {
-        return $this->render('category/category/index.html.twig', ['categories' => $this->repository->findAll()]);
+        return $this->render('category/index.html.twig', ['categories' => $this->repository->findAll()]);
     }
 
     /**
@@ -59,7 +59,7 @@ class CategoryController extends Controller
             return $this->redirectToRoute('category.index');
         }
 
-        return $this->render('category/category/new.html.twig', [
+        return $this->render('category/new.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
         ]);
@@ -79,7 +79,7 @@ class CategoryController extends Controller
 
         $maxPages = ceil($companies->count() / 4);
 
-        return $this->render('category/category/show.html.twig', compact('companies', 'category', 'maxPages', 'thisPage'));
+        return $this->render('category/show.html.twig', compact('companies', 'category', 'maxPages', 'thisPage'));
     }
 
 //    /**
@@ -89,7 +89,7 @@ class CategoryController extends Controller
 //     */
 //    public function show(Category $category): Response
 //    {
-//        return $this->render('category/category/show.html.twig', ['category' => $category]);
+//        return $this->render('category/show.html.twig', ['category' => $category]);
 //    }
 
     /**
@@ -111,7 +111,7 @@ class CategoryController extends Controller
             return $this->redirectToRoute('category.edit', ['id' => $category->getId()]);
         }
 
-        return $this->render('category/category/edit.html.twig', [
+        return $this->render('category/edit.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
         ]);

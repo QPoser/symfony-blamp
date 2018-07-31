@@ -3,9 +3,10 @@
 namespace App\Entity\Company;
 
 use App\Entity\Category\Category;
-use App\Entity\Company\Tag;
 use App\Entity\Advert\AdvertDescription;
 use App\Entity\User;
+use Beelab\TagBundle\Tag\TaggableInterface;
+use Beelab\TagBundle\Tag\TagInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Review\Review;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Company\CompanyRepository")
  */
-class Company
+class Company implements TaggableInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_WAIT = 'wait';
@@ -134,8 +135,7 @@ class Company
     private $categories;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Tag", mappedBy="companies", cascade={"persist", "merge"})
-     * @ORM\JoinTable(name="companies_tags")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Company\Tag")
      * @OrderBy({"name" = "ASC"})
      */
     private $tags;
@@ -162,6 +162,13 @@ class Company
     private $creatorEmail;
 
     private $newPhoto;
+
+    private $tagsText;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
 
     public function calcAssessment()
@@ -553,31 +560,62 @@ class Company
     }
 
     /**
-     * @return Collection|Tag[]
+     * {@inheritdoc}
      */
-    public function getTags(): Collection
+    public function addTag(TagInterface $tag)
+    {
+        $this->tags[] = $tag;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeTag(TagInterface $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasTag(TagInterface $tag)
+    {
+        return $this->tags->contains($tag);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTags()
     {
         return $this->tags;
     }
 
-    public function addTag(Tag $tag): self
+    /**
+     * {@inheritdoc}
+     */
+    public function getTagNames(): array
     {
-        //if (!$this->tags->contains($tag)) {
-            $this->tags[] = $tag;
-            $tag->addCompany($this);
-        //}
-
-        return $this;
+        return empty($this->tagsText) ? [] : array_map('trim', explode(',', $this->tagsText));
     }
 
-    public function removeTag(Tag $tag): self
+    /**
+     * @param string
+     */
+    public function setTagsText($tagsText)
     {
-        //if ($this->tags->contains($tag)) {
-            $this->tags->removeElement($tag);
-            $tag->removeCompany($this);
-        //}
+        $this->tagsText = $tagsText;
+        $this->updatedAt = new \DateTime();
+    }
 
-        return $this;
+    /**
+     * @return string
+     */
+    public function getTagsText()
+    {
+        $this->tagsText = implode(', ', $this->tags->toArray());
+
+        return $this->tagsText;
     }
 
     public function getAdvertDescription(): ?AdvertDescription
@@ -691,6 +729,18 @@ class Company
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

@@ -3,29 +3,27 @@
 {% block title %}Tag index{% endblock %}
 
 {% block body %}
-    <h1>Tag index</h1>
-
+    <h1>Теги</h1>
     <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>CompanyCounter</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
             <tr>
                 <td>
                     {% for tag in tags %}
-                        {% if tag.companies|length == 0 %}
-                            <button type="button" class="btn btn-outline-primary">{{ tag.name }} <span class="badge badge-pill badge-primary">{{ tag.companies|length }}</span></button>
+                        {% if app.user and app.user.isAdmin %}
+                        <div class="btn-group">
+                            <a href="{{ path('company') }}?search={{ tag.name }}" class="btn btn-outline-primary">
+                                {{ tag.name }}
+                            </a>
+                            {% include 'company/tag/_delete_form.html.twig' with {'id': tag.id} %}
+                        </div>
+                        {% else %}
+                            <a  href="{{ path('company') }}?search={{ tag.name }}" class="btn btn-outline-primary">{{ tag.name }}</a>
                         {% endif %}
                     {% endfor %}
                 </td>
             </tr>
-        </tbody>
     </table>
 
-    <a href="{{ path('company.tag.new') }}">Create new</a>
+    {% if app.user and app.user.isAdmin %}
+        <a class="btn btn-primary" href="{{ path('company.tag.new') }}">Новый тег</a>
+    {% endif %}
 {% endblock %}

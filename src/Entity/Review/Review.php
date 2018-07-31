@@ -32,7 +32,11 @@ class Review
     private $text;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review\ReviewPhoto", mappedBy="review", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Entity\Review\Photo", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\JoinTable(name="reviews_photos",
+     *      joinColumns={@ORM\JoinColumn(name="review_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="photo_id", referencedColumnName="id", unique=true)}
+     *      )
      */
     private $photos;
 
@@ -273,37 +277,6 @@ class Review
         return $this;
     }
 
-    /**
-     * @return Collection|ReviewPhoto[]
-     */
-    public function getPhotos(): Collection
-    {
-        return $this->photos;
-    }
-
-    public function addPhoto(ReviewPhoto $photo): self
-    {
-        if (!$this->photos->contains($photo)) {
-            $this->photos[] = $photo;
-            $photo->setReview($this);
-        }
-
-        return $this;
-    }
-
-    public function removePhoto(ReviewPhoto $photo): self
-    {
-        if ($this->photos->contains($photo)) {
-            $this->photos->removeElement($photo);
-            // set the owning side to null (unless already changed)
-            if ($photo->getReview() === $this) {
-                $photo->setReview(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getLikeCounter(): ?int
     {
         return $this->likeCounter;
@@ -341,5 +314,31 @@ class Review
         }
         $this->likeCounter = $likeCounter;
         $this->dislikeCounter = $dislikeCounter;
+    }
+
+    /**
+     * @return Collection|Photo[]
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(Photo $photo): self
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos[] = $photo;
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(Photo $photo): self
+    {
+        if ($this->photos->contains($photo)) {
+            $this->photos->removeElement($photo);
+        }
+
+        return $this;
     }
 }
