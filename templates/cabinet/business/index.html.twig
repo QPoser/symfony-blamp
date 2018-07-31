@@ -105,4 +105,23 @@
         {% endif %}
         <hr>
     {% endfor %}
+
+    <h4>Smart protect</h4>
+    <hr>
+    <table class="table table-striped">
+        <tbody>
+            {% for company in app.user.businessCompanies %}
+                <tr>
+                    <th>{{ company.name }}</th>
+                    <td>
+                        {% if company.isProtected %}
+                            <a href="{{ path('company.unprotect', {id : company.id}) }}" class="btn btn-danger">Отключить</a>
+                        {% else %}
+                            <a href="{{ path('company.protect', {id : company.id}) }}" class="btn btn-success">Оплатить</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

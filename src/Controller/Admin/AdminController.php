@@ -9,6 +9,7 @@ use App\Repository\Advert\BannerRepository;
 use App\Repository\Company\BusinessRequestRepository;
 use App\Repository\Company\CompanyRepository;
 use App\Repository\Company\CouponTypeRepository;
+use App\Repository\Company\ProtectorRepository;
 use App\Repository\Review\ReviewCommentRepository;
 use App\Repository\Review\ReviewRepository;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,15 +76,19 @@ class AdminController extends Controller
 
     /**
      * @Route("", name="admin")
+     * @param ProtectorRepository $protectorRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function companies()
+    public function companies(ProtectorRepository $protectorRepository)
     {
         $companies = $this->companyRepository->findBy([], ['status' => 'DESC']);
+
+        $protectors = $protectorRepository->findAll();
 
         return $this->render('admin/index.html.twig', [
             'companies' => $companies,
             'waitCounts' => $this->counts,
+            'protectors' => $protectors,
         ]);
     }
 

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Добавить отзыв{% endblock %}
+
+{% block body %}
+    <h2>Добавить отзыв для {{ company.name }}</h2>
+    <a href="{{ path('company.show', {'id' : company.id}) }}" class="btn btn-primary">< {{ company.name }}</a>
+    <hr>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {% if protector %}
+    <div id="protectSpace" style="display: none;">
+        <p>{{ protector.description }}</p>
+
+        {% for key, option in protector.shuffleOptions %}
+            {% if key == 'correct' %}
+                <input type="submit" class="btn btn-primary" value="{{ option }}">
+            {% else %}
+                <button type="button" class="btn btn-primary protectFalse">{{ option }}</button>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+        <div id="protectSpace" style="display: none;">
+            <p>В каком году началась вторая мировая война?</p>
+            <button type="button" class="btn btn-primary protectFalse">1944</button>
+            <button type="button" class="btn btn-primary protectFalse">1943</button>
+            <input type="submit" class="btn btn-primary" value="1941">
+            <button type="button" class="btn btn-primary protectFalse">1945</button>
+        </div>
+    {% endif %}
+    <button type="button" class="btn btn-primary" id="protectButton">Добавить</button>
+    <p id="protectDescription" style="display: none;"><span class="badge badge-danger">Неправильно</span></p>
+    {{ form_end(form) }}
+{% endblock %}

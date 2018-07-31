@@ -161,8 +161,31 @@ class Company
      */
     private $creatorEmail;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isProtected;
+
     private $newPhoto;
 
+    public function isProtected()
+    {
+        if ($this->isProtected) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function setProtected()
+    {
+        $this->isProtected = true;
+    }
+
+    public function setUnprotected()
+    {
+        $this->isProtected = false;
+    }
 
     public function calcAssessment()
     {
@@ -691,6 +714,18 @@ class Company
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getIsProtected(): ?bool
+    {
+        return $this->isProtected;
+    }
+
+    public function setIsProtected(?bool $isProtected): self
+    {
+        $this->isProtected = $isProtected;
 
         return $this;
     }

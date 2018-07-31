@@ -5,6 +5,46 @@
 {% block body %}
     {% include 'admin/_nav.html.twig' %}
 
+    <p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEx" aria-expanded="false" aria-controls="collapseEx">
+            Протектеры
+        </button>
+    </p>
+
+    <div class="collapse" id="collapseEx">
+        <div class="card">
+            <div class="card-body">
+                <p><a href="{{ path('protector.create') }}" class="btn btn-primary">Добавить</a></p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Описание</th>
+                            <th>Правильный ответ</th>
+                            <th>Неправильные ответы</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for protector in protectors %}
+                            <tr>
+                                <td>{{ protector.description }}</td>
+                                <td><span class="badge badge-success">{{ protector.correctOption }}</span></td>
+                                <td>
+                                    {% for option in protector.wrongOptions %}
+                                        <span class="badge badge-danger">{{ option }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('protector.remove', {id: protector.id}) }}" class="btn btn-danger">Удалить</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-striped">
         <thead>
             <tr>

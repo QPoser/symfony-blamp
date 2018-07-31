@@ -41,6 +41,10 @@ class CompanyService
      * @var EventService
      */
     private $eventService;
+    /**
+     * @var ReviewService
+     */
+    private $reviewService;
 
     /**
      * CompanyService constructor.
@@ -48,13 +52,15 @@ class CompanyService
      * @param Container $container
      * @param EmailService $emailService
      * @param EventService $eventService
+     * @param ReviewService $reviewService
      */
-    public function __construct(EntityManager $manager, Container $container, EmailService $emailService, EventService $eventService)
+    public function __construct(EntityManager $manager, Container $container, EmailService $emailService, EventService $eventService, ReviewService $reviewService)
     {
         $this->manager = $manager;
         $this->container = $container;
         $this->emailService = $emailService;
         $this->eventService = $eventService;
+        $this->reviewService = $reviewService;
     }
 
 
@@ -130,8 +136,12 @@ class CompanyService
 
         $this->manager->persist($review);
         $this->manager->flush();
-        $company->calcAssessment();
-        $this->manager->flush();
+
+        if ($user->isAdmin()) {
+            $this->reviewService->verify($review);
+            $company->calcAssessment();
+            $this->manager->flush();
+        }
     }
 
     // Business
@@ -173,6 +183,22 @@ class CompanyService
         $company->removeBusinessUser($user);
 
         $this->eventService->addEventByCompany($user, 'Вы были отвязаны от компании, и больше не являетесь её владельцем', $company);
+
+        $this->manager->flush();
+    }
+
+    //  Smart protecter
+
+    public function addProtection(Company $company)
+    {
+        $company->setProtected();
+
+        $this->manager->flush();
+    }
+
+    public function removeProtection(Company $company)
+    {
+        $company->setUnprotected();
 
         $this->manager->flush();
     }

@@ -15,6 +15,7 @@ use App\Form\Company\CompanyEditForm;
 use App\Form\Company\Review\ReviewCreateForm;
 use App\Repository\Company\CompanyRepository;
 use App\Repository\Company\CouponTypeRepository;
+use App\Repository\Company\ProtectorRepository;
 use App\Services\CompanyService;
 use App\Services\EventService;
 use App\Services\ReviewService;
@@ -97,6 +98,10 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             $company = $this->service->create($company, $form, $email);
+
+            if ($this->getUser()->isAdmin()) {
+                $this->service->verify($company);
+            }
 
             $this->addFlash('notice', 'Компания ' . $company->getName() . ' успешно добавлена.');
 
@@ -266,10 +271,10 @@ class CompanyController extends Controller
      * @Route("/{id}/reviews/create", name="company.add.review")
      * @param Request $request
      * @param Company $company
-     * @param ReviewService $reviewService
+     * @param ProtectorRepository $protectorRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addReview(Request $request, Company $company, ReviewService $reviewService)
+    public function addReview(Request $request, Company $company, ProtectorRepository $protectorRepository)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -282,13 +287,19 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->addReview($company, $review, $this->getUser());
 
-            if ($this->getUser()->isAdmin()) {
-                $reviewService->verify($review);
-            }
-
             $this->addFlash('notice', 'Отзыв успешно добавлен.');
 
             return $this->redirectToRoute('company');
+        }
+
+        if ($company->isProtected() && !$this->getUser()->isAdmin()) {
+            $protector = $protectorRepository->findRandom();
+
+            return $this->render('company/review/protected.html.twig', [
+                'company' => $company,
+                'form' => $form->createView(),
+                'protector' => $protector,
+            ]);
         }
 
         return $this->render('company/review/add.html.twig', [
@@ -388,5 +399,37 @@ class CompanyController extends Controller
         $this->addFlash('notice', 'Заявка успешно отклонена.');
 
         return $this->redirectToRoute('admin.request');
+    }
+
+    /**
+     * @Route("/protect/{id}", name="company.protect")
+     * @param Company $company
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function protect(Company $company)
+    {
+        $this->denyAccessUnlessGranted('EDIT', $company);
+
+        $this->service->addProtection($company);
+
+        $this->addFlash('notice', 'Защита вашей компании успешно включена');
+
+        return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
+    }
+
+    /**
+     * @Route("/unprotect/{id}", name="company.unprotect")
+     * @param Company $company
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function unprotect(Company $company)
+    {
+        $this->denyAccessUnlessGranted('EDIT', $company);
+
+        $this->service->removeProtection($company);
+
+        $this->addFlash('notice', 'Защита вашей компании успешно отключена');
+
+        return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
     }
 }

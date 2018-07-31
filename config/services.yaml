@@ -66,9 +66,11 @@ services:
     AppBundle\Services\EmailService:
         arguments: ['@twig', '@mailer', '%default_mail_to%']
 
-
     App\Services\CategoryService:
         arguments: ['@doctrine.orm.entity_manager', '@service_container', '@security.token_storage']
+
+    App\Services\ProtectorService:
+        arguments: ['@doctrine.orm.entity_manager']
 
 hwi_oauth:
     firewall_names:     ['main']

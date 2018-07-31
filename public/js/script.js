@@ -58,5 +58,23 @@ $( document ).ready(function () {
         var aTop = $( window ).scrollTop();
         $('.banner-vertical img').css('top', aTop);
     });
+
+    $('#protectButton').on('click', function () {
+        let value = $('#review_create_form_assessment').val();
+        if (value < 3) {
+            $('#protectSpace').css('display', 'block');
+            $(this).css('display', 'none');
+        } else {
+            $('form[name="review_create_form"]').submit();
+        }
+    });
+
+    $('.protectFalse').on('click', function () {
+         $("#review_create_form_assessment option[value='1']").remove();
+         $("#review_create_form_assessment option[value='2']").remove();
+         $('#protectSpace').css('display', 'none');
+         $('#protectButton').css('display', 'block');
+         $('#protectDescription').css('display', 'block');
+    });
 });
 
