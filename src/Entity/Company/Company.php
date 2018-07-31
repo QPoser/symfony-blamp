@@ -35,11 +35,6 @@ class Company
     private $name;
 
     /**
-     * @ORM\Column(type="text", length=2048, nullable=true)//TODO remove nullable
-     */
-    private $description;
-
-    /**
      * @ORM\Column(type="string", length=12)
      * @Assert\Regex(
      *     pattern = "^((\+7|7|8)+([0-9]){10})^",
@@ -378,6 +373,17 @@ class Company
         return $this->reviews;
     }
 
+    public function getActiveReviews(): array
+    {
+        $reviews = [];
+        foreach ($this->reviews as $review) {
+            if ($review->isActive()) {
+                $reviews[] = $review;
+            }
+        }
+        return $reviews;
+    }
+
     public function addReview(Review $review): self
     {
         if (!$this->reviews->contains($review)) {
@@ -542,18 +548,6 @@ class Company
             $this->categories->removeElement($category);
             $category->removeCompany($this);
         }
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }

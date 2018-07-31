@@ -37,7 +37,7 @@ class CompanyRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('company')
             ->leftJoin(Category::class, 'category', 'with', 'company MEMBER OF category.companies')
             ->leftJoin(Tag::class, 'tag', 'with', 'company MEMBER OF tag.companies')
-            ->where('company.name LIKE :search OR category.name LIKE :search OR tag.name LIKE :search OR company.description LIKE :search')
+            ->where('company.name LIKE :search OR category.name LIKE :search OR tag.name LIKE :search')
             ->andWhere('company.status = :status')
             ->orderBy('company.name', 'ASC')
             ->setParameters([

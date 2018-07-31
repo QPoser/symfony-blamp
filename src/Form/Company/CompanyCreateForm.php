@@ -20,9 +20,6 @@ class CompanyCreateForm extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Название компании'
             ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Сфера деятельности'
-            ])
             ->add('phone', TextType::class, [
                 'label' => 'Контактный телефон'
             ])

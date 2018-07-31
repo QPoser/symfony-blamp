@@ -41,24 +41,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="category.show", methods="GET")
-     * @param Category $category
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function show(Category $category, Request $request)
-    {
-        $companies = $this->repository->search($category, $request->get('search'), $request->get('page') ?: 1);
-
-        $thisPage = $request->get('page') ?: 1;
-
-        $maxPages = ceil($companies->count() / 4);
-
-        return $this->render('category/category/show.html.twig', compact('companies', 'category', 'maxPages', 'thisPage'));
-    }
-
-
-    /**
      * @Route("/new", name="category.new", methods="GET|POST")
      * @param Request $request
      * @return Response
@@ -81,6 +63,23 @@ class CategoryController extends Controller
             'category' => $category,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/{id}", name="category.show", methods="GET")
+     * @param Category $category
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function show(Category $category, Request $request)
+    {
+        $companies = $this->repository->search($category, $request->get('search'), $request->get('page') ?: 1);
+
+        $thisPage = $request->get('page') ?: 1;
+
+        $maxPages = ceil($companies->count() / 4);
+
+        return $this->render('category/category/show.html.twig', compact('companies', 'category', 'maxPages', 'thisPage'));
     }
 
 //    /**

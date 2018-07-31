@@ -22,9 +22,6 @@ class CompanyEditForm extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Название компании'
             ])
-            ->add('description', TextareaType::class ,array(
-                'label' => 'Сфера деятельности'
-            ))
             ->add('phone', TextType::class, [
                 'label' => 'Контактный телефон'
             ])
