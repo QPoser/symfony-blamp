@@ -139,7 +139,6 @@ class CompanyService
 
         if ($user->isAdmin()) {
             $this->reviewService->verify($review);
-            $company->calcAssessment();
             $this->manager->flush();
         }
     }

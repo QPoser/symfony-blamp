@@ -12,7 +12,7 @@ class CompanyControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/company/');
+        $client->request('GET', '/company');
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
     }

@@ -58,33 +58,6 @@ class CompanyTest extends KernelTestCase
         $this->assertEquals($company->getRejectReason(), 'Причина отклонения');
     }
 
-    public function testAddingReview()
-    {
-        $company = new Company();
-        $company->setPhone('+79997778855');
-        $company->setName('Test Company 2');
-
-        $this->companyService->create($company);
-
-        $review = new Review();
-        $review->setText('Good Review');
-        $review->setAssessment(4);
-
-        $user = new User();
-        $user->setUsername('User');
-        $user->setRoles([User::ROLE_USER]);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        $this->companyService->addReview($company, $review, $user);
-
-        $this->assertTrue($review->isWait());
-        $this->assertFalse($review->isActive());
-        $this->assertTrue($review->getUser()->getId() == $user->getId());
-        $this->assertTrue($review->getCompany()->getId() == $company->getId());
-    }
-
     public function testBusinessRequests()
     {
         $company = new Company();
