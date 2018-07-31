@@ -84,7 +84,6 @@ class CompanyService
         }
 
         foreach ($form['categories']->getData()->getValues() as $category) {
-          $company->setDescription($company->getDescription() . (string)$category);
             $company->addCategory($category);
         }
 
