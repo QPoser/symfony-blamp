@@ -2,6 +2,8 @@ twig:
     globals:
         vk_client: '%env(VK_CLIENT_ID)%'
         vk_secret: '%env(VK_SECRET_KEY)%'
+        domain: '%env(DOMAIN)%'
+        port: '%env(PORT)%'
     paths: ['%kernel.project_dir%/templates']
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'

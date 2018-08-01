@@ -32,16 +32,6 @@ class ReviewCreateForm extends AbstractType
                 'label' => 'Ваша оценка'
             ])
             ;
-
-
-
-
-
-
-
-
-
-
 //            ->add('photos', FileType::class, [
 //                'multiple' => true,
 //                'attr'     => [
@@ -57,13 +47,5 @@ class ReviewCreateForm extends AbstractType
         $resolver->setDefaults([
             'data_class' => Review::class,
         ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return '';
     }
 }

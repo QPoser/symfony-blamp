@@ -321,7 +321,7 @@ class CompanyController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->service->addRequest($businessRequest, $company, $this->getUser());
 
-            $this->addFlash('notice', 'Компания ' . $company->getName() . ' теперь является вашей компанией.');
+            $this->addFlash('notice', 'Заявка на бизнес-использование компании ' . $company->getName() . ' была успешно принята, скоро с вами свяжутся!');
 
             return $this->redirectToRoute('company.show', ['id' => $company->getId()]);
         }

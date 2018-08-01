@@ -81,7 +81,7 @@
                 {% if (app.user.getNetworkVk) %}
                     <td>{{ app.user.getNetworkVk.identity }}</td>
                 {% else %}
-                    <td><a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri=https://localhost:8080/network/add/vk&v=5.80" class="btn btn-primary" style="color: white;">Подключить</a></td>
+                    <td><a href="https://oauth.vk.com/authorize?client_id={{ vk_client }}&redirect_uri={{ port }}://{{ domain }}/network/add/vk&v=5.80" class="btn btn-primary" style="color: white;">Подключить</a></td>
                 {% endif %}
             </tr>
         </tbody>
