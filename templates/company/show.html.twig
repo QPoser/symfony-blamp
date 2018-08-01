@@ -5,13 +5,15 @@
 {% block body %}
 
     <div class="row company-head">
-        <div class="col-sm-1">
-            <div class="logo">
-                <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+        {%  if company.photo %}
+            <div class="col-sm-1">
+                <div class="logo">
+                    <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                </div>
             </div>
-        </div>
+        {% endif %}
 
-        <div class="col-sm-5">
+        <div class="{{ company.photo ? 'col-sm-5' : 'col-sm-6' }}">
 
             <h1>{{ company.name }}</h1>
             {% if company.startWork and company.endWork %}

@@ -95,7 +95,7 @@ class CompanyController extends Controller
 
             $company = $this->service->create($company, $form, $email);
 
-            if ($this->getUser()->isAdmin()) {
+            if ($this->getUser() && $this->getUser()->isAdmin()) {
                 $this->service->verify($company);
             }
 
