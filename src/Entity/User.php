@@ -193,6 +193,13 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
         return $newEvents;
     }
 
+    // Status
+
+    public function isVerified()
+    {
+        return $this->emailToken != null;
+    }
+
     // Password Reset
 
     public function setResetPasswordToken()

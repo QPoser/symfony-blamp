@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Repository\User\UserRepository;
+use App\Services\AuthService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +87,30 @@ class UserController extends Controller
 
         $this->service->removeUser($user);
 
-        $this->addFlash('notice', 'Юзер ' . $user->getUsername() . ' был успешно удален.');
+        $this->addFlash('notice', 'Пользователь ' . $user->getUsername() . ' был успешно удален.');
+
+        return $this->redirectToRoute('user.index');
+    }
+
+    /**
+     * @Route("/verify/{id}", name="user.verify")
+     * @param User $user
+     * @param AuthService $authService
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function verifyUser(User $user, AuthService $authService)
+    {
+        try {
+            $this->guardAdmin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+
+            return $this->redirectToRoute('homepage');
+        }
+
+        $authService->verify($user);
+
+        $this->addFlash('notice', 'Пользователь ' . $user->getUsername() . ' был успешно проверифицирован.');
 
         return $this->redirectToRoute('user.index');
     }

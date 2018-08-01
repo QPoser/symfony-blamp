@@ -48,11 +48,16 @@
                 <td>{{ user.comments|length }}</td>
                 <td>{{ user.subscribers|length }}</td>
                 <td>{{ user.subscriptions|length }}</td>
-                {% if app.user and (app.user.id == user.id or user.isAdmin) %}
-                    <td><a href="#" class="btn btn-secondary">Удалить</a></td>
-                {% else %}
-                    <td><a href="{{ path('user.delete', {id: user.id}) }}" class="btn btn-danger">Удалить</a></td>
+                <td>
+                {% if not app.user.isVerified %}
+                    <a href="{{ path('user.verify', {id: user.id}) }}" class="btn btn-info">Принять</a>
                 {% endif %}
+                {% if app.user and (app.user.id == user.id or user.isAdmin) %}
+                    <a href="#" class="btn btn-secondary">Удалить</a>
+                {% else %}
+                    <a href="{{ path('user.delete', {id: user.id}) }}" class="btn btn-danger">Удалить</a>
+                {% endif %}
+                </td>
             </tr>
         {% else %}
             <tr>

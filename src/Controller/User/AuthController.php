@@ -184,7 +184,6 @@ class AuthController extends Controller
             $this->addFlash('warning', $e->getMessage());
             return $this->redirectToRoute('homepage');
         }
-        //$this->generateUrl('verify', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
         $user = $this->repository->findUserByEmailToken($token);
 
         if (!$user) {
