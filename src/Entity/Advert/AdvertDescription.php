@@ -4,6 +4,7 @@ namespace App\Entity\Advert;
 
 use App\Entity\Company\Company;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Advert\AdvertDescriptionRepository")
@@ -30,6 +31,10 @@ class AdvertDescription
 
     /**
      * @ORM\Column(type="string", length=350)
+     * @Assert\Length(max=350, min=50,
+     *     minMessage="Длина описания не может быть меньше 50 символов",
+     *     maxMessage="Длина описания не может быть больше 350 символов"
+     * )
      */
     private $description;
 

@@ -32,7 +32,13 @@ class Banner
      * @ORM\Column(type="string", length=255)
      * @Assert\Url(
      *    protocols={"http", "https"},
-     *    message = "The url '{{ value }}' is not a valid url",
+     *    message = "Ссылка '{{ value }}' не является валидной ссылкой",
+     * )
+     * @Assert\Length(
+     *      max=255,
+     *      min=8,
+     *      minMessage="Длина сайта не может быть меньше 8 символов",
+     *      maxMessage="Длина сайта не может быть больше 250 символов",
      * )
      */
     private $src;
@@ -41,12 +47,15 @@ class Banner
      * @ORM\Column(type="string", length=255)
      * @Assert\Image(
      *     maxWidth="240",
-     *     groups={"vertical"}
+     *     groups={"vertical"},
+     *     maxWidthMessage="Ширина изображения вертикального баннера не может быть больше 240px"
      * )
      * @Assert\Image(
      *     minWidth="1000",
      *     maxHeight="300",
-     *     groups={"horizontal"}
+     *     groups={"horizontal"},
+     *     maxHeightMessage="Высота изображения горизонтального баннера не может быть больше 300px",
+     *     minWidthMessage="Ширина изображения горизонтального баннера не может быть больше 1000px"
      * )
      */
     private $bannerImg;
@@ -63,6 +72,7 @@ class Banner
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Choice(choices={"vertical", "horizontal"}, message="Формат баннера может быть только вертикальным или горизонтальным")
      */
     private $format;
 

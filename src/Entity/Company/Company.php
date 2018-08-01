@@ -31,7 +31,10 @@ class Company implements TaggableInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(min=2, minMessage="Название компании не может быть меньше двух символов",
+     *  max=50, maxMessage="Название компании не может превышать 50 символов"
+     * )
      */
     private $name;
 
@@ -39,7 +42,7 @@ class Company implements TaggableInterface
      * @ORM\Column(type="string", length=12)
      * @Assert\Regex(
      *     pattern = "^((\+7|7|8)+([0-9]){10})^",
-     *     message = "The phone '{{ value }}' is not a valid phone. Valid phone is - +79876543210."
+     *     message = "Телефон '{{ value }}' не является валидным. Валидный формат номера - +79876543210."
      * )
      */
     private $phone;
@@ -58,6 +61,9 @@ class Company implements TaggableInterface
 
     /**
      * @ORM\Column(type="string", length=150, nullable=true)
+     * @Assert\Length(min=5, minMessage="Минимальная длина адреса - 5 символов",
+     *     max=150, maxMessage="Максимальная длина адреса - 150 символов"
+     * )
      */
     private $address;
 
@@ -66,7 +72,10 @@ class Company implements TaggableInterface
      *
      * @Assert\Url(
      *    protocols={"http", "https"},
-     *    message = "The url '{{ value }}' is not a valid url",
+     *    message = "Ссылка '{{ value }}' не является валидной",
+     * )
+     * @Assert\Length(max=100, maxMessage="Максимальная длина ссылки - 100 символов",
+     *  min=8, minMessage="Минимальная длина ссылки - 8 символов"
      * )
      */
     private $site;
@@ -74,12 +83,7 @@ class Company implements TaggableInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @Assert\Image(
-     * )
-     *     minWidth= 200,
-     *     maxWidth= 200,
-     *     minHeight= 200,
-     *     maxHeight= 400
+     * @Assert\Image()
      */
     private $photo;
 
@@ -156,8 +160,9 @@ class Company implements TaggableInterface
     private $coupons;
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string", length=36, nullable=true)
      * @Assert\Email()
+     * @Assert\Length(max=36, maxMessage="Максимальная длина емейла - 36 символов")
      */
     private $creatorEmail;
 

@@ -30,6 +30,7 @@ class Review
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Нельзя создать отзыв с пустым текстом")
+     * @Assert\Length(min=50, minMessage="Минимальная длина отзыва - 50 символов")
      */
     private $text;
 

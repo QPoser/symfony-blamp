@@ -5,6 +5,7 @@ namespace App\Entity\Company;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Company\CouponTypeRepository")
@@ -30,7 +31,10 @@ class CouponType
     private $company;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=120)
+     * @Assert\Length(min=20, minMessage="Минимальная длина описания купона - 20 символов",
+     *  max=120, maxMessage="Максимальная длина описания купона - 120 символов"
+     * )
      */
     private $description;
 

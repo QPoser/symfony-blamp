@@ -58,11 +58,15 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
      */
     private $password;
 
+    /**
+     * @Assert\Length(min=5, minMessage="Минимальная длина пароля - 5 символов")
+     */
     private $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     * @ORM\Column(type="string", length=36, unique=true, nullable=true)
      * @Assert\Email()
+     * @Assert\Length(max=36, maxMessage="Максимальная длина email - 36 символов")
      */
     private $email;
 

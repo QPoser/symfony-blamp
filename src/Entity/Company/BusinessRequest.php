@@ -39,7 +39,7 @@ class BusinessRequest
      * @ORM\Column(type="string", length=16)
      * @Assert\Regex(
      *     pattern = "^((\+7|7|8)+([0-9]){10})^",
-     *     message = "The phone '{{ value }}' is not a valid phone. Valid phone is - +79876543210."
+     *     message = "Телефон '{{ value }}' не валиден. Валидный формат телефона - +79876543210."
      * )
      */
     private $phone;
@@ -51,6 +51,7 @@ class BusinessRequest
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="Длина примечания не может быть больше 250 символов.")
      */
     private $note;
 

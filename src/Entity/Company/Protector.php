@@ -3,6 +3,7 @@
 namespace App\Entity\Company;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Company\ProtectorRepository")
@@ -17,27 +18,42 @@ class Protector
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=150)
+     * @Assert\Length(min=10, minMessage="Минимальная длина протектера - 10 символов",
+     *  max=150, maxMessage="Максимальная длина протектера - 150 свимволов"
+     * )
      */
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(min=1, minMessage="Минимальная длина ответа - 1 символ",
+     *  max=50, maxMessage="Максимальная длина ответа - 50 свимволов"
+     * )
      */
     private $correctOption;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(min=1, minMessage="Минимальная длина ответа - 1 символ",
+     *  max=50, maxMessage="Максимальная длина ответа - 50 свимволов"
+     * )
      */
     private $wrongOptionFirst;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(min=1, minMessage="Минимальная длина ответа - 1 символ",
+     *  max=50, maxMessage="Максимальная длина ответа - 50 свимволов"
+     * )
      */
     private $wrongOptionSecond;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(min=1, minMessage="Минимальная длина ответа - 1 символ",
+     *  max=50, maxMessage="Максимальная длина ответа - 50 свимволов"
+     * )
      */
     private $wrongOptionThird;
 
