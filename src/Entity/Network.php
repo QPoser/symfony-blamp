@@ -27,7 +27,7 @@ class Network
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="networks")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 

@@ -19,7 +19,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="events")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 
@@ -30,13 +30,13 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="sendEvent")
-     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $senderUser;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="sendCompanies", )
-     * @ORM\JoinColumn(name="company_company_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="company_company_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $senderCompany;
 

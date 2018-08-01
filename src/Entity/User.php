@@ -136,8 +136,8 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="friendsWithMe")
      * @ORM\JoinTable(name="subscribers",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="subscriber_user_id", referencedColumnName="id")}
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="subscriber_user_id", referencedColumnName="id", onDelete="CASCADE")}
      * )
      */
     private $subscribers;

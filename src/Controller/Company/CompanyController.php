@@ -178,7 +178,7 @@ class CompanyController extends Controller
 
         $this->addFlash('warning', 'Компания ' . $company->getName() . ' успешно удалена.');
 
-        return $this->redirectToRoute('company');
+        return $this->redirectToRoute('admin');
     }
 
 

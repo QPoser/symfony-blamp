@@ -12,6 +12,9 @@
             <a href="{{ path('user.subscribe', {'id' : user.id}) }}" class="btn btn-success">Подписаться</a>
         {% endif %}
     {% endif %}
+    {% if app.user and app.user.isAdmin and (app.user.id != user.id and not user.isAdmin) %}
+        <a href="{{ path('user.delete', {id: user.id}) }}" class="btn btn-danger">Удалить</a>
+    {% endif %}
     <hr>
 
     <table class="table table-striped">

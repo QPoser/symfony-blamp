@@ -36,6 +36,14 @@ class UserController extends Controller
      */
     public function index(Request $request): Response
     {
+        try {
+            $this->guardAdmin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+
+            return $this->redirectToRoute('homepage');
+        }
+
         $users = $this->users->search($request->get('search'), $request->get('page') ?: 1);
 
         $thisPage = $request->get('page') ?: 1;
@@ -53,6 +61,34 @@ class UserController extends Controller
     public function show(User $user): Response
     {
         return $this->render('user/show.html.twig', ['user' => $user]);
+    }
+
+    /**
+     * @Route("/remove/{id}", name="user.delete")
+     * @param User $user
+     * @return Response
+     */
+    public function remove(User $user): Response
+    {
+        try {
+            $this->guardAdmin();
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+
+            return $this->redirectToRoute('homepage');
+        }
+
+        if ($this->getUser() == $user) {
+            $this->addFlash('warning', 'Ты что делаешь?');
+
+            return $this->redirectToRoute('user.index');
+        }
+
+        $this->service->removeUser($user);
+
+        $this->addFlash('notice', 'Юзер ' . $user->getUsername() . ' был успешно удален.');
+
+        return $this->redirectToRoute('user.index');
     }
 
     /**
@@ -81,5 +117,12 @@ class UserController extends Controller
         $this->addFlash('notice', 'Вы успешно отписались от пользователя '  . $user->getUsername());
 
         return $this->redirectToRoute('user.show', ['id' => $user->getId()]);
+    }
+
+    private function guardAdmin()
+    {
+        if (!$this->getUser() || !$this->getUser()->isAdmin()) {
+            throw new \DomainException('У вас нет доступа для просмотра данной страницы');
+        }
     }
 }

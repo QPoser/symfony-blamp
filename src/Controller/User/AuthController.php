@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         $networks = [
             'vk' =>
-                'https://oauth.vk.com/authorize?client_id=' . getenv('VK_CLIENT_ID') . '&redirect_uri=https://localhost:8080/login/check-vkontakte&v=5.80',
+                'https://oauth.vk.com/authorize?client_id=' . getenv('VK_CLIENT_ID') . '&redirect_uri=' . getenv('PORT') . '://' . getenv('DOMAIN') . '/login/check-vkontakte&v=5.80',
         ];
 
         return $this->render('auth/login.html.twig', [

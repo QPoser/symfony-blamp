@@ -30,7 +30,7 @@ class ReviewComment
 
     /**
      * @ORM\ManyToOne(targetEntity="Review", inversedBy="comments")
-     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="rev_comments_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     private $review;
 
@@ -46,7 +46,7 @@ class ReviewComment
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
-     * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="user_comments_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     private $user;
 
@@ -58,7 +58,7 @@ class ReviewComment
     /**
      * Many Categories have One Category.
      * @ORM\ManyToOne(targetEntity="App\Entity\Review\ReviewComment", inversedBy="childrenComments")
-     * @ORM\JoinColumn(name="parent_comment_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="parent_comment_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parentComment;
 

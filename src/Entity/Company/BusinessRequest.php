@@ -25,13 +25,13 @@ class BusinessRequest
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="businessRequests")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="businessRequests")
-     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $company;
 

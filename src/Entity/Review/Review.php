@@ -37,8 +37,8 @@ class Review
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Review\Photo", cascade={"persist"}, orphanRemoval=true)
      * @ORM\JoinTable(name="reviews_photos",
-     *      joinColumns={@ORM\JoinColumn(name="review_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="photo_id", referencedColumnName="id", unique=true)}
+     *      joinColumns={@ORM\JoinColumn(name="review_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="photo_id", referencedColumnName="id", onDelete="CASCADE", unique=true)}
      *      )
      */
     private $photos;
@@ -50,7 +50,7 @@ class Review
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company\Company", inversedBy="reviews")
-     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $company;
 

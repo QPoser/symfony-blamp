@@ -20,13 +20,13 @@ class LogBanner
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="bannerLogs")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Advert\Banner", inversedBy="logs")
-     * @ORM\JoinColumn(name="banner_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="banner_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $banner;
 

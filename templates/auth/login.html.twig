@@ -36,8 +36,13 @@
                 <button type="submit" class="btn btn-primary">Войти</button>
                 <a href="{{ networks.vk }}" class="btn btn-dark"><i class="fa fa-vk"></i></a>
             </div>
+            <a href="{{ path('reset.password.request') }}" class="btn btn-dark">Регистрация!</a>
         </div>
     </form>
-    <a href="{{ path('reset.password.request') }}">Забыл пароль!</a>
+
+    <div class="col-sm-4">
+        <a href="{{ path('reset.password.request') }}" class="btn btn-warning">Забыл пароль!</a>
+    </div>
+
 
 {% endblock %}

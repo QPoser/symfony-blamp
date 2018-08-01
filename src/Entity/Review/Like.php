@@ -33,7 +33,7 @@ class Like
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Review\Review", inversedBy="likes")
-     * @ORM\JoinColumn(name="review_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="review_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $review;
 

@@ -37,6 +37,12 @@ class UserService
         $this->manager->flush();
     }
 
+    public function removeUser(User $user)
+    {
+        $this->manager->remove($user);
+        $this->manager->flush();
+    }
+
     public function setBusiness()
     {
         $user = $this->storage->getToken()->getUser();

@@ -131,12 +131,12 @@ class NetworkService
             $res = $client->request('GET',
                 'https://oauth.vk.com/access_token?client_id=' . getenv('VK_CLIENT_ID')
                 . '&client_secret=' . getenv('VK_SECRET_KEY')
-                . '&redirect_uri=https://localhost:8080/network/add/vk&code=' . $code);
+                . '&redirect_uri=' . getenv('PORT') . '://' . getenv('DOMAIN') . '/network/add/vk&code=' . $code);
         } else {
             $res = $client->request('GET',
                 'https://oauth.vk.com/access_token?client_id=' . getenv('VK_CLIENT_ID')
                 . '&client_secret=' . getenv('VK_SECRET_KEY')
-                . '&redirect_uri=https://localhost:8080/login/check-vkontakte&code=' . $code);
+                . '&redirect_uri=' . getenv('PORT') . '://' . getenv('DOMAIN') . '/login/check-vkontakte&code=' . $code);
         }
         $response = json_decode($res->getBody());
 

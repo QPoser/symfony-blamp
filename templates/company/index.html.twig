@@ -39,8 +39,10 @@
                             <div class="card company-card col-md-5 mr-5">
                                 <div class="normal">
                                     <div class="card-body">
-                                        <div class="img">
-                                            <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                                        <div class="img" style="background-color: #f5f8fa;">
+                                            {% if company.photo %}
+                                                <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                                            {% endif %}
                                         </div>
                                         <div class="company-name">
                                             <p>{{ company.name }}</p>
