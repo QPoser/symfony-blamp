@@ -17,5 +17,5 @@ update-database:
 		docker-compose exec php-fpm php bin/console doctrine:schema:update -f
 
 clear-cache:
-		docker-compose exec php-fpm php bin/console clear:cache --no-warmup -e prod
+		docker-compose exec php-fpm php bin/console cache:clear --no-warmup -e prod
 

@@ -72,7 +72,7 @@ class CustomAuthenticator extends AbstractFormLoginAuthenticator
             if ($code) {
                 return compact('code');
             }
-            return null;
+            throw new AuthenticationException('Вы ввели некорректные данные.');
         }
 
         $request->getSession()->set(

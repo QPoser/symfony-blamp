@@ -48,8 +48,8 @@
                                             <p>{{ company.name }}</p>
                                         </div>
                                         <div class="stats">
-                                            <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Пока нет оценки' }}</p>
-                                            <p><i class="fa fa-comment"></i> {{ company.activeReviews|length ?: 'Нет комментариев' }}</p>
+                                            <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Нет оценки' }}</p>
+                                            <p><i class="fa fa-comment"></i> {{ company.activeReviews|length }}</p>
                                             <p><a href="{{ path('company.show', { id : company.id}) }}" class="btn btn-light">Перейти</a></p>
                                         </div>
                                     </div>
