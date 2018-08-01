@@ -197,6 +197,11 @@ class User implements UserInterface, \Serializable, OAuthAwareUserProviderInterf
 
     public function isVerified()
     {
+        return $this->emailToken == null;
+    }
+
+    public function isWait()
+    {
         return $this->emailToken != null;
     }
 

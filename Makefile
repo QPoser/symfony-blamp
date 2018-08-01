@@ -9,3 +9,13 @@ docker-build:
 
 test:
 		docker-compose exec php-fpm php ./bin/phpunit
+
+grant-access:
+		chmod -R 777 var
+
+update-database:
+		docker-compose exec php-fpm php bin/console doctrine:schema:update -f
+
+clear-cache:
+		docker-compose exec php-fpm php bin/console clear:cache --no-warmup -e prod
+

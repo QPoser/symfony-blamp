@@ -5,7 +5,12 @@ $( document ).ready(function () {
         type: 'GET',
         url: "/banner/vertical/get",
     }).done(function ( html ) {
-        $('.banner-vertical').html(html);
+        if ($( window ).width() < 768) {
+            $('.banner-body .banner-vertical').html(html);
+            $('#modal').modal('show');
+        } else {
+            $('.banner .banner-vertical').html(html);
+        }
     }).fail(function () {
         $('.banner-vertical').css('display', 'none');
     });

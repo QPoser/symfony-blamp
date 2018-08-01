@@ -33,10 +33,10 @@
         <p>
         <div class="row">
             {% for chunk in row|batch(2) %}
-                <div class="col-md-6">
-                    <div class="row">
+                <div class="col-md-6 col-sm-7 ml-auto mr-auto">
+                    <div class="row" style="padding-left: 15px; padding-right: 15px;">
                         {% for company in chunk %}
-                            <div class="card company-card col-md-5 mr-5">
+                            <div class="card company-card col-md-5 mr-auto">
                                 <div class="normal">
                                     <div class="card-body">
                                         <div class="img" style="background-color: #f5f8fa;">

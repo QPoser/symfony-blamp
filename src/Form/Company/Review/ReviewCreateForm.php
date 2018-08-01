@@ -31,11 +31,6 @@ class ReviewCreateForm extends AbstractType
                 ],
                 'label' => 'Ваша оценка'
             ])
-            ->add('photos', CollectionType::class,array(
-                'entry_type' => PhotoType::class,
-                'allow_add' => true,
-                'by_reference' => false,
-            ))
             ;
 
 

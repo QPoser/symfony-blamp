@@ -19,7 +19,7 @@
         <main class="py-4">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-md-10">
 
                         {% include 'partials/flash.html.twig' %}
 
@@ -32,15 +32,32 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-1">
+                    <div class="col-md-2 banner">
 
-                    <div class="banner-vertical">
+                        <div class="banner-vertical">
 
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <div class="modal fade bd-example-modal-sm" id="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Реклама</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body banner-body">
+                        <div class="banner-vertical">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {% if app.user %}
             <a href="{{ path('cabinet') }}" class="notify-circle">
