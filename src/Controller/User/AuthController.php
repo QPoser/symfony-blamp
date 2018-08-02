@@ -124,9 +124,6 @@ class AuthController extends Controller
                 $this->addFlash('notice', 'Инструкции по смене пароля отправлены вам на почту!');
                 return $this->redirectToRoute('login');
             }
-            dump($user);
-            dump($username);
-            die;
             $this->addFlash('warning', 'Пользователь с данным именем не найден');
         }
 

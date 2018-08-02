@@ -49,7 +49,7 @@
                 <td>{{ user.subscribers|length }}</td>
                 <td>{{ user.subscriptions|length }}</td>
                 <td>
-                {% if app.user.isWait %}
+                {% if user.isWait %}
                     <a href="{{ path('user.verify', {id: user.id}) }}" class="btn btn-info">Принять</a>
                 {% endif %}
                 {% if app.user and (app.user.id == user.id or user.isAdmin) %}
