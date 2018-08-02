@@ -35,21 +35,23 @@
         <p>
         <div class="row">
         {% for chunk in row|batch(2) %}
-            <div class="col-md-6">
-            <div class="row">
+            <div class="col-md-6 col-sm-7 ml-auto mr-auto">
+            <div class="row" style="padding-left: 15px; padding-right: 15px;">
             {% for company in chunk %}
-                <div class="card company-card col-md-5 mr-5">
+                <div class="card company-card col-md-5 mr-auto">
                     <div class="normal">
                         <div class="card-body">
-                            <div class="img">
-                                <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                            <div class="img" style="background-color: #f5f8fa;">
+                                {% if company.photo %}
+                                    <img src="{{ absolute_url(asset(company.photo)) }}" alt="#">
+                                {% endif %}
                             </div>
                             <div class="company-name">
                 <p>{{ company.name }}</p>
                 </div>
                 <div class="stats">
-                    <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Пока нет оценки' }}</p>
-                    <p><i class="fa fa-comment"></i> {{ company.reviews|length ?: 'Нет комментариев' }}</p>
+                    <p><i class="fa fa-star"></i> {{ company.assessment ?: 'Нет оценки' }}</p>
+                    <p><i class="fa fa-comment"></i> {{ company.activeReviews|length }}</p>
                     <p><a href="{{ path('company.show', { id : company.id}) }}" class="btn btn-light">Перейти</a></p>
                 </div>
                 </div>
@@ -66,20 +68,22 @@
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item" {{ thisPage == 1 ? 'class="disabled"' }}>
-                <a class="page-link" href="{{ path('category.show', {page: thisPage-1 < 1 ? 1 : thisPage-1, search: app.request.get('search'), id: category.id}) }}">«</a>
+                <a class="page-link" href="{{ path('company', {page: thisPage-1 < 1 ? 1 : thisPage-1, search: app.request.get('search')}) }}">«</a>
             </li>
 
             {% for i in 1..maxPages %}
                 {% if i > 0 %}
                     <li class="page-item {{ thisPage == i ? 'active' }}" >
-                        <a class="page-link" href="{{ path('category.show', {page: i, search: app.request.get('search'), id: category.id}) }}">{{ i }}</a>
+                        <a class="page-link" href="{{ path('company', {page: i, search: app.request.get('search')}) }}">{{ i }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
 
             <li class="page-item" {{ thisPage == maxPages ? 'class="disabled"' }}>
-                <a class="page-link" href="{{ path('category.show', {page: thisPage+1 <= maxPages ? thisPage+1 : thisPage, search: app.request.get('search'), id: category.id}) }}">»</a>
+                <a class="page-link" href="{{ path('company', {page: thisPage+1 <= maxPages ? thisPage+1 : thisPage, search: app.request.get('search')}) }}">»</a>
             </li>
         </ul>
     </nav>
+
+
 {% endblock %}

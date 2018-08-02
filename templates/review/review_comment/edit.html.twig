@@ -4,7 +4,8 @@
 
 {% block body %}
     <h1>Редактировать комментарий</h1>
-
+    <a href="{{ path('review.show', {'id' : review_comment.review.id}) }}" class="btn btn-primary">< Назад </a>
+    <hr>
     {{ include('review/review_comment/_form.html.twig', {'button_label': 'Обновить'}) }}
 
     {{ include('review/review_comment/_delete_form.html.twig') }} 

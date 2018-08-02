@@ -6,6 +6,7 @@ use App\Entity\Review\ReviewComment;
 use App\Form\Review\ReviewCommentType;
 use App\Services\CommentService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,7 +42,10 @@ class ReviewCommentController extends Controller
         $form = $this->createForm(ReviewCommentType::class, $comment);
 
         if ($reviewComment->getReview()->getCompany()->getBusinessUsers()->contains($this->getUser())) {
-            $form->add('isCompany');
+            $form->add('isCompany', CheckboxType::class, array(
+                'label'    => 'Оставить комментарий от имени компании',
+                'required' => false,
+                ));
         }
 
         $form->handleRequest($request);

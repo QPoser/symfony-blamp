@@ -4,6 +4,7 @@
 
 {% block body %}
     <h2>Добавить комментарий</h2>
+    <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary">< {{  review.company.name }} </a>
     <hr>
     {{ form_start(form) }}
     {{ form_widget(form) }}

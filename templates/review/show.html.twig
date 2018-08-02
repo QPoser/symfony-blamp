@@ -3,42 +3,40 @@
 {% block title %}See review{% endblock %}
 
 {% block body %}
-    <div class="d-flex flex-row">
-        <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary mr-1">< {{ review.company.name }}</a>
-        <a href="{{ path('review.add.comment.outside', {id: review.id}) }}" class="btn btn-success mr-1">Добавить комментарий</a>
+
+    <p class="company-nav">
+        <a href="{{ path('company.show', {'id' : review.company.id}) }}" class="btn btn-primary">< {{ review.company.name }}</a>
         {% if app.user and (app.user == review.user or app.user.isAdmin) %}
-            <a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary mr-1">Редактировать</a>
-            <form action="{{ path('review.delete', {'id' : review.id}) }}" method="post" class="mr-1">
-                <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
-                <input type="hidden" name="_method" value="delete">
-                <button type="submit" class="btn btn-danger">Удалить</button>
-            </form>
+            <a href="{{ path('review.edit', {'id' : review.id}) }}" class="btn btn-primary">Редактировать</a>
         {% endif %}
+    </p>
+
+    <hr>
+    <div class="row review">
+        <div class="col-sm-2 review-info">
+            <p><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></p>
+            <p>
+                {% set count = 5 %}
+                {% for i in 1..review.assessment %}
+                    <i class="fa fa-star active-star"></i>
+                    {% set count = 5 - i %}
+                {% endfor %}
+                {% if count > 0 %}
+                    {% for i in 1..count %}
+                        <i class="fa fa-star"></i>
+                    {% endfor %}
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-sm-10 review-content">
+            <p>{{ review.text }}</p>
+        </div>
+
     </div>
     <hr>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Param</th>
-                <th scope="col">Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><i class="fa fa-user"></i> User</td>
-                <td><a href="{{ path('user.show', {'id' : review.user.id}) }}">{{ review.user.username }}</a></td>
-            </tr>
-            <tr>
-                <td><i class="fa fa-star"></i> Assessment</td>
-                <td>{{ review.assessment }}</td>
-            </tr>
-            <tr>
-                <td><i class="fa fa-comment"></i> Review</td>
-                <td>{{ review.text }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <h2>{{ review.comments|length }} комментариев</h2>
+
+    <h2>Комментарии ({{ review.comments|length }})</h2>
+
     <hr>
 
     <form method="post" action="{{ path('review.add.comment.inside', {'id': review.id}) }}">
@@ -57,17 +55,12 @@
         {% endif %}
         <button type="submit" class="btn btn-primary mr-1">Добавить комментарий</button>
     </form>
+    <hr>
 
 
 
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">User</th>
-            <th scope="col">Comment</th>
-        </tr>
-        </thead>
+    <table class="table">
         <tbody>
         {% import _self as macros %}
         {% for comment in review.comments %}
@@ -78,24 +71,38 @@
                 {% macro comment_tree(comment) %}
                     {% import _self as macros %}
                     <ul class="nested-comments" style="list-style: none">
-                        <li style="margin-left: 1em">
-                            <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 15px;">
-                                <div class="col-sm-2">
-                                    {% if comment.isCompany %}
-                                        <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
-                                    {% else %}
-                                        <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
-                                    {% endif %}
-                                    {% if comment.updatedAt %}
+                        <li>
+                                <div class="row review border-left border-bottom" style="padding:1em 1em 0em 0em;">
+                                    <div class="col-sm-2 review-info">
+                                        <p>
+                                            {% if comment.isCompany %}
+                                                <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                                            {% else %}
+                                                <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                                            {% endif %}
+                                        </p>
+                                        <p>
+                                            {% if comment.updatedAt %}
                                         <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
-                                    {% else %}
-                                        <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
-                                    {% endif %}
+                                        {% else %}
+                                            <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
+                                        {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-10 review-content">
+                                        <p style="word-wrap: break-word">{{ comment.text }}</p>
+                                        <p>
+                                        <div>
+                                            {% if app.user  %}
+                                            <a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Ответить</a>
+                                            {% endif %}
+                                            {% if app.user and (app.user == comment.user or app.user.isAdmin) %}
+                                                <a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Изменить</a>
+                                            {% endif %}
+                                        </div>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="col-sm-8"><p style="word-wrap: break-word">{{ comment.text }}</p></div>
-                                <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
-                                <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
-                            </div>
                             {% if comment.childrenComments %}
                                 {% for children in comment.childrenComments %}
                                     {{ macros.comment_tree(children) }}
@@ -106,55 +113,48 @@
                 {% endmacro %}
 
 
-                        <ul class="nested-comments" style="list-style: none; padding-left: 1em">
-                            <li>
-                                <div class="row bg-light text-dark rounded" style="padding:1em; border: 1px solid black; border-radius: 10px;">
-                                    <div class="col-sm-2">
-                                        {% if comment.isCompany %}
-                                            <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
-                                        {% else %}
-                                            <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
-                                        {% endif %}
-                                        {% if comment.updatedAt %}
-                                            <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
-                                        {% else %}
-                                            <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-sm-8"><p style="word-wrap: break-word">{{ comment.text }}</p></div>
-                                    <div class="col-sm-1"><a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Reply</a></div>
-                                    <div class="col-sm-1"><a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Edit</a></div>
-                                </div>
-                                {% if comment.childrenComments %}
-                                    {% for children in comment.childrenComments %}
-                                        {{ macros.comment_tree(children) }}
-                                    {% endfor %}
+                <ul class="nested-comments" style="list-style: none; padding-left: 1em">
+                    <li>
+                        <div class="row review border-left border-bottom">
+                            <div class="col-sm-2 review-info">
+                                <p>
+                                    {% if comment.isCompany %}
+                                        <i class="fa fa-building-o" aria-hidden="true"></i><a href="{{ path('company.show', {'id' : comment.review.company.id}) }}">{{ comment.review.company.name }}</a>
+                                    {% else %}
+                                        <i class="fa fa-user"></i><a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a>
+                                    {% endif %}
+                                </p>
+                                <p>
+                                    {% if comment.updatedAt %}
+                                <p>changed: <i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.updatedAt|date('Y-m-d H:i:s') }}</p>
+                                {% else %}
+                                    <p><i class="fa fa-clock-o" aria-hidden="true"></i></i>{{ comment.createdAt|date('Y-m-d H:i:s') }}</p>
                                 {% endif %}
-                            </li>
-                        </ul>
+                                </p>
+                            </div>
+                            <div class="col-sm-10 review-content">
+                                <p style="word-wrap: break-word">{{ comment.text }}</p>
+                                <p>
+                                <div>
+                                    <a href="{{ path('comment.answer', {'id' : comment.id}) }}" class="btn btn-primary mr-1">Ответить</a>
+                                    {% if app.user and (app.user == comment.user or app.user.isAdmin) %}
+                                        <a href="{{ path('comment.edit', {'id' : comment.id}) }}" class="btn btn-danger mr-1">Изменить</a>
+                                    {% endif %}
+                                </div>
+                                </p>
+                            </div>
+                        </div>
+                        {% if comment.childrenComments %}
+                            {% for children in comment.childrenComments %}
+                                {{ macros.comment_tree(children) }}
+                            {% endfor %}
+                        {% endif %}
+                    </li>
+                </ul>
             </td>
         </tr>
         {% endif %}
         {% endfor %}
         </tbody>
     </table>
-
-
-
-
-
-
-
-
-
-
-      {#<tr>
-            <td><i class="fa fa-user"></i> <a href="{{ path('user.show', {'id' : comment.user.id}) }}">{{ comment.user.username }}</a></td>
-            <td>{{ comment.text }}</td>
-            <td><a href="{{ path('comment.answer', {'id' : comment.id}) }}">Answer</a></td>
-            <td><a href="{{ path('comment.edit', {'id' : comment.id}) }}">Edit</a></td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table> #}
 {% endblock %}

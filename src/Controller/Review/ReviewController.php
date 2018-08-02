@@ -55,7 +55,7 @@ class ReviewController extends Controller
 
             $this->addFlash('notice', 'Комментарий успешно добавлен.');
 
-            return $this->redirectToRoute('company', ['id' => $review->getCompany()->getId()]);
+            return $this->redirectToRoute('review.show', ['id' => $review->getId()]);
         }
 
         return $this->render('review/comment/add.html.twig', [

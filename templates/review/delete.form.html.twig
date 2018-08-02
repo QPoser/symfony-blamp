@@ -1,0 +1,5 @@
+<form action="{{ path('review.delete', {'id' : review.id}) }}" method="post" onsubmit="return confirm('Вы действительно хотите удалить свой отзыв?');" class="mr-1">
+    <input type="hidden" name="token" value="{{ csrf_token('delete-review') }}">
+    <input type="hidden" name="_method" value="delete">
+    <button type="submit" class="btn btn-danger mr-1">Удалить</button>
+</form>
